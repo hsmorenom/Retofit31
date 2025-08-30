@@ -41,7 +41,6 @@ switch ($metodo) {
         }
         break;
 
-
     // POST: se crea un nuevo cliente
     case 'POST':
         $accion = $_GET['accion'] ?? null;

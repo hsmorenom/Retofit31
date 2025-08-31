@@ -115,11 +115,11 @@ export class Administrativo implements OnInit {
     }
 
     if (this.usuarioEditado.CONTRASENA || this.usuarioEditado.CONFIRMAR) {
-      if ((this.usuarioEditado.CONTRASENA || '').trim() !== (this.usuarioEditado.CONFIRMAR || '').trim()) {
-        alert("Las contraseñas no coinciden");
-        return;
-      }
-    }
+        if ((this.usuarioEditado.CONTRASENA || '').trim() !== (this.usuarioEditado.CONFIRMAR || '').trim()) {
+          alert("Las contraseñas no coinciden");
+          return;
+        }
+      }
 
     // Si ya tienes ID_CLIENTE no vuelvas a buscarlo
     if (this.usuarioEditado.ID_CLIENTE) {

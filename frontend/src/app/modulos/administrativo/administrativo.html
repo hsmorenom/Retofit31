@@ -465,53 +465,53 @@
                 <h2 class="text-green-950 text-2xl font-oswald font-bold mt-6 mb-4">SEGURIDAD</h2>
 <div class="flex flex-col gap-3 text-black">
 
-  <!-- Contraseña -->
-  <div class="flex flex-col">
-    <div class="flex items-center gap-3">
-      <label class="w-40 text-lg font-oswald font-bold">Contraseña</label>
-      <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
-           [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONTRASENA}">
-        
-        <input [type]="mostrarClave ? 'text' : 'password'" 
-               [(ngModel)]="usuarioEditado.CONTRASENA"
-               placeholder="Contraseña" 
-               class="flex-1 bg-transparent text-black outline-none" />
+            <!-- Contraseña -->
+            <div class="flex flex-col">
+                <div class="flex items-center gap-3">
+                <label class="w-40 text-lg font-oswald font-bold">Contraseña</label>
+                <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONTRASENA}">
+                    
+                    <input [type]="mostrarClave ? 'text' : 'password'" 
+                        [(ngModel)]="usuarioEditado.CONTRASENA"
+                        placeholder="Contraseña" 
+                        class="flex-1 bg-transparent text-black outline-none" />
 
-        <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
-          @if (!mostrarClave) {
-            <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
-          }
-          @if (mostrarClave) {
-            <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
-          }
-        </button>
-      </div>
-    </div>
-  </div>
+                    <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+                    @if (!mostrarClave) {
+                        <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                    }
+                    @if (mostrarClave) {
+                        <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                    }
+                    </button>
+                </div>
+                </div>
+            </div>
 
-  <!-- Confirmar Contraseña -->
-  <div class="flex flex-col">
-    <div class="flex items-center gap-3">
-      <label class="w-40 text-lg font-oswald font-bold">Confirmar contraseña</label>
-      <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
-           [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONFIRMAR}">
-        
-        <input [type]="mostrarConfirmarClave ? 'text' : 'password'" 
-               [(ngModel)]="usuarioEditado.CONFIRMAR"
-               placeholder="Confirmar contraseña" 
-               class="flex-1 bg-transparent text-black outline-none" />
+            <!-- Confirmar Contraseña -->
+            <div class="flex flex-col">
+                <div class="flex items-center gap-3">
+                <label class="w-40 text-lg font-oswald font-bold">Confirmar contraseña</label>
+                <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONFIRMAR}">
+                    
+                    <input [type]="mostrarConfirmarClave ? 'text' : 'password'" 
+                        [(ngModel)]="usuarioEditado.CONFIRMAR"
+                        placeholder="Confirmar contraseña" 
+                        class="flex-1 bg-transparent text-black outline-none" />
 
-        <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave" class="focus:outline-none">
-          @if (!mostrarConfirmarClave) {
-            <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
-          }
-          @if (mostrarConfirmarClave) {
-            <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
-          }
-        </button>
-      </div>
-    </div>
-  </div>
+                    <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave" class="focus:outline-none">
+                    @if (!mostrarConfirmarClave) {
+                        <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                    }
+                    @if (mostrarConfirmarClave) {
+                        <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                    }
+                    </button>
+                </div>
+                </div>
+            </div>
 
 </div>
 

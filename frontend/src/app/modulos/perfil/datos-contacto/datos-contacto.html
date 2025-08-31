@@ -1,0 +1,66 @@
+<div class="bg-white p-4 rounded shadow-md md:h-fit ">
+  <h3 class="text-2xl font-semibold mb-4 text-[#004D00]">DATOS DE CONTACTO</h3>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Correo electrónico</label>
+    @if (modoEdicion) {
+    <input [(ngModel)]="email" (ngModelChange)="onCampoCambiado()" type="email"
+      class="w-full p-2 rounded-full  bg-[#E1E1E1] text-black"
+      [ngClass]="{'border-red-500 border-2': mostrarError && !email}" />
+    @if (mostrarError && !email) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+
+    } @else {
+    <p class="text-black">{{ email }}</p>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Dirección</label>
+    @if (modoEdicion) {
+    <input [(ngModel)]="direccion" (ngModelChange)="onCampoCambiado()" type="text"
+      class="w-full p-2 rounded-full bg-[#E1E1E1] text-black" />
+
+    } @else {
+    <p class="text-black">{{ direccion }}</p>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Ciudad</label>
+
+    @if (modoEdicion) {
+    <select [(ngModel)]="ciudad" (ngModelChange)="onCampoCambiado()"
+      class="w-full p-2 rounded-full bg-[#E1E1E1] text-black"
+      [ngClass]="{'border-red-500 border-2': mostrarError && !ciudad}">
+
+      <option [ngValue]="null" disabled>Seleccione una ciudad</option>
+
+      @for (c of ciudades; track c.ID_CIUDAD) {
+      <option [ngValue]="c.ID_CIUDAD">
+        {{ c.NOMBRE }}
+      </option>
+      }
+    </select>
+    @if (mostrarError && !ciudad) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+
+    } @else {
+    <p class="text-black font-light">
+      {{ getNombreCiudad(ciudad) }}
+    </p>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Teléfono</label>
+    @if (modoEdicion) {
+    <input [(ngModel)]="telefono" (ngModelChange)="onCampoCambiado()" type="text"
+      class="w-full p-2 rounded-full bg-[#E1E1E1] text-black" />
+    } @else {
+    <p class="text-black">{{ telefono }}</p>
+    }
+  </div>
+
+  <!-- <pre class="text-xs text-left">{{ datosUsuario | json }}</pre> -->
+</div>

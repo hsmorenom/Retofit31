@@ -1,0 +1,160 @@
+<!-- Banner de presentacion -->
+<!-- Aca la opcion de relative habilita que sus hijos se vuelvan absolutos y se superpongan, w-full es para que los elementos ocupen todo el contenedor de section, h-300px es para fijar la altura a 300px -->
+<section class="relative w-full h-[300px] bg-[#314A37] ">
+  <!-- Aca se pone la imagen de fondo del banner, el hidden oculta el elemento hasta que se activa con el sm:block cuando la pantalla es mas grande, el inset hace que la imagen rellene todo el contenderor, el object.cover se usa para que se escale la imagen en caso de que la imagen no tenga la misma proporcion a donde se quiere poner -->
+  <img src="assets/images/login/fondo inicio de sesion.png" alt="Fondo"
+    class=" hidden sm:block absolute inset-0 w-full h-full object-cover" />
+  <div class="absolute inset-0 flex items-center justify-center">
+    <!-- md es cuando la pantalla esta en tamaño mediano entonces allí cambia el tamaño de la fuente a 3xl, el bg-black es background en negro, el /60 es la transparencia, el rounded es la redondez de las esquinas  -->
+    <div class="bg-black/60 px-6 py-4 rounded-lg">
+      <h1 class="text-white text-2xl md:text-3xl font-bold text-center">
+        ¡CONECTATE Y EMPIEZA AHORA!
+      </h1>
+    </div>
+  </div>
+</section>
+
+<main class="flex flex-col items-center justify-center px-4 py-15 bg-[#314A37] ">
+  <section class="relative bg-[#2A3C2F] p-8 pt-16 rounded-lg shadow-lg text-center w-full max-w-md">
+    <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+      <img src="assets/images/login/icono inicio de sesion.png" alt="Ícono"
+        class="w-20 h-20 rounded-full border-4 border-[#2A3C2F] bg-white" />
+    </div>
+    <!-- Titulo de inicio de sesion -->
+    <h2 class="text-white text-2xl font-bold mb-6">REGISTRO DE USUARIO</h2>
+    <!-- Primer nombre -->
+    <div class="flex flex-col object-left text-left gap-2 ">
+      <label class="block text-sm text-white ">Escribe tu primer nombre</label>
+      <div>
+        <input [(ngModel)]="usuario.primerNombre" type="text" placeholder="Primer nombre"
+          class=" bg-white mb-1 pr-3 w-full p-2 rounded-full text-black"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.primerNombre}" />
+        @if (mostrarError && !usuario.primerNombre) {
+        <small class="text-red-500 flex  ">Campo obligatorio</small>
+        }
+      </div>
+
+
+      <!-- Segundo nombre -->
+      <label class="block text-sm text-white">Escribe tu segundo nombre</label>
+      <input [(ngModel)]="usuario.segundoNombre" type="text" placeholder="Segundo nombre"
+        class=" bg-white mb-3 w-full p-2 rounded-full text-black" />
+
+      <!-- Apellidos -->
+      <label class="block text-sm text-white">Escribe tu primer y segundo apellido</label>
+      <div class="flex gap-2">
+
+        <input [(ngModel)]="usuario.primerApellido" type="text" placeholder="Primer apellido"
+          class=" bg-white w-1/2 p-2 rounded-full text-black"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.primerApellido}" />
+
+        <input [(ngModel)]="usuario.segundoApellido" type="text" placeholder="Segundo apellido"
+          class=" bg-white w-1/2 p-2 rounded-full text-black" />
+      </div>
+      @if (mostrarError && !usuario.primerNombre) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>
+      }
+      <!-- Tipo y numero de documento -->
+      <label class="block text-sm text-white">Escoge el tipo de documento y escribe tu número de identificación</label>
+      <div class="flex gap-2">
+        <select [(ngModel)]="usuario.tipoDocumento" class="bg-white w-1/4 p-2 rounded-full text-black"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.tipoDocumento}">
+          <option value="CC">CC</option>
+          <option value="TI">TI</option>
+          <option value="CE">CE</option>
+        </select>
+        <input [(ngModel)]="usuario.Identificacion" type="text" placeholder="Número de identificación"
+          class="bg-white w-3/4 p-2 rounded-full text-black"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.Identificacion}" />
+      </div>
+      <div class="flex gap-2">
+        <div class="w-1/4">
+          @if (mostrarError && !usuario.tipoDocumento) {
+          <small class="text-red-500 flex  ">Campo obligatorio</small>}
+        </div>
+        <div class="3/4">
+          @if (mostrarError && !usuario.Identificacion) {
+          <small class="text-red-500 flex  ">Campo obligatorio</small>}
+        </div>
+
+      </div>
+      <!-- Ciudad -->
+      <label class="block text-sm text-white ">Ciudad de residencia</label>
+      <select [(ngModel)]="usuario.ciudad" class="bg-white w-full p-2 rounded-full text-black"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.ciudad}">
+        <option [ngValue]="null" disabled>Seleccione una ciudad</option>
+        @for(c of ciudades; track c.ID_CIUDAD) {
+        <option [ngValue]="c.ID_CIUDAD">{{ c.NOMBRE }}</option>
+        }
+      </select>
+      @if (mostrarError && !usuario.ciudad) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
+      <!-- Correo -->
+      <label class="block text-sm text-white">Escribe tu correo electrónico</label>
+      <input [(ngModel)]="usuario.correo" type="email" placeholder="Correo electrónico"
+        class="bg-white w-full p-2 rounded-full text-black"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.correo}" />
+
+      @if (mostrarError && !usuario.correo) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
+      <!-- Contraseña -->
+      <label class="block text-sm text-white">Escribe tu contraseña</label>
+      <div class="bg-white w-full p-2 rounded-full flex items-center"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.clave}">
+        <input [type]="mostrarClave ? 'text' : 'password'" [(ngModel)]="usuario.clave" placeholder="Contraseña"
+          class="flex-1 bg-transparent text-black outline-none" />
+        <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+          @if (!mostrarClave) {
+          <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+          }
+          @if (mostrarClave) {
+          <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+          }
+        </button>
+      </div>
+      @if (mostrarError && !usuario.correo) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
+      <!-- Confirmar contraseña -->
+      <label class="block text-sm text-white ">Vuelve a escribir tu contraseña</label>
+      <div class="bg-white w-full p-2 rounded-full flex items-center" [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.confirmarClave}" >
+        <input [type]="mostrarConfirmarClave ? 'text' : 'password'" [(ngModel)]="usuario.confirmarClave"
+          placeholder="Confirmar contraseña" class="flex-1 bg-transparent text-black outline-none" />
+        <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave" class="focus:outline-none">
+          @if (!mostrarConfirmarClave) {
+          <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+          }
+          @if (mostrarConfirmarClave) {
+          <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+          }
+
+        </button>
+      </div>
+      @if (mostrarError && !usuario.confirmarClave) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
+
+      <!-- Fecha de nacimiento -->
+      <label class="block text-sm text-white">Escribe o selecciona tu fecha de nacimiento</label>
+      <input [(ngModel)]="usuario.fechaNacimiento" type="date" class=" bg-white w-full p-2 rounded-full text-black" [ngClass]="{'border-red-500 border-2': mostrarError && !usuario.fechaNacimiento}" />
+      @if (mostrarError && !usuario.fechaNacimiento) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
+      <!-- Botón de registro -->
+      <button (click)="registrar()"
+        class="w-full bg-[#6ED13C] text-black font-bold py-2  my-2 rounded-full hover:bg-[#004D00] transition hover:text-white">
+        ENVIAR
+      </button>
+
+      <!-- Link a iniciar sesión -->
+      <p class="text-center text-sm  font-semibold mt-2 text-white">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/" class="text-[#6ED13C] font-semibold hover:underline">Inicia sesión</a>
+      </p>
+    </div>
+
+
+  </section>
+</main>

@@ -1,0 +1,122 @@
+<!-- info-basica.html -->
+<div class="p-4 rounded-lg">
+  <div class="space-y-2">
+
+    <!-- <pre class="text-xs text-left">{{ datosUsuario | json }}</pre> -->
+
+    <!-- Imagen del perfil -->
+    <div class="flex flex-col items-center">
+      <img [src]="fotoPerfil" alt="Foto de perfil" class="w-44 h-44 rounded-full object-cover border border-gray-300" />
+    </div>
+
+    @if (modoEdicion) {
+    <div class="flex flex-col mb-4 items-center pl-52">
+      <label class="cursor-pointer text-black px-4 py-1 rounded-full text-2xl hover:bg-green-700 hover:text-white">
+        <i class="fas fa-pencil-alt"></i>
+        <input type="file" accept="image/*" (change)="cambiarFoto($event)" class="hidden" />
+      </label>
+    </div>
+    }
+
+    <!-- Nombre completo -->
+    <div class="flex flex-col items-center text-center">
+      <label class="block text-sm font-semibold text-gray-700">Nombre completo</label>
+
+      @if (!modoEdicion) {
+      <div class="text-[#1F2C20] text-3xl">{{ nombreCompleto }}</div>
+      }
+      @if (modoEdicion) {
+      <div class="flex flex-wrap gap-5">
+
+        <input [(ngModel)]="primerNombre" (ngModelChange)="onCampoCambiado()"
+          class="p-2 rounded-full bg-[#E1E1E1]  w-full md:w-[23%]" placeholder="Primer nombre"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !primerNombre}" />
+
+        <input [(ngModel)]="segundoNombre" (ngModelChange)="onCampoCambiado()"
+          class="p-2 rounded-full bg-[#E1E1E1]  w-full md:w-[23%]" placeholder="Segundo nombre" />
+
+        <input [(ngModel)]="primerApellido" (ngModelChange)="onCampoCambiado()"
+          class="p-2 rounded-full bg-[#E1E1E1]  w-full md:w-[23%]" placeholder="Primer apellido"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !primerApellido}" />
+
+        <input [(ngModel)]="segundoApellido" (ngModelChange)="onCampoCambiado()"
+          class="p-2 rounded-full bg-[#E1E1E1]  w-full md:w-[23%]" placeholder="Segundo apellido" />
+      </div>
+      <!-- Mostrar campos de error  -->
+      <div class="flex  gap-7 w-full">
+        @if (mostrarError && !primerNombre) {
+        <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+        @if (mostrarError && !primerApellido) {
+        <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+      </div>
+      }
+    </div>
+
+    <!-- Tipo y número de documento -->
+    <div class="flex flex-col items-center text-center mb-4">
+      <label class="block font-semibold text-gray-700 text-sm">Documento</label>
+
+      @if (!modoEdicion) {
+      <p>{{ tipoDocumento }} - {{ numeroIdentificacion }}</p>
+      }
+      @if (modoEdicion) {
+      <div class="flex gap-4 ">
+        <select [(ngModel)]="tipoDocumento" (ngModelChange)="onCampoCambiado()" class="p-2 bg-[#E1E1E1] rounded-full"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !tipoDocumento}">
+          <option value="CC">CC</option>
+          <option value="TI">TI</option>
+          <option value="CE">CE</option>
+        </select>
+        <input [(ngModel)]="numeroIdentificacion" (ngModelChange)="onCampoCambiado()" type="text"
+          class="p-2  bg-[#E1E1E1] rounded-full" placeholder="Número de documento"
+          [ngClass]="{'border-red-500 border-2': mostrarError && !numeroIdentificacion}" />
+      </div>
+      <div class="flex gap-4">
+        @if (mostrarError && !tipoDocumento) {
+        <small class="text-red-500 flex  ">Campo obligatorio</small>}
+        @if (mostrarError && !numeroIdentificacion) {
+        <small class="text-red-500 flex  ">Campo obligatorio</small>}
+      </div>
+
+      }
+    </div>
+
+    <!-- Género -->
+    <div class="flex flex-col items-center text-center mb-4">
+      <label class="block text-sm font-medium text-gray-700">Sexo</label>
+
+      @if (!modoEdicion) {
+      <div class="text-[#1F2C20]">{{ sexo }}</div>
+      }
+      @if (modoEdicion) {
+      <select [(ngModel)]="sexo" (ngModelChange)="onCampoCambiado()"
+        class="p-2 rounded-full bg-[#E1E1E1] w-full max-w-xs mx-auto text-black"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !sexo}">
+        <option>Masculino</option>
+        <option>Femenino</option>
+        <option>Otro</option>
+      </select>
+      @if (mostrarError && !sexo) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+      }
+    </div>
+
+    <!-- Fecha de nacimiento -->
+    <div class="flex flex-col items-center text-center">
+      <label class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+
+      @if (!modoEdicion) {
+      <div class="text-[#1F2C20]">{{ fechaNacimiento }}</div>
+      }
+      @if (modoEdicion) {
+      <input [(ngModel)]="fechaNacimiento" (ngModelChange)="onCampoCambiado()" type="date"
+        class="p-2 rounded-full bg-[#E1E1E1] w-full max-w-xs mx-auto text-black"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !fechaNacimiento}" />
+      @if (mostrarError && !fechaNacimiento) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
+      }
+
+    </div>
+
+  </div>
+</div>

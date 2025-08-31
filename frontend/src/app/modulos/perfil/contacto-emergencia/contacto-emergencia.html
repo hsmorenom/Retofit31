@@ -1,0 +1,54 @@
+<div class="bg-white p-4 rounded shadow-md ">
+  <h3 class="text-2xl font-semibold mb-4 text-[#004D00]">DATOS DE CONTACTO DE EMERGENCIA</h3>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Nombre completo</label>
+    @if (modoEdicion) {
+    <input [(ngModel)]="contactoEmergencia" (ngModelChange)="onCampoCambiado()" type="text"
+      class="w-full p-2 rounded-full bg-[#E1E1E1] text-black"
+      [ngClass]="{'border-red-500 border-2': mostrarError && !contactoEmergencia}" />
+    @if (mostrarError && !contactoEmergencia) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+
+    } @else {
+    <p class="text-black">{{ contactoEmergencia }}</p>
+    }
+  </div>
+
+  <!-- 
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Dirección</label>
+    @if (modoEdicion) {
+      <input [(ngModel)]="emergencia.direccion" (ngModelChange)="onCampoCambiado()  type="text"
+        class="w-full p-2 rounded border border-gray-300 text-black" />
+    } @else {
+      <p class="text-black">{{ emergencia.direccion }}</p>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Ciudad</label>
+    @if (modoEdicion) {
+      <input [(ngModel)]="emergencia.ciudad" (ngModelChange)="onCampoCambiado()  type="text"
+        class="w-full p-2 rounded border border-gray-300 text-black" />
+    } @else {
+      <p class="text-black">{{ emergencia.ciudad }}</p>
+    }
+  </div>
+  -->
+
+  <div class="mb-3 ">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Teléfono</label>
+    @if (modoEdicion) {
+    <input [(ngModel)]="telefonoEmergencia" (ngModelChange)="onCampoCambiado()" type="text"
+      class="w-full p-2 rounded-full bg-[#E1E1E1] text-black"
+      [ngClass]="{'border-red-500 border-2': mostrarError && !telefonoEmergencia}" />
+
+    @if (mostrarError && !telefonoEmergencia) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+
+    } @else {
+    <p class="text-black">{{ telefonoEmergencia }}</p>
+    }
+  </div>
+</div>

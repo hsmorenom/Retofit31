@@ -1,0 +1,52 @@
+<!-- perfil.html -->
+<div class="w-full sm:w-[90%] lg:w-[70%] mx-auto p-6 space-y-6">
+  <!-- Botón de editar/guardar -->
+  <div class="flex justify-end gap-2">
+    @if (!modoEdicion) {
+    <button (click)="toggleEdicion()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+      {{ modoEdicion ? 'GUARDAR' : 'EDITAR' }}
+    </button>
+    }@else {
+    <button (click)="toggleCancelarEdicion()"
+      class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+      CANCELAR
+    </button>
+    <button (click)="toggleEdicion()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">{{
+      modoEdicion ? 'GUARDAR' : 'EDITAR' }}
+    </button>
+
+    }
+
+
+  </div>
+
+  <!-- Secciones del perfil -->
+  <app-info-basica [modoEdicion]="modoEdicion" [datosUsuario]="datosUsuario" [mostrarError]="mostrarError"
+    (datosCambiados)="onDatosCambiados($event)">
+  </app-info-basica>
+
+  <div class="flex flex-wrap justify-between gap-4 w-full">
+    <app-datos-contacto [modoEdicion]="modoEdicion" [datosUsuario]="datosUsuario" [ciudades]="ciudades"
+      [departamentos]="departamentos" (datosCambiados)="onDatosCambiados($event)" [mostrarError]="mostrarError"
+      class="w-full  md:w-[45%] ">
+    </app-datos-contacto>
+
+    <!-- Línea vertical -->
+    <div class="hidden  md:block w-px bg-gray-400 mx-2"></div>
+
+    <app-contacto-emergencia [modoEdicion]="modoEdicion" [datosUsuario]="datosUsuario"
+      (datosCambiados)="onDatosCambiados($event)" [mostrarError]="mostrarError" class="w-full   md:w-[45%] ">
+    </app-contacto-emergencia>
+  </div>
+
+  <!-- Actualizar contraseña -->
+  <div class="flex justify-end">
+    <button (click)="toggleClave()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+      {{ mostrarFormularioClave ? 'CERRAR' : 'ACTUALIZAR CLAVE' }}
+    </button>
+  </div>
+
+  @if (mostrarFormularioClave) {
+  <app-cambiar-clave></app-cambiar-clave>
+  }
+</div>

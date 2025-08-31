@@ -1,0 +1,106 @@
+<div class="mb-3 gap-5 ">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
+        <h2 class=" text-xl font-semibold text-[#004D00]">HISTORIAL DE ASISTENCIAS</h2>
+        <p class="font-light">(Consulta el historial de asistencia de un usuario )</p>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        <!-- //Buscar ID del usuario -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
+                Identificación del usuario:
+            </h3>
+            <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
+                <input type="text" placeholder="Ingrese aquí el ID del usuario"
+                    class="flex-1 outline-none text-sm pl-5" />
+                <label class="cursor-pointer">
+                    <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarUsuario()" />
+                </label>
+            </div>
+        </div>
+
+        <!--Filtrar fecha inicial  -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
+                Fecha inicial:
+            </h3>
+            <input type="date" class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+        </div>
+
+        <!--Filtrar fecha final  -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
+                Fecha final:
+            </h3>
+            <input type="date" class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+        </div>
+    </div>
+
+
+    <!-- Consultar Historial -->
+    <div class="flex justify-end">
+        <button (click)="toggleConsulta()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+            {{ mostrarHistorialUsuario ? 'REGRESAR' : 'CONSULTAR' }}
+        </button>
+    </div>
+
+    @if (mostrarHistorialUsuario) {
+
+    <div class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
+        <table class="min-w-full border-collapse text-sm">
+            <thead class="bg-zinc-400 text-zinc-800 font-oswald">
+                <tr class="bg-zinc-400 text-lg text-center font-semibold">
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Nombres</th>
+                    <th class="px-4 py-2">Apellidos</th>
+                    <th class="px-4 py-2">Evento</th>
+                    <th class="px-4 py-2">Asistencia</th>
+                    <th class="px-4 py-2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-400">
+                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
+                    <td class="px-4 py-2">123456789</td>
+                    <td class="px-4 py-2">John Michael</td>
+                    <td class="px-4 py-2">Smith Johnson</td>
+                    <td class="px-4 py-2">Nutrición</td>
+                    <td class="px-4 py-2">15/04/2025</td>
+                    <td class="px-4 py-2">
+                        <div class="flex justify-center">
+                            <button type="button"
+                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                <i class="fas fa-trash text-2xl"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
+                    <td class="px-4 py-2">123456789</td>
+                    <td class="px-4 py-2">John Michael</td>
+                    <td class="px-4 py-2">Smith Johnson</td>
+                    <td class="px-4 py-2">Práctica</td>
+                    <td class="px-4 py-2">18/04/2025</td>
+                    <td class="px-4 py-2">
+                        <div class="flex justify-center">
+                            <button type="button"
+                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                <i class="fas fa-trash text-2xl"></i>
+                            </button>
+                        </div>
+
+                    </td>
+                </tr>
+                <!-- Agrega más filas según sea necesario -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="flex justify-end">
+        <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+            EXPORTAR
+        </button>
+    </div>
+    }
+
+</div>

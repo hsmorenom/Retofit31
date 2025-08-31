@@ -1,0 +1,60 @@
+<!-- Bandeja de opciones -->
+<!-- Aca se define el contenedor div para crear el sidebar-->
+<div class="w-64 max-h-fit bg-green-900 text-white shadow-lg ">
+    <nav class="flex flex-col gap-2 p-4">
+        <a routerLink="/inicio" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/inicio'}">
+            <i class="fas fa-home"></i> INICIO
+        </a>
+
+        <a routerLink="/perfil" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/perfil'}">
+            <i class="fas fa-user"></i> PERFIL DEL USUARIO
+        </a>
+
+        <a routerLink="/administrativo" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/administrativo'}">
+            <i class=" fas fa-user-cog"></i> ADMINISTRATIVO
+        </a>
+
+        <a routerLink="/asistencia" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/asistencia'}">
+            <i class=" fas fa-clipboard"></i> GESTIÓN DE ASISTENCIA
+        </a>
+
+        <a routerLink="/eventos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/eventos'}">
+            <i class=" fas fa-calendar-day"></i> EVENTOS
+        </a>
+
+        <a routerLink="/fotografias" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/fotografias'}">
+            <i class=" fas fa-camera"></i> FOTOGRAFÍAS
+        </a>
+
+        <a routerLink="/antropometricos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/antropometricos'}">
+            <i class=" fas fa-ruler-horizontal"></i> MEDIDAS ANTROPOMÉTRICAS
+        </a>
+
+        <a routerLink="/consultas" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/consultas'}">
+            <i class=" fas fa-file-medical-alt"></i> CONSULTAS
+        </a>
+
+        <a routerLink="/nutricional" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/nutricional'}">
+            <i class=" fas fa-utensils"></i> PLAN NUTRICIONAL
+        </a>
+
+        <a routerLink="/pago" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/pago'}">
+            <i class=" fas fa-credit-card"></i> PAGO DE MENSUALIDAD
+        </a>
+
+        <button (click)="cerrarSesion()"
+            class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-full mb-2 hover:bg-[#004D00] hover:text-white">
+            CERRAR SESIÓN
+        </button>
+    </nav>
+</div>

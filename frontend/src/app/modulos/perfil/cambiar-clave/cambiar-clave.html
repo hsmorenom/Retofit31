@@ -1,0 +1,65 @@
+<div class="bg-white p-4 rounded shadow-md max-w-md mx-auto mt-4">
+  <h3 class="text-2xl font-semibold mb-4 text-[#004D00]">SEGURIDAD</h3>
+
+  <!-- Contraseña actual -->
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Contraseña actual</label>
+    <div class="flex items-center bg-[#E1E1E1]  rounded-full p-2" [ngClass]="{'border-red-500 border-2': mostrarError && !claveActual}" >
+      <input [type]="mostrarClaveActual ? 'text' : 'password'" [(ngModel)]="claveActual"
+        class="flex-1 outline-none text-black" />
+      <button type="button" (click)="mostrarClaveActual = !mostrarClaveActual" class="focus:outline-none">
+        @if (!mostrarClaveActual) {
+        <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+        }
+        @if (mostrarClaveActual) {
+        <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+        }
+      </button>
+    </div>
+    @if (mostrarError && !claveActual) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+  </div>
+
+  <!-- Nueva contraseña -->
+  <div class="mb-3">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Nueva contraseña</label>
+    <div class="flex items-center bg-[#E1E1E1] rounded-full p-2" [ngClass]="{'border-red-500 border-2': mostrarError && !nuevaClave}" >
+      <input [type]="mostrarNuevaClave ? 'text' : 'password'" [(ngModel)]="nuevaClave"
+        class="flex-1 outline-none  text-black" />
+      <button type="button" (click)="mostrarNuevaClave = !mostrarNuevaClave" class="focus:outline-none">
+        @if (!mostrarNuevaClave) {
+        <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+        }
+        @if (mostrarNuevaClave) {
+        <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+        }
+      </button>
+    </div>
+    @if (mostrarError && !nuevaClave) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+  </div>
+
+  <!-- Confirmar nueva contraseña -->
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-medium mb-1">Confirmar nueva contraseña</label>
+    <div class="flex items-center bg-[#E1E1E1] rounded-full p-2" [ngClass]="{'border-red-500 border-2': mostrarError && !confirmarClave}" >
+      <input [type]="mostrarConfirmarClave ? 'text' : 'password'" [(ngModel)]="confirmarClave"
+        class="flex-1 outline-none text-black" />
+      <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave" class="focus:outline-none">
+        @if (!mostrarConfirmarClave) {
+        <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+        }
+        @if (mostrarConfirmarClave) {
+        <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+        }
+      </button>
+    </div>
+    @if (mostrarError && !confirmarClave) {
+    <small class="text-red-500 flex justify-start w-1/2 md:[23%]">Campo obligatorio</small>}
+  </div>
+
+
+  <button (click)="actualizarclave()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 w-full">
+    GUARDAR
+  </button>
+</div>

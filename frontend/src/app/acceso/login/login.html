@@ -1,0 +1,90 @@
+<!-- Banner de presentacion -->
+<!-- Aca la opcion de relative habilita que sus hijos se vuelvan absolutos y se superpongan, w-full es para que los elementos ocupen todo el contenedor de section, h-300px es para fijar la altura a 300px -->
+<section class="relative w-full h-[300px] bg-[#314A37] ">
+    <!-- Aca se pone la imagen de fondo del banner, el hidden oculta el elemento hasta que se activa con el sm:block cuando la pantalla es mas grande, el inset hace que la imagen rellene todo el contenderor, el object.cover se usa para que se escale la imagen en caso de que la imagen no tenga la misma proporcion a donde se quiere poner -->
+    <img src="assets/images/login/fondo inicio de sesion.png" alt="Fondo"
+        class=" hidden sm:block absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 flex items-center justify-center">
+        <!-- md es cuando la pantalla esta en tamaño mediano entonces allí cambia el tamaño de la fuente a 3xl, el bg-black es background en negro, el /60 es la transparencia, el rounded es la redondez de las esquinas  -->
+        <div class="bg-black/60 px-6 py-4 rounded-lg">
+            <h1 class="text-white text-2xl md:text-3xl font-bold text-center">
+                ¡CONECTATE Y EMPIEZA AHORA!
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- Formulario de inicio de sesion-->
+<!-- aca se aplica lo mismo para imagenes superpuestas, es por ello que el la section comienza con relative, para que sus hijos sean absolutes, shadow-lg es para que la seccion tenga sombra en la parte inferior -->
+<main class="flex flex-col items-center justify-center px-4 py-15 bg-[#314A37] ">
+    <section class="relative bg-[#2A3C2F] p-8 pt-16 rounded-lg shadow-lg text-center w-full max-w-md">
+
+        <!-- Ícono superpuesto de inicio de sesion, aca posiciona absoluta al objeto , -top-10 sube la imagen 40 px, left mueve el objeto hacia la mitad del contenedor desde la izq, transform -translate-x-1/2 traslada al 50%d de su ancho-->
+        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+            <img src="assets/images/login/icono inicio de sesion.png" alt="Ícono"
+                class="w-20 h-20 rounded-full border-4 border-[#2A3C2F] bg-white" />
+        </div>
+        <!-- Titulo de inicio de sesion -->
+        <h2 class="text-white text-2xl font-bold mb-6">INICIO DE SESIÓN</h2>
+
+        <!-- Input de usuario -->
+        <!-- mb es margin bottom, pr es padding right, mr es margin right -->
+        <div flex flex-col gap-2>
+            <div class="bg-white rounded-full flex items-center mb-3 pr-3"
+                [ngClass]="{'border-red-500 border-2': mostrarError && !usuario}">
+                <img src="assets/images/login/icono-usuario-inicio-sesion.png" class="w-10 h-10 mr-3" />
+                <!-- Flex-1 hae que el elemento ocupe todo el contenedor, en este caso es el espacio en blanco destinado para el input, el outline-none elimina el borde por defecto, el text-sm define el texto como pequeño -->
+                <input type="text" placeholder="Usuario" [(ngModel)]="usuario" class="flex-1 outline-none text-sm" />
+
+            </div>
+            @if (mostrarError && !usuario) {
+            <small class="text-red-500 flex pb-1">Campo obligatorio</small>}
+        </div>
+
+
+        <!-- Input de contraseña con botón de mostrar/ocultar -->
+        <div flex flex-col gap-3>
+            <div class="bg-white rounded-full flex items-center mb-1 pr-3"
+                [ngClass]="{'border-red-500 border-2': mostrarError && !clave}">
+                <img src="assets/images/login/icono-clave-inicio-sesion.png" class="w-10 h-10 mr-3" />
+
+                <!-- El tipo cambia dinámicamente entre 'password' y 'text' -->
+                <input [type]="mostrarClave ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="clave"
+                    class="flex-1 outline-none text-sm" />
+
+                <!-- Botón de ojo -->
+                <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+                    @if(!mostrarClave){
+                    <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                    }
+                    @if (mostrarClave) {
+                    <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                    }
+                </button>
+
+            </div>
+            @if (mostrarError && !clave) {
+            <small class="text-red-500 flex pb-1 ">Campo obligatorio</small>
+            }
+        </div>
+
+
+
+
+        <!-- Opciones -->
+        <!-- felx-wrap hace que los elementos pasen a una segunda fila si no cabe en una sola  -->
+        <div class="flex justify-between text-sm text-white mb-4 flex-wrap gap-2">
+            <label><input type="checkbox" class="cursor-pointer"> Recuérdame</label>
+            <a (click)="recordarClave()" class="text-[#7CE54F] font-semibold hover:underline cursor-pointer ">¿Olvidaste
+                la contraseña?</a>
+        </div>
+
+        <!-- Botón de inicio de sesión -->
+        <button (click)="iniciarSesion()"
+            class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-full mb-2 hover:bg-[#004D00] hover:text-white">
+            INICIAR SESIÓN
+        </button>
+        <a (click)="registrarUsuario()" class="text-[#7CE54F] font-semibold text-sm cursor-pointer hover:underline">
+            Crear cuenta</a>
+    </section>
+</main>

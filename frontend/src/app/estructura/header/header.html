@@ -1,0 +1,42 @@
+<header class="bg-black text-white px-6 py-4 flex items-center justify-between">
+
+  <div class="flex items-center gap-4">
+
+    <!-- Solo muestra el botón del sidebar si está activado cuando mostrarboton de app.ts es true y se utiliza ngif para alternal la visibilidada -->
+    @if (mostrarBoton)
+    {<button (click)="emitirToggle()"
+      class="bg-black hover:bg-[#7CE54F] text-white p-3 rounded-full shadow-lg focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    }
+
+
+    <img src="assets/images/header/logo_retofit-removebg-preview.png" alt="Logo" class="w-14 h-14" />
+  </div>
+
+  <!-- Menú visible en pantallas grandes -->
+  <nav class="hidden sm:flex gap-6 text-lg">
+    <a href="#" class="hover:text-[#7CE54F]">Inicio</a>
+    <a href="#" class="hover:text-[#7CE54F]">Acerca de</a>
+    <a href="#" class="hover:text-[#7CE54F]">Servicios</a>
+    <a href="#" class="hover:text-[#7CE54F]">Contacto</a>
+  </nav>
+
+  <!-- Botón hamburguesa para menú responsive -->
+  <button class="sm:hidden hover:text-[#7CE54F]" (click)="toggleMenu()">
+    Menú
+  </button>
+</header>
+
+<!-- Menú desplegable en móviles -->
+@if(isMenuOpen){
+<div class="sm:hidden bg-black text-white flex flex-col items-start px-6 py-4 gap-2">
+  <a href="#" (click)="closeMenu()" class="hover:text-[#7CE54F]">Inicio</a>
+  <a href="#" (click)="closeMenu()" class="hover:text-[#7CE54F]">Acerca de</a>
+  <a href="#" (click)="closeMenu()" class="hover:text-[#7CE54F]">Servicios</a>
+  <a href="#" (click)="closeMenu()" class="hover:text-[#7CE54F]">Contacto</a>
+</div>
+}

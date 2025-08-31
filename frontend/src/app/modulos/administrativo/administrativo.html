@@ -1,0 +1,520 @@
+<!-- TITULO -->
+<div class="w-full sm:w-[90%] lg:w-[70%] mx-auto p-6 space-y-6">
+
+    <pre class="text-xs text-shadow-green-700 text-left">{{ clientes | json }}</pre>
+    <pre class="text-xs  text-indigo-800 text-left ">{{ usuarioEditado | json }}</pre>
+    <pre class="text-xs text-amber-900 text-left">{{ nuevoUsuario | json }}</pre>
+
+
+    <h1 class="text-black text-center font-semibold text-2xl sm:text-3xl font-oswald m-4">
+        ADMINISTRATIVO
+    </h1>
+    <!-- CONTENIDO PRINCIPAL (BUSCADOR + TABLA) -->
+    <div id="contenidoPrincipal" class="w-full sm:w-[90%] lg:w-[100%] mx-auto">
+        <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mt-4 ">
+            <!-- Botón Agregar Usuario -->
+            <button (click)="agregarUsuario()" type="button"
+                class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 font-oswald">
+                AGREGAR USUARIO
+            </button>
+            <!-- Caja de búsqueda -->
+            <div class="flex gap-3 mb-4">
+                <div class="relative flex-1 min-w-[400px]">
+                    <div class="absolute inset-y-0 -left-3 flex items-center pl-3">
+                        <div
+                            class="bg-gray-600 text-black font-bold flex items-center justify-center w-10 h-10 rounded-full font-oswald">
+                            ID
+                        </div>
+                    </div>
+                    <input type="text" [(ngModel)]="filtroTexto" (ngModelChange)="filtrarTabla()"
+                        placeholder="Buscar por ID, Nombres o Apellidos"
+                        class="border border-gray-300 rounded-full pl-16 pr-4 py-2 w-full font-bold text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-600 bg-zinc-200" />
+                </div>
+                <button type="button" (click)="limpiarFiltro()"
+                    class="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 font-oswald">
+                    LIMPIAR
+                </button>
+            </div>
+            <!-- TABLA DE USUARIOS -->
+            <!-- Solo muestra la tabla si NO hay formularios -->
+            @if (!mostrarFormulario && !mostrarFormularioEditar) {
+            <div
+                class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
+                <table class="min-w-full border-collapse">
+                    <thead class="bg-zinc-400 text-zinc-800 font-oswald">
+                        <tr>
+                            <th class="px-4 py-2">ID</th>
+                            <th class="px-4 py-2">Documento</th>
+                            <th class="px-4 py-2">Nombres</th>
+                            <th class="px-4 py-2">Apellidos</th>
+                            <th class="px-4 py-2">Estado</th>
+                            <th class="px-4 py-2">Asistencia</th>
+                            <th class="px-4 py-2">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-zinc-400">
+                        @for (cliente of clientesFiltrados; track cliente.ID_USUARIO) {
+                        <tr class="bg-white text-center hover:bg-[#E1E1E1]">
+                            <td class="px-4 py-2">{{ cliente.ID_USUARIO }}</td>
+                            <td class="px-4 py-2">{{ cliente.IDENTIFICACION }}</td>
+                            <td class="px-4 py-2">{{ cliente.NOMBRES }}</td>
+                            <td class="px-4 py-2">{{ cliente.APELLIDOS }}</td>
+                            <td class="px-4 py-2">
+                                <span
+                                    [ngClass]="+cliente.ESTADO === 1 ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                                    {{ +cliente.ESTADO === 1 ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2">Presente</td>
+                            <td class="px-4 py-2">
+                                <div class="flex justify-center gap-2">
+                                    <!-- Botón editar -->
+                                    <button type="button" (click)="editarCliente(cliente.ID_CLIENTE)"
+                                        class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                        <i class="fas fa-pencil text-2xl"></i>
+                                    </button>
+
+                                    <!-- Botón cambiar estado -->
+                                    <button type="button" (click)="cambiarEstado(cliente.ID_USUARIO)"
+                                        class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                        <i class="fas fa-eye text-2xl"></i>
+                                    </button>
+
+                                    <!-- Botón descargar -->
+                                    <button type="button"
+                                        class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                        <i class="fas fa-download text-2xl"></i>
+                                    </button>
+
+                                    <!-- Botón eliminar -->
+                                    <button type="button" (click)="eliminarUsuario(cliente.ID_USUARIO)"
+                                        class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                        <i class="fas fa-trash text-2xl"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+
+            <!-- FORMULARIO AGREGAR  (OCULTO AL INICIO) -->
+            @if (mostrarFormulario) {
+            <div class="max-w-4xl mx-auto p-6">
+                <h1 class="text-green-950 text-center text-2xl font-oswald font-bold mb-6">
+                    AGREGAR USUARIO
+                </h1>
+
+                <h2 class="text-green-950 text-2xl font-oswald font-bold mb-4">
+                    DATOS PERSONALES DEL USUARIO
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+                    <!-- Columna 1 -->
+                    <div class="flex flex-col gap-3">
+                        <!-- Primer nombre -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Primer nombre</label>
+                                <input type="text" [(ngModel)]="nuevoUsuario.primer_nombre" name="primerNombre"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.primer_nombre}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.primer_nombre) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Segundo nombre -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Segundo nombre</label>
+                                <input type="text" [(ngModel)]="nuevoUsuario.segundo_nombre" name="segundoNombre"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <!-- Primer apellido -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Primer apellido</label>
+                                <input type="text" [(ngModel)]="nuevoUsuario.primer_apellido" name="primerApellido"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.primer_apellido}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.primer_apellido) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Segundo apellido -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Segundo apellido</label>
+                                <input type="text" [(ngModel)]="nuevoUsuario.segundo_apellido" name="segundoApellido"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <!-- Fecha de nacimiento -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Fecha de nacimiento</label>
+                                <input type="date" [(ngModel)]="nuevoUsuario.fecha_nacimiento " name="fechaNacimiento"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.fecha_nacimiento}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.fecha_nacimiento) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Columna 2 -->
+                    <div class="flex flex-col gap-3">
+                        <!-- Correo electrónico -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Correo electrónico</label>
+                                <input type="email" [(ngModel)]="nuevoUsuario.email " name="correo"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.email}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.email) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Dirección</label>
+                                <input type="text" [(ngModel)]="nuevoUsuario.direccion " name="direccion"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.direccion}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.direccion) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Ciudad -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Ciudad</label>
+                                <select [(ngModel)]="nuevoUsuario.ciudad" name="tipo_usuario"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option [ngValue]="null" disabled>-- Seleccione un rol --</option>
+                                    @for (c of ciudades; track $index) {
+                                    <option [ngValue]="c.ID_CIUDAD">{{ c.NOMBRE }}</option>
+                                    }
+                                </select>
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.ciudad) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Teléfono</label>
+                                <input type="tel" [(ngModel)]="nuevoUsuario.telefono" name="telefono"
+                                    [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.telefono}"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.telefono) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Rol</label>
+
+                                <select [(ngModel)]="nuevoUsuario.tipo_usuario" name="rol" [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.tipo_usuario}" 
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option [ngValue]="null" disabled>-- Seleccione un rol --</option>
+                                    @for (t of tipoUsuario; track $index) {
+                                    <option [ngValue]="t.ID_TIPO_USUARIO">{{ t.TIPO }}</option>
+                                    }
+                                </select>
+                            </div>
+                            @if (mostrarError && !nuevoUsuario.tipo_usuario) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEGURIDAD -->
+                <h2 class="text-green-950 text-2xl font-oswald font-bold mt-6 mb-4">SEGURIDAD</h2>
+                <div class="flex flex-col gap-3 text-black">
+                    <!-- Contraseña -->
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3">
+                            <label class="w-40 text-lg font-oswald font-bold">Contraseña</label>
+                            <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
+                                [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.clave}">
+                                <input [type]="mostrarClave ? 'text' : 'password'" [(ngModel)]="nuevoUsuario.clave"
+                                    placeholder="Contraseña" class="flex-1 bg-transparent text-black outline-none" />
+                                <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+                                    @if (!mostrarClave) {
+                                    <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                                    }
+                                    @if (mostrarClave) {
+                                    <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                        @if (mostrarError && !nuevoUsuario.CLAVE) {
+                        <small class="text-red-500 ml-40">Campo obligatorio</small>
+                        }
+                    </div>
+
+                    <!-- Confirmar contraseña -->
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3">
+                            <label class="w-40 text-lg font-oswald font-bold">Confirmar contraseña</label>
+                            <div class=" w-full bg-zinc-200 p-2 rounded-full flex items-center"
+                                [ngClass]="{'border-red-500 border-2': mostrarError && !nuevoUsuario.confirmar_clave}">
+                                <input [type]="mostrarConfirmarClave ? 'text' : 'password'"
+                                    [(ngModel)]="nuevoUsuario.confirmar_clave" placeholder="Contraseña"
+                                    class="flex-1 bg-transparent text-black outline-none" />
+                                <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave"
+                                    class="focus:outline-none">
+                                    @if (!mostrarConfirmarClave) {
+                                    <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                                    }
+                                    @if (mostrarConfirmarClave) {
+                                    <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                                    }
+                                </button>
+                            </div>
+
+                        </div>
+                        @if (mostrarError && !nuevoUsuario.confirmar_clave) {
+                        <small class="text-red-500 ml-40">Campo obligatorio</small>
+                        }
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-6 flex gap-3">
+                    <button type="button" (click)="guardarUsuario()"
+                        class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-50 mb-2 hover:bg-[#004D00] hover:text-white">
+                        GUARDAR
+                    </button>
+                    <button type="button" (click)="volverLista()"
+                        class="cursor-pointer bg-black text-white font-bold py-2 px-4 rounded-full w-50 mb-2 hover:bg-zinc-800 hover:text-white">
+                        CANCELAR
+                    </button>
+                </div>
+            </div>
+            }
+
+            <!-- FIN DEL CÓDIGO -->
+
+            <!-- FORMULARIO EDITAR  (OCULTO AL INICIO) -->
+            @if (mostrarFormularioEditar) {
+            <div class="max-w-4xl mx-auto p-6">
+                <h1 class="text-green-950 text-center text-2xl font-oswald font-bold mb-6">EDITAR USUARIO</h1>
+
+                <h2 class="text-green-950 text-2xl font-oswald font-bold mb-4">DATOS PERSONALES DEL USUARIO</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+
+                    <!-- Columna 1 -->
+                    <div class="flex flex-col gap-3">
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Primer nombre</label>
+                                <input type="text" name="primerNombre" [(ngModel)]="usuarioEditado.PRIMER_NOMBRE"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                            @if (mostrarError && !usuarioEditado.PRIMER_NOMBRE) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Segundo nombre</label>
+                                <input type="text" name="segundoNombre" [(ngModel)]="usuarioEditado.SEGUNDO_NOMBRE"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Primer apellido</label>
+                                <input type="text" name="primerApellido" [(ngModel)]="usuarioEditado.PRIMER_APELLIDO"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Segundo apellido</label>
+                                <input type="text" name="segundoApellido" [(ngModel)]="usuarioEditado.SEGUNDO_APELLIDO"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Fecha de nacimiento</label>
+                                <input type="date" name="fechaNacimiento" [(ngModel)]="usuarioEditado.FECHA_NACIMIENTO"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Columna 2 -->
+                    <div class="flex flex-col gap-3">
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Correo electrónico</label>
+                                <input type="email" name="correo" [(ngModel)]="usuarioEditado.EMAIL"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Dirección</label>
+                                <input type="text" name="direccion" [(ngModel)]="usuarioEditado.DIRECCION"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Ciudad</label>
+                                <select [(ngModel)]="usuarioEditado.CIUDAD" name="tipo_usuario"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option [ngValue]="null" disabled>-- Seleccione un rol --</option>
+                                    @for (c of ciudades; track $index) {
+                                    <option [ngValue]="c.ID_CIUDAD">{{ c.NOMBRE }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Teléfono</label>
+                                <input type="tel" name="TELEFONO" [(ngModel)]="usuarioEditado.TELEFONO"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Rol</label>
+                                <select [(ngModel)]="usuarioEditado.TIPO_USUARIO" name="tipo_usuario"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option [ngValue]="null" disabled>-- Seleccione un rol --</option>
+                                    @for (t of tipoUsuario; track $index) {
+                                    <option [ngValue]="t.ID_TIPO_USUARIO">{{ t.TIPO }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Estado</label>
+                                <select name="estado" [(ngModel)]="usuarioEditado.ESTADO"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option value="">Seleccione...</option>
+                                    <option [ngValue]="1">Activo</option>
+                                    <option [ngValue]="0">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <label class="w-40 text-lg font-oswald font-bold">Asistencia</label>
+                                <select name="asistencia" [(ngModel)]="usuarioEditado.ASISTENCIA"
+                                    class="bg-zinc-200 rounded-full p-2 flex-1">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Presente">Presente</option>
+                                    <option value="Ausente">Ausente</option>
+                                </select>
+                            </div>
+                            @if (mostrarError && !usuarioEditado.ASISTENCIA) {
+                            <small class="text-red-500 ml-40">Campo obligatorio</small>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SEGURIDAD -->
+                <h2 class="text-green-950 text-2xl font-oswald font-bold mt-6 mb-4">SEGURIDAD</h2>
+                <div class="flex flex-col gap-3 text-black">
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3">
+                            <label class="w-40 text-lg font-oswald font-bold">Contraseña</label>
+                            <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
+                                [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONTRASENA}" >
+                                <input [type]="mostrarClave ? 'text' : 'password'" [(ngModel)]="usuarioEditado.CONSTRASENA"
+                                    placeholder="Contraseña" class="flex-1 bg-transparent text-black outline-none" />
+                                <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+                                    @if (!mostrarClave) {
+                                    <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                                    }
+                                    @if (mostrarClave) {
+                                    <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                                    }
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3">
+                            <label class="w-40 text-lg font-oswald font-bold">Confirmar contraseña</label>
+                            <div class="bg-zinc-200 w-full p-2 rounded-full flex items-center"
+                                [ngClass]="{'border-red-500 border-2': mostrarError && !usuarioEditado.CONFIRMAR}">
+                                <input [type]="mostrarConfirmarClave ? 'text' : 'password'" [(ngModel)]="usuarioEditado.CONFIRMAR"
+                                    placeholder="Contraseña" class="flex-1 bg-transparent text-black outline-none" />
+                                <button type="button" (click)="mostrarConfirmarClave = !mostrarConfirmarClave" class="focus:outline-none">
+                                    @if (!mostrarConfirmarClave) {
+                                    <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                                    }
+                                    @if (mostrarConfirmarClave) {
+                                    <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-6 flex gap-3">
+                    <button type="button" (click)="actualizarCliente()"
+                        class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-50 mb-2 hover:bg-[#004D00] hover:text-white">
+                        ACTUALIZAR
+                    </button>
+                    <button type="button" (click)="cancelarEdicion()"
+                        class="cursor-pointer bg-black text-white font-bold py-2 px-4 rounded-full w-50 mb-2 hover:bg-zinc-800 hover:text-white">
+                        CANCELAR
+                    </button>
+                </div>
+            </div>
+            }
+            <!-- FIN DEL CÓDIGO -->

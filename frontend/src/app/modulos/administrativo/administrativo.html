@@ -82,10 +82,10 @@
                                     </button>
 
                                     <!-- Botón descargar -->
-                                    <button type="button"
-                                        class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
-                                        <i class="fas fa-download text-2xl"></i>
-                                    </button>
+<button type="button" (click)="descargarFicha(cliente)"
+      class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+      <i class="fas fa-download text-2xl"></i>
+    </button>
 
                                     <!-- Botón eliminar -->
                                     <button type="button" (click)="eliminarUsuario(cliente.ID_USUARIO)"

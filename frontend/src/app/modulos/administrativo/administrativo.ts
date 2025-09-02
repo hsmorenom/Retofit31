@@ -6,6 +6,7 @@ import { ClienteService } from '../../services/cliente';
 import { CiudadService } from '../../services/ciudad';
 import { Tipo_usuarioService } from '../../services/tipo-usuario';
 import { UsuarioService } from '../../services/usuario';
+import { jsPDF } from 'jspdf';
 
 interface Cliente {
   ID: number;
@@ -414,4 +415,175 @@ export class Administrativo implements OnInit {
   }
 
 
+
+async descargarFicha(cliente: Cliente) {
+  // 🔹 Nombre completo
+  const fullName = [
+    cliente.PRIMER_NOMBRE,
+    cliente.SEGUNDO_NOMBRE,
+    cliente.PRIMER_APELLIDO,
+    cliente.SEGUNDO_APELLIDO
+  ].filter(Boolean).join(' ').trim();
+
+  const documento = `${cliente.TIPO_DOCUMENTO || 'CC'} - ${cliente.IDENTIFICACION || ''}`;
+  const sexo = (cliente as any).SEXO || 'N/A';
+  const fechaNac = cliente.FECHA_NACIMIENTO || 'N/A';
+  const email = cliente.EMAIL || 'N/A';
+  const direccion = cliente.DIRECCION || 'N/A';
+  const ciudad = this.getNombreCiudad(Number(cliente.CIUDAD)) || '';
+  const telefono = cliente.TELEFONO || 'N/A';
+  const emergenciaNombre = (cliente as any).CONTACTO_EMERGENCIA || 'N/A';
+  const emergenciaTelefono = (cliente as any).TELEFONO_EMERGENCIA || 'N/A';
+  const fotoUrl = (cliente as any).FOTO_PERFIL_URL || '';
+
+  // 🔹 Crear documento PDF
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 15;
+
+  // Colores
+  const verde = { r: 34, g: 85, b: 34 };
+  const gris = { r: 95, g: 95, b: 95 };
+  const divider = { r: 190, g: 190, b: 190 };
+
+  // 🔹 Foto en cabecera (avatar centrado)
+  let y = 20;
+  if (fotoUrl) {
+    try {
+      const base64 = await this.urlToBase64(fotoUrl);
+
+      const fotoSize = 40; // tamaño cuadrado
+      const fotoX = (pageW - fotoSize) / 2; // centrada
+      const fotoY = y;
+
+      doc.addImage(base64, 'JPEG', fotoX, fotoY, fotoSize, fotoSize);
+      y += fotoSize + 10; // espacio debajo de la foto
+    } catch {
+      console.warn('⚠️ No se pudo cargar la foto');
+    }
+  }
+
+  // 🔹 Nombre completo
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  doc.text('Nombre completo', pageW / 2, y + 6, { align: 'center' });
+
+  doc.setFontSize(22);
+  doc.setTextColor(0, 0, 0);
+  doc.text(fullName.toUpperCase(), pageW / 2, y + 16, { align: 'center' });
+
+  // Documento
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  doc.text('Documento', pageW / 2, y + 28, { align: 'center' });
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(documento, pageW / 2, y + 35, { align: 'center' });
+
+  // Sexo
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  doc.text('Sexo', pageW / 2, y + 47, { align: 'center' });
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(sexo, pageW / 2, y + 54, { align: 'center' });
+
+  // Fecha nacimiento
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  doc.text('Fecha de nacimiento', pageW / 2, y + 66, { align: 'center' });
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(fechaNac, pageW / 2, y + 73, { align: 'center' });
+
+  // 🔹 Cajas en dos columnas
+  const startCardsY = y + 85;
+  const gap = 10;
+  const colW = (pageW - (margin * 2) - gap) / 2;
+  const leftX = margin;
+  const rightX = margin + colW + gap;
+  const cardH = 80;
+
+  // Línea divisoria vertical
+  doc.setDrawColor(divider.r, divider.g, divider.b);
+  doc.line(pageW / 2, startCardsY - 8, pageW / 2, startCardsY + cardH + 6);
+
+  // --- Caja izquierda: Datos de contacto ---
+  doc.setDrawColor(230, 230, 230);
+  doc.roundedRect(leftX, startCardsY, colW, cardH, 3, 3, 'S');
+
+  doc.setFontSize(14);
+  doc.setTextColor(verde.r, verde.g, verde.b);
+  doc.text('DATOS DE CONTACTO', leftX + 7, startCardsY + 12);
+
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  let ly = startCardsY + 24;
+  const lh = 14;
+
+  doc.text('Correo electrónico', leftX + 7, ly);
+  doc.setTextColor(0, 0, 0);
+  doc.text(email, leftX + 7, ly + 6);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  ly += lh;
+
+  doc.text('Dirección', leftX + 7, ly);
+  doc.setTextColor(0, 0, 0);
+  doc.text(direccion, leftX + 7, ly + 6);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  ly += lh;
+
+  doc.text('Ciudad', leftX + 7, ly);
+  doc.setTextColor(0, 0, 0);
+  doc.text(ciudad, leftX + 7, ly + 6);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  ly += lh;
+
+  doc.text('Teléfono', leftX + 7, ly);
+  doc.setTextColor(0, 0, 0);
+  doc.text(telefono, leftX + 7, ly + 6);
+
+  // --- Caja derecha: Contacto de emergencia ---
+  doc.setDrawColor(230, 230, 230);
+  doc.roundedRect(rightX, startCardsY, colW, cardH, 3, 3, 'S');
+
+  doc.setFontSize(14);
+  doc.setTextColor(verde.r, verde.g, verde.b);
+  doc.text('CONTACTO DE EMERGENCIA', rightX + 7, startCardsY + 12);
+
+  doc.setFontSize(10);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  let ry = startCardsY + 24;
+
+  doc.text('Nombre completo', rightX + 7, ry);
+  doc.setTextColor(0, 0, 0);
+  doc.text(emergenciaNombre, rightX + 7, ry + 6);
+  doc.setTextColor(gris.r, gris.g, gris.b);
+  ry += lh;
+
+  doc.text('Teléfono', rightX + 7, ry);
+  doc.setTextColor(0, 0, 0);
+  doc.text(emergenciaTelefono, rightX + 7, ry + 6);
+
+  // 🔹 Guardar PDF
+  const safeName = fullName.replace(/\s+/g, '_');
+  doc.save(`${safeName || 'Cliente'}_Ficha.pdf`);
 }
+
+/** 📌 Convierte URL de imagen a Base64 */
+private async urlToBase64(url: string): Promise<string> {
+  const res = await fetch(url, { mode: 'cors' });
+  const blob = await res.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+
+}
+
+
+

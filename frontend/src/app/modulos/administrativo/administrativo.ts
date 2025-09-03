@@ -29,6 +29,7 @@ interface Cliente {
   TELEFONO: string;
   TIPO_USUARIO: string;
   ASISTENCIA: string;
+  FOTO_PERFIL_URL?: string;
 }
 
 
@@ -419,10 +420,15 @@ export class Administrativo implements OnInit {
   
 
 
-
   
 
-async descargarFicha(cliente: Cliente) {
+
+
+
+
+
+
+  async descargarFicha(cliente: Cliente) {
   // 🔹 Nombre completo
   const fullName = [
     cliente.PRIMER_NOMBRE,
@@ -440,37 +446,42 @@ async descargarFicha(cliente: Cliente) {
   const telefono = cliente.TELEFONO || 'N/A';
   const emergenciaNombre = (cliente as any).CONTACTO_EMERGENCIA || 'N/A';
   const emergenciaTelefono = (cliente as any).TELEFONO_EMERGENCIA || 'N/A';
-  const fotoUrl = (cliente as any).FOTO_PERFIL_URL || '';
 
-  // 🔹 Crear documento PDF
+  // 🔹 Foto actual (solo nombre del archivo)
+// Asegúrate que FOTO_PERFIL_URL solo tenga el nombre:
+const archivo = cliente.FOTO_PERFIL_URL?.split('/').pop()?.split('?')[0];
+const fotoUrl = `http://localhost:8000/backend/api/imagenes/ver-foto-perfil.php?archivo=${archivo}`;
+
+
+  // 🔹 Crear PDF
   const doc = new jsPDF('p', 'mm', 'a4');
   const pageW = doc.internal.pageSize.getWidth();
-  const margin = 15; 
-
-  // Colores
+  const margin = 15;
   const verde = { r: 34, g: 85, b: 34 };
   const gris = { r: 95, g: 95, b: 95 };
   const divider = { r: 190, g: 190, b: 190 };
-
-  // 🔹 Foto en cabecera (avatar centrado)
   let y = 20;
-  if (fotoUrl) {
-  try {
-    const base64 = await this.urlToBase64(fotoUrl);
 
-    const fotoSize = 40; // tamaño cuadrado
-    const fotoX = (pageW - fotoSize) / 2;
-    const fotoY = y;
-
-    doc.addImage(base64, 'JPEG', fotoX, fotoY, fotoSize, fotoSize);
-    y += fotoSize + 10;
-  } catch (e) {
-    console.warn('⚠️ No se pudo cargar la foto', e);
+  // 🔹 Agregar foto
+  if (cliente.FOTO_PERFIL_URL) {
+    try {
+      let base64 = await this.urlToBase64(fotoUrl);
+      // Convertir WebP a PNG si es necesario
+      if (base64.startsWith('data:image/webp')) {
+        base64 = await this.convertWebpToPng(base64);
+      }
+      const imgType = base64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+      const fotoSize = 60;
+      const fotoX = (pageW - fotoSize) / 2;
+      const fotoY = y;
+      doc.addImage(base64, imgType, fotoX, fotoY, fotoSize, fotoSize);
+      y += fotoSize + 10;
+    } catch (e) {
+      console.warn('⚠️ No se pudo cargar la foto', e);
+    }
   }
-}
 
-
-  // 🔹 Nombre completo
+  // 🔹 Nombre completo y datos
   doc.setFontSize(10);
   doc.setTextColor(gris.r, gris.g, gris.b);
   doc.text('Nombre completo', pageW / 2, y + 6, { align: 'center' });
@@ -479,7 +490,6 @@ async descargarFicha(cliente: Cliente) {
   doc.setTextColor(0, 0, 0);
   doc.text(fullName.toUpperCase(), pageW / 2, y + 16, { align: 'center' });
 
-  // Documento
   doc.setFontSize(10);
   doc.setTextColor(gris.r, gris.g, gris.b);
   doc.text('Documento', pageW / 2, y + 28, { align: 'center' });
@@ -487,7 +497,6 @@ async descargarFicha(cliente: Cliente) {
   doc.setTextColor(0, 0, 0);
   doc.text(documento, pageW / 2, y + 35, { align: 'center' });
 
-  // Sexo
   doc.setFontSize(10);
   doc.setTextColor(gris.r, gris.g, gris.b);
   doc.text('Sexo', pageW / 2, y + 47, { align: 'center' });
@@ -495,7 +504,6 @@ async descargarFicha(cliente: Cliente) {
   doc.setTextColor(0, 0, 0);
   doc.text(sexo, pageW / 2, y + 54, { align: 'center' });
 
-  // Fecha nacimiento
   doc.setFontSize(10);
   doc.setTextColor(gris.r, gris.g, gris.b);
   doc.text('Fecha de nacimiento', pageW / 2, y + 66, { align: 'center' });
@@ -503,7 +511,7 @@ async descargarFicha(cliente: Cliente) {
   doc.setTextColor(0, 0, 0);
   doc.text(fechaNac, pageW / 2, y + 73, { align: 'center' });
 
-  // 🔹 Cajas en dos columnas
+  // 🔹 Cajas de información
   const startCardsY = y + 85;
   const gap = 10;
   const colW = (pageW - (margin * 2) - gap) / 2;
@@ -511,14 +519,12 @@ async descargarFicha(cliente: Cliente) {
   const rightX = margin + colW + gap;
   const cardH = 80;
 
-  // Línea divisoria vertical
   doc.setDrawColor(divider.r, divider.g, divider.b);
   doc.line(pageW / 2, startCardsY - 8, pageW / 2, startCardsY + cardH + 6);
 
-  // --- Caja izquierda: Datos de contacto ---
+  // --- Datos de contacto ---
   doc.setDrawColor(230, 230, 230);
   doc.roundedRect(leftX, startCardsY, colW, cardH, 3, 3, 'S');
-
   doc.setFontSize(14);
   doc.setTextColor(verde.r, verde.g, verde.b);
   doc.text('DATOS DE CONTACTO', leftX + 7, startCardsY + 12);
@@ -528,32 +534,24 @@ async descargarFicha(cliente: Cliente) {
   let ly = startCardsY + 24;
   const lh = 14;
 
-  doc.text('Correo electrónico', leftX + 7, ly);
-  doc.setTextColor(0, 0, 0);
-  doc.text(email, leftX + 7, ly + 6);
-  doc.setTextColor(gris.r, gris.g, gris.b);
-  ly += lh;
+  const leftFields = [
+    ['Correo electrónico', email],
+    ['Dirección', direccion],
+    ['Ciudad', ciudad],
+    ['Teléfono', telefono]
+  ];
 
-  doc.text('Dirección', leftX + 7, ly);
-  doc.setTextColor(0, 0, 0);
-  doc.text(direccion, leftX + 7, ly + 6);
-  doc.setTextColor(gris.r, gris.g, gris.b);
-  ly += lh;
+  leftFields.forEach(([label, value]) => {
+    doc.text(label, leftX + 7, ly);
+    doc.setTextColor(0, 0, 0);
+    doc.text(value, leftX + 7, ly + 6);
+    doc.setTextColor(gris.r, gris.g, gris.b);
+    ly += lh;
+  });
 
-  doc.text('Ciudad', leftX + 7, ly);
-  doc.setTextColor(0, 0, 0);
-  doc.text(ciudad, leftX + 7, ly + 6);
-  doc.setTextColor(gris.r, gris.g, gris.b);
-  ly += lh;
-
-  doc.text('Teléfono', leftX + 7, ly);
-  doc.setTextColor(0, 0, 0);
-  doc.text(telefono, leftX + 7, ly + 6);
-
-  // --- Caja derecha: Contacto de emergencia ---
+  // --- Contacto de emergencia ---
   doc.setDrawColor(230, 230, 230);
   doc.roundedRect(rightX, startCardsY, colW, cardH, 3, 3, 'S');
-
   doc.setFontSize(14);
   doc.setTextColor(verde.r, verde.g, verde.b);
   doc.text('CONTACTO DE EMERGENCIA', rightX + 7, startCardsY + 12);
@@ -562,28 +560,30 @@ async descargarFicha(cliente: Cliente) {
   doc.setTextColor(gris.r, gris.g, gris.b);
   let ry = startCardsY + 24;
 
-  doc.text('Nombre completo', rightX + 7, ry);
-  doc.setTextColor(0, 0, 0);
-  doc.text(emergenciaNombre, rightX + 7, ry + 6);
-  doc.setTextColor(gris.r, gris.g, gris.b);
-  ry += lh;
+  const rightFields = [
+    ['Nombre completo', emergenciaNombre],
+    ['Teléfono', emergenciaTelefono]
+  ];
 
-  doc.text('Teléfono', rightX + 7, ry);
-  doc.setTextColor(0, 0, 0);
-  doc.text(emergenciaTelefono, rightX + 7, ry + 6);
+  rightFields.forEach(([label, value]) => {
+    doc.text(label, rightX + 7, ry);
+    doc.setTextColor(0, 0, 0);
+    doc.text(value, rightX + 7, ry + 6);
+    doc.setTextColor(gris.r, gris.g, gris.b);
+    ry += lh;
+  });
 
   // 🔹 Guardar PDF
   const safeName = fullName.replace(/\s+/g, '_');
   doc.save(`${safeName || 'Cliente'}_Ficha.pdf`);
 }
 
-/** 📌 Convierte URL de imagen a Base64 */
+/** Convierte URL a Base64 */
 private async urlToBase64(url: string): Promise<string> {
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error('No se pudo cargar la imagen');
     const blob = await res.blob();
-
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result as string);
@@ -592,15 +592,16 @@ private async urlToBase64(url: string): Promise<string> {
     });
   } catch (err) {
     console.warn('Error cargando la imagen:', err);
-    return ''; // retorna vacío si falla
+    return '';
   }
 }
 
+/** Convierte WebP a PNG */
 private async convertWebpToPng(base64: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.src = base64;
     img.crossOrigin = 'anonymous';
+    img.src = base64;
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;

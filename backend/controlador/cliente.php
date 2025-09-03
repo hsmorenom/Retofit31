@@ -7,6 +7,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 // Se permite el tipo de contenido en el dominio
 header('Access-Control-Allow-Headers: Content-Type');
+header("Content-Type: image/jpeg");
+
 
 // 🔹 Evitar que los errores rompan el JSON
 ini_set('display_errors', 0); // No mostrar errores en pantalla

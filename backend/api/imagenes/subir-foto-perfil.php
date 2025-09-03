@@ -4,6 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
+
 // Ajusta la ruta según donde esté tu conexion.php
 require_once '../../conexion.php'; // <-- Asegúrate de que este path sea correcto
 

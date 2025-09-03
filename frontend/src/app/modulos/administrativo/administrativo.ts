@@ -8,6 +8,7 @@ import { Tipo_usuarioService } from '../../services/tipo-usuario';
 import { UsuarioService } from '../../services/usuario';
 import { jsPDF } from 'jspdf';
 
+
 interface Cliente {
   ID: number;
   ID_CLIENTE: number;
@@ -415,6 +416,11 @@ export class Administrativo implements OnInit {
   }
 
 
+  
+
+
+
+  
 
 async descargarFicha(cliente: Cliente) {
   // 🔹 Nombre completo
@@ -439,7 +445,7 @@ async descargarFicha(cliente: Cliente) {
   // 🔹 Crear documento PDF
   const doc = new jsPDF('p', 'mm', 'a4');
   const pageW = doc.internal.pageSize.getWidth();
-  const margin = 15;
+  const margin = 15; 
 
   // Colores
   const verde = { r: 34, g: 85, b: 34 };
@@ -449,19 +455,20 @@ async descargarFicha(cliente: Cliente) {
   // 🔹 Foto en cabecera (avatar centrado)
   let y = 20;
   if (fotoUrl) {
-    try {
-      const base64 = await this.urlToBase64(fotoUrl);
+  try {
+    const base64 = await this.urlToBase64(fotoUrl);
 
-      const fotoSize = 40; // tamaño cuadrado
-      const fotoX = (pageW - fotoSize) / 2; // centrada
-      const fotoY = y;
+    const fotoSize = 40; // tamaño cuadrado
+    const fotoX = (pageW - fotoSize) / 2;
+    const fotoY = y;
 
-      doc.addImage(base64, 'JPEG', fotoX, fotoY, fotoSize, fotoSize);
-      y += fotoSize + 10; // espacio debajo de la foto
-    } catch {
-      console.warn('⚠️ No se pudo cargar la foto');
-    }
+    doc.addImage(base64, 'JPEG', fotoX, fotoY, fotoSize, fotoSize);
+    y += fotoSize + 10;
+  } catch (e) {
+    console.warn('⚠️ No se pudo cargar la foto', e);
   }
+}
+
 
   // 🔹 Nombre completo
   doc.setFontSize(10);
@@ -572,13 +579,38 @@ async descargarFicha(cliente: Cliente) {
 
 /** 📌 Convierte URL de imagen a Base64 */
 private async urlToBase64(url: string): Promise<string> {
-  const res = await fetch(url, { mode: 'cors' });
-  const blob = await res.blob();
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('No se pudo cargar la imagen');
+    const blob = await res.blob();
+
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (err) {
+    console.warn('Error cargando la imagen:', err);
+    return ''; // retorna vacío si falla
+  }
+}
+
+private async convertWebpToPng(base64: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
+    const img = new Image();
+    img.src = base64;
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return reject('No se pudo obtener el contexto');
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = reject;
   });
 }
 

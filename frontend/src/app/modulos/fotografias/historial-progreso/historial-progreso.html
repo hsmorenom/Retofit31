@@ -1,1 +1,98 @@
-<p>historial-progreso works!</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Progreso</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-2xl mt-10">
+    <!-- Título -->
+    <h1 class="text-xl font-bold text-green-700 mb-6">
+      HISTORIAL DE PROGRESO 
+      <span class="text-sm text-gray-600">
+        (Filtra por fecha y Id del usuario las fotos en las que quieres dar una observación)
+      </span>
+    </h1>
+
+    <!-- Formulario de filtros -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- ID Usuario -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">ID del usuario:</label>
+        <div class="flex items-center border rounded-lg overflow-hidden">
+          <input type="text" placeholder="Ingrese aquí el ID del usuario"
+            class="flex-1 px-3 py-2 text-sm outline-none border-none">
+          <button class="bg-gray-200 px-3 py-2">
+            🔍
+          </button>
+        </div>
+        <div class="mt-2 inline-flex items-center bg-gray-200 px-3 py-1 rounded-full text-sm">
+          Nicky Minaj
+          <button class="ml-2 text-gray-500 hover:text-red-500">✖</button>
+        </div>
+      </div>
+
+      <!-- Fecha de registro -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Fecha de registro:</label>
+        <div class="flex items-center border rounded-lg overflow-hidden">
+          <input type="date" value="2025-04-15"
+            class="flex-1 px-3 py-2 text-sm outline-none border-none">
+          <button class="bg-gray-200 px-3 py-2">📅</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón consultar -->
+    <div class="flex justify-end mb-6">
+      <button class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">
+        CONSULTAR
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <div>
+      <h2 class="text-lg font-bold text-gray-800 mb-4">Resultado:</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Frontal -->
+        <div class="text-center">
+          <img src="https://via.placeholder.com/150x220" alt="Frontal" class="mx-auto rounded-lg shadow">
+          <p class="mt-2 text-sm font-semibold">Frontal</p>
+        </div>
+        <!-- Lateral -->
+        <div class="text-center">
+          <img src="https://via.placeholder.com/150x220" alt="Lateral" class="mx-auto rounded-lg shadow">
+          <p class="mt-2 text-sm font-semibold">Lateral</p>
+        </div>
+        <!-- Posterior -->
+        <div class="text-center">
+          <img src="https://via.placeholder.com/150x220" alt="Posterior" class="mx-auto rounded-lg shadow">
+          <p class="mt-2 text-sm font-semibold">Posterior</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observación -->
+    <div class="mt-6">
+      <label class="block text-gray-700 font-semibold mb-1">15/04/2025</label>
+      <textarea placeholder="Agregue la observación respecto al cambio físico del usuario"
+        class="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500"></textarea>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end gap-4 mt-6">
+      <button class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">
+        CANCELAR
+      </button>
+      <button class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+        GUARDAR
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>
+

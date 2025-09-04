@@ -1,19 +1,62 @@
 <h1 class="text-3xl md:text-5xl font-bold text-center py-8">
   FOTOGRAFÍA
 </h1>
-<div class="flex flex-col gap-8 w-full max-w-xs mx-auto py-8">
-  <!-- Botón Subir Fotos -->
-  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+
+<!-- Botones solo si no hay componente activo -->
+<div *ngIf="!componenteActivo" class="flex flex-col gap-8 w-full max-w-xs mx-auto py-8">
+  <button 
+    (click)="mostrarComponente('subir')"
+    class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
     Subir Fotos
   </button>
 
-  <!-- Botón Historial de Progreso -->
-  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+  <button 
+    (click)="mostrarComponente('historial')"
+    class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
     Historial de Progreso
   </button>
 
-  <!-- Botón Comparación Fotográfica -->
-  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+  <button 
+    (click)="mostrarComponente('comparacion')"
+    class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
     Comparación Fotográfica
   </button>
+</div>
+
+<!-- Mostrar microcomponentes según selección -->
+
+
+<div *ngIf="componenteActivo === 'subir'">
+  <app-subir-fotografia></app-subir-fotografia>
+
+  <!-- Botón Volver centrado -->
+  <div class="mt-6 flex justify-center">
+    <button 
+      (click)="volverBotones()" 
+      class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-50">
+      Volver
+    </button>
+  </div>
+</div>
+
+<div *ngIf="componenteActivo === 'historial'">
+  <app-historial-progreso></app-historial-progreso>
+  <div class="mt-6 flex justify-center">
+    <button 
+      (click)="volverBotones()" 
+      class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-50">
+      Volver
+    </button>
+  </div>
+</div>
+
+<div *ngIf="componenteActivo === 'comparacion'">
+  <app-comparacion-fotografica></app-comparacion-fotografica>
+  <div class="mt-6 flex justify-center">
+    <button 
+      (click)="volverBotones()" 
+      class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-50">
+      Volver
+    </button>
+  </div>
 </div>

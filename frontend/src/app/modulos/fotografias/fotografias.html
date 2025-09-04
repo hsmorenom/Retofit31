@@ -1,126 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Subir Fotografías – Tailwind</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white text-neutral-900 antialiased">
-  <main class="min-h-screen flex items-start justify-center p-6">
-    <div class="w-full max-w-5xl">
-      <!-- Título -->
-      <header class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-700">
-          SUBIR FOTOGRAFÍA
-        </h1>
-        <p class="text-sm text-neutral-500 mt-1">
-          (Sube 3 fotos de diferente perfil: una <span class="font-medium">frontal</span>, otra <span class="font-medium">lateral</span> y otra <span class="font-medium">posterior</span>)
-        </p>
-      </header>
+<h1 class="text-3xl md:text-5xl font-bold text-center py-8">
+  FOTOGRAFÍA
+</h1>
+<div class="flex flex-col gap-8 w-full max-w-xs mx-auto py-8">
+  <!-- Botón Subir Fotos -->
+  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+    Subir Fotos
+  </button>
 
-      <!-- Grid principal -->
-      <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Columna Izquierda (Frontal + Posterior) -->
-        <div class="space-y-10 relative">
-          <!-- Línea divisoria vertical para pantallas md+ (se dibuja desde el contenedor padre con ::after, pero aquí la evitamos y usamos una pseudo-columna) -->
-          <div class="absolute right-[-16px] top-0 bottom-0 hidden md:block w-px bg-neutral-200" aria-hidden="true"></div>
+  <!-- Botón Historial de Progreso -->
+  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+    Historial de Progreso
+  </button>
 
-          <!-- Frontal -->
-          <div>
-            <h2 class="text-lg font-bold text-neutral-900 mb-3">
-              Frontal: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
-            </h2>
-            <div class="space-y-3">
-              <!-- Selector de archivo -->
-              <div class="flex items-center gap-3">
-                <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-                  <input id="file-frontal" type="file" accept="image/*" class="sr-only" onchange="updateFileName('file-frontal','name-frontal')" />
-                  Seleccionar foto
-                </label>
-                <span id="name-frontal" class="text-sm text-neutral-600 truncate max-w-[220px]">—</span>
-                <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6" title="Quitar archivo" onclick="clearFile('file-frontal','name-frontal')">×</button>
-              </div>
-
-              <!-- Descripción -->
-              <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-
-              <!-- Etiqueta -->
-              <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            </div>
-          </div>
-
-          <!-- Posterior -->
-          <div>
-            <h2 class="text-lg font-bold text-neutral-900 mb-3">
-              Posterior: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
-            </h2>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3">
-                <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-                  <input id="file-posterior" type="file" accept="image/*" class="sr-only" onchange="updateFileName('file-posterior','name-posterior')" />
-                  Seleccionar foto
-                </label>
-                <span id="name-posterior" class="text-sm text-neutral-600 truncate max-w-[220px]">—</span>
-                <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6" title="Quitar archivo" onclick="clearFile('file-posterior','name-posterior')">×</button>
-              </div>
-
-              <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-              <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna Derecha (Lateral) -->
-        <div>
-          <h2 class="text-lg font-bold text-neutral-900 mb-3">
-            Lateral: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
-          </h2>
-          <div class="space-y-3">
-            <div class="flex items-center gap-3">
-              <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-                <input id="file-lateral" type="file" accept="image/*" class="sr-only" onchange="updateFileName('file-lateral','name-lateral')" />
-                Seleccionar foto
-              </label>
-              <span id="name-lateral" class="text-sm text-neutral-600 truncate max-w-[220px]">—</span>
-              <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6" title="Quitar archivo" onclick="clearFile('file-lateral','name-lateral')">×</button>
-            </div>
-
-            <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-          </div>
-        </div>
-      </section>
-
-      <!-- CTA -->
-      <div class="mt-10 flex justify-end">
-        <button class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-          SUBIR FOTOS
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    function updateFileName(inputId, labelId) {
-      const input = document.getElementById(inputId);
-      const label = document.getElementById(labelId);
-      if (input && input.files && input.files.length > 0) {
-        label.textContent = input.files[0].name;
-      } else {
-        label.textContent = '—';
-      }
-    }
-    function clearFile(inputId, labelId) {
-      const input = document.getElementById(inputId);
-      if (!input) return;
-      // Crear un clon para poder limpiar el input file de forma segura
-      const newInput = input.cloneNode(true);
-      newInput.value = '';
-      newInput.addEventListener('change', () => updateFileName(inputId, labelId));
-      input.parentNode.replaceChild(newInput, input);
-      updateFileName(inputId, labelId);
-    }
-  </script>
-</body>
-</html>
+  <!-- Botón Comparación Fotográfica -->
+  <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-4 rounded-full shadow hover:bg-[#0d542b] hover:text-white transition w-full">
+    Comparación Fotográfica
+  </button>
+</div>

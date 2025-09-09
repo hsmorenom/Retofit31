@@ -416,18 +416,6 @@ export class Administrativo implements OnInit {
     return tipo_usuario ? tipo_usuario.TIPO : '';
   }
 
-
-  
-
-
-  
-
-
-
-
-
-
-
   async descargarFicha(cliente: Cliente) {
   // 🔹 Nombre completo
   const fullName = [
@@ -614,7 +602,6 @@ private async convertWebpToPng(base64: string): Promise<string> {
     img.onerror = reject;
   });
 }
-
 
 }
 

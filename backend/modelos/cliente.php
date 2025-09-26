@@ -513,132 +513,132 @@ class ClienteModelo
     }
 
     public function insertarParaAdmon($parametros)
-{
-    try {
-        $this->conexion->beginTransaction();
+    {
+        try {
+            $this->conexion->beginTransaction();
 
-        // ==============================
-        // MAPEAR CAMPOS OBLIGATORIOS
-        // ==============================
+            // ==============================
+            // MAPEAR CAMPOS OBLIGATORIOS
+            // ==============================
 
-        $parametros = (array) $parametros;
+            $parametros = (array) $parametros;
 
-        $tipo_usuario      = $parametros['TIPO_USUARIO'] ?? $parametros['tipo_usuario'] ?? null;
-        $primer_nombre     = $parametros['PRIMER_NOMBRE'] ?? $parametros['primer_nombre'] ?? null;
-        $segundo_nombre    = $parametros['SEGUNDO_NOMBRE'] ?? $parametros['segundo_nombre'] ?? '';
-        $primer_apellido   = $parametros['PRIMER_APELLIDO'] ?? $parametros['primer_apellido'] ?? null;
-        $segundo_apellido  = $parametros['SEGUNDO_APELLIDO'] ?? $parametros['segundo_apellido'] ?? '';
-        $email             = $parametros['EMAIL'] ?? $parametros['email'] ?? null;
-        $clave             = $parametros['CLAVE'] ?? $parametros['CONTRASENA'] ?? $parametros['clave'] ?? null;
-        $fecha_nacimiento  = $parametros['FECHA_NACIMIENTO'] ?? $parametros['fecha_nacimiento'] ?? null;
-        $direccion         = $parametros['DIRECCION'] ?? $parametros['direccion'] ?? '';
-        $telefono          = $parametros['TELEFONO'] ?? $parametros['telefono'] ?? '';
-        $ciudad            = $parametros['CIUDAD'] ?? $parametros['ciudad'] ?? '';
-        $estado            = isset($parametros['ESTADO']) ? (int)$parametros['ESTADO'] : 1;
+            $tipo_usuario = $parametros['TIPO_USUARIO'] ?? $parametros['tipo_usuario'] ?? null;
+            $primer_nombre = $parametros['PRIMER_NOMBRE'] ?? $parametros['primer_nombre'] ?? null;
+            $segundo_nombre = $parametros['SEGUNDO_NOMBRE'] ?? $parametros['segundo_nombre'] ?? '';
+            $primer_apellido = $parametros['PRIMER_APELLIDO'] ?? $parametros['primer_apellido'] ?? null;
+            $segundo_apellido = $parametros['SEGUNDO_APELLIDO'] ?? $parametros['segundo_apellido'] ?? '';
+            $email = $parametros['EMAIL'] ?? $parametros['email'] ?? null;
+            $clave = $parametros['CLAVE'] ?? $parametros['CONTRASENA'] ?? $parametros['clave'] ?? null;
+            $fecha_nacimiento = $parametros['FECHA_NACIMIENTO'] ?? $parametros['fecha_nacimiento'] ?? null;
+            $direccion = $parametros['DIRECCION'] ?? $parametros['direccion'] ?? '';
+            $telefono = $parametros['TELEFONO'] ?? $parametros['telefono'] ?? '';
+            $ciudad = $parametros['CIUDAD'] ?? $parametros['ciudad'] ?? '';
+            $estado = isset($parametros['ESTADO']) ? (int) $parametros['ESTADO'] : 1;
 
-        // Validación simple de campos obligatorios
-        if (!$tipo_usuario || !$primer_nombre || !$primer_apellido || !$email || !$clave) {
-            return ['resultado' => 'ERROR', 'mensaje' => 'Campos obligatorios no completados'];
-        }
+            // Validación simple de campos obligatorios
+            if (!$tipo_usuario || !$primer_nombre || !$primer_apellido || !$email || !$clave) {
+                return ['resultado' => 'ERROR', 'mensaje' => 'Campos obligatorios no completados'];
+            }
 
-        // ==============================
-        // VERIFICAR DUPLICADO DE EMAIL
-        // ==============================
-        $stmtEmail = $this->conexion->prepare("SELECT ID_USUARIO FROM usuario WHERE EMAIL = :email");
-        $stmtEmail->execute([':email' => $email]);
-        if ($stmtEmail->fetch()) {
-            return ['resultado' => 'ERROR', 'mensaje' => 'El correo electrónico ya está registrado'];
-        }
+            // ==============================
+            // VERIFICAR DUPLICADO DE EMAIL
+            // ==============================
+            $stmtEmail = $this->conexion->prepare("SELECT ID_USUARIO FROM usuario WHERE EMAIL = :email");
+            $stmtEmail->execute([':email' => $email]);
+            if ($stmtEmail->fetch()) {
+                return ['resultado' => 'ERROR', 'mensaje' => 'El correo electrónico ya está registrado'];
+            }
 
-        // ==============================
-        // INSERTAR EN USUARIO
-        // ==============================
-        $sqlUsuario = "INSERT INTO usuario 
+            // ==============================
+            // INSERTAR EN USUARIO
+            // ==============================
+            $sqlUsuario = "INSERT INTO usuario 
             (TIPO_USUARIO, PRIMER_NOMBRE, SEGUNDO_NOMBRE, PRIMER_APELLIDO, SEGUNDO_APELLIDO, EMAIL, CLAVE, ESTADO)
             VALUES
             (:tipo_usuario, :primer_nombre, :segundo_nombre, :primer_apellido, :segundo_apellido, :email, :clave, :estado)";
 
-        $claveHash = password_hash($clave, PASSWORD_DEFAULT);
+            $claveHash = password_hash($clave, PASSWORD_DEFAULT);
 
 
-        $stmtUsuario = $this->conexion->prepare($sqlUsuario);
-        $stmtUsuario->bindParam(':tipo_usuario', $tipo_usuario, PDO::PARAM_INT);
-        $stmtUsuario->bindParam(':primer_nombre', $primer_nombre);
-        $stmtUsuario->bindParam(':segundo_nombre', $segundo_nombre);
-        $stmtUsuario->bindParam(':primer_apellido', $primer_apellido);
-        $stmtUsuario->bindParam(':segundo_apellido', $segundo_apellido);
-        $stmtUsuario->bindParam(':email', $email);
-        $stmtUsuario->bindParam(':clave', $claveHash);
-        $stmtUsuario->bindParam(':estado', $estado);
+            $stmtUsuario = $this->conexion->prepare($sqlUsuario);
+            $stmtUsuario->bindParam(':tipo_usuario', $tipo_usuario, PDO::PARAM_INT);
+            $stmtUsuario->bindParam(':primer_nombre', $primer_nombre);
+            $stmtUsuario->bindParam(':segundo_nombre', $segundo_nombre);
+            $stmtUsuario->bindParam(':primer_apellido', $primer_apellido);
+            $stmtUsuario->bindParam(':segundo_apellido', $segundo_apellido);
+            $stmtUsuario->bindParam(':email', $email);
+            $stmtUsuario->bindParam(':clave', $claveHash);
+            $stmtUsuario->bindParam(':estado', $estado);
 
-        $stmtUsuario->execute();
-        $ultimoUsuarioId = $this->conexion->lastInsertId();
+            $stmtUsuario->execute();
+            $ultimoUsuarioId = $this->conexion->lastInsertId();
 
-        // ==============================
-        // PREPARAR CAMPOS DE CLIENTE
-        // ==============================
-        $tipo_documento      = $parametros['TIPO_DOCUMENTO'] ?? $parametros['tipo_documento'] ?? 'N/A';
-        $contacto_emergencia = $parametros['CONTACTO_EMERGENCIA'] ?? $parametros['contacto_emergencia'] ?? 'N/A';
-        $telefono_emergencia = $parametros['TELEFONO_EMERGENCIA'] ?? $parametros['telefono_emergencia'] ?? 'N/A';
-        $sexo                = $parametros['SEXO'] ?? $parametros['sexo'] ?? 'N/A';
-        $foto_perfil_url     = $parametros['FOTO_PERFIL_URL'] ?? $parametros['foto_perfil_url'] ?? null;
+            // ==============================
+            // PREPARAR CAMPOS DE CLIENTE
+            // ==============================
+            $tipo_documento = $parametros['TIPO_DOCUMENTO'] ?? $parametros['tipo_documento'] ?? 'N/A';
+            $contacto_emergencia = $parametros['CONTACTO_EMERGENCIA'] ?? $parametros['contacto_emergencia'] ?? 'N/A';
+            $telefono_emergencia = $parametros['TELEFONO_EMERGENCIA'] ?? $parametros['telefono_emergencia'] ?? 'N/A';
+            $sexo = $parametros['SEXO'] ?? $parametros['sexo'] ?? 'N/A';
+            $foto_perfil_url = $parametros['FOTO_PERFIL_URL'] ?? $parametros['foto_perfil_url'] ?? null;
 
-        // ==============================
-        // GENERAR IDENTIFICACION AUTOMÁTICA ALEATORIA SIN DUPLICADOS
-        // ==============================
-        if (!isset($parametros['IDENTIFICACION']) || $parametros['IDENTIFICACION'] == 0) {
-            $maxIntentos = 1000; // evitar bucles infinitos
-            $intentos = 0;
-            do {
-                // Generar número aleatorio de 7 dígitos
-                $identificacion = str_pad(rand(1, 9999999), 7, '0', STR_PAD_LEFT);
+            // ==============================
+            // GENERAR IDENTIFICACION AUTOMÁTICA ALEATORIA SIN DUPLICADOS
+            // ==============================
+            if (!isset($parametros['IDENTIFICACION']) || $parametros['IDENTIFICACION'] == 0) {
+                $maxIntentos = 1000; // evitar bucles infinitos
+                $intentos = 0;
+                do {
+                    // Generar número aleatorio de 7 dígitos
+                    $identificacion = str_pad(rand(1, 9999999), 7, '0', STR_PAD_LEFT);
 
-                // Verificar que no exista
-                $stmtCheck = $this->conexion->prepare("SELECT ID_CLIENTE FROM cliente WHERE IDENTIFICACION = :identificacion");
-                $stmtCheck->execute([':identificacion' => $identificacion]);
-                $existe = $stmtCheck->fetch();
+                    // Verificar que no exista
+                    $stmtCheck = $this->conexion->prepare("SELECT ID_CLIENTE FROM cliente WHERE IDENTIFICACION = :identificacion");
+                    $stmtCheck->execute([':identificacion' => $identificacion]);
+                    $existe = $stmtCheck->fetch();
 
-                $intentos++;
-                if ($intentos >= $maxIntentos) {
-                    throw new Exception("No se pudo generar un identificador único después de $maxIntentos intentos");
-                }
-            } while ($existe);
-        } else {
-            $identificacion = $parametros['IDENTIFICACION'];
-        }
+                    $intentos++;
+                    if ($intentos >= $maxIntentos) {
+                        throw new Exception("No se pudo generar un identificador único después de $maxIntentos intentos");
+                    }
+                } while ($existe);
+            } else {
+                $identificacion = $parametros['IDENTIFICACION'];
+            }
 
 
-        // ==============================
-        // INSERTAR EN CLIENTE
-        // ==============================
-        $sqlCliente = "INSERT INTO cliente 
+            // ==============================
+            // INSERTAR EN CLIENTE
+            // ==============================
+            $sqlCliente = "INSERT INTO cliente 
             (USUARIO, TIPO_DOCUMENTO, IDENTIFICACION, FECHA_NACIMIENTO, FOTO_PERFIL_URL, DIRECCION, TELEFONO, CONTACTO_EMERGENCIA, TELEFONO_EMERGENCIA, CIUDAD, SEXO)
             VALUES
             (:usuario, :tipo_documento, :identificacion, :fecha_nacimiento, :foto_perfil_url, :direccion, :telefono, :contacto_emergencia, :telefono_emergencia, :ciudad, :sexo)";
 
-        $stmtCliente = $this->conexion->prepare($sqlCliente);
-        $stmtCliente->bindParam(':usuario', $ultimoUsuarioId, PDO::PARAM_INT);
-        $stmtCliente->bindParam(':tipo_documento', $tipo_documento);
-        $stmtCliente->bindParam(':identificacion', $identificacion);
-        $stmtCliente->bindParam(':fecha_nacimiento', $fecha_nacimiento);
-        $stmtCliente->bindParam(':foto_perfil_url', $foto_perfil_url);
-        $stmtCliente->bindParam(':direccion', $direccion);
-        $stmtCliente->bindParam(':telefono', $telefono);
-        $stmtCliente->bindParam(':contacto_emergencia', $contacto_emergencia);
-        $stmtCliente->bindParam(':telefono_emergencia', $telefono_emergencia);
-        $stmtCliente->bindParam(':ciudad', $ciudad);
-        $stmtCliente->bindParam(':sexo', $sexo);
+            $stmtCliente = $this->conexion->prepare($sqlCliente);
+            $stmtCliente->bindParam(':usuario', $ultimoUsuarioId, PDO::PARAM_INT);
+            $stmtCliente->bindParam(':tipo_documento', $tipo_documento);
+            $stmtCliente->bindParam(':identificacion', $identificacion);
+            $stmtCliente->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+            $stmtCliente->bindParam(':foto_perfil_url', $foto_perfil_url);
+            $stmtCliente->bindParam(':direccion', $direccion);
+            $stmtCliente->bindParam(':telefono', $telefono);
+            $stmtCliente->bindParam(':contacto_emergencia', $contacto_emergencia);
+            $stmtCliente->bindParam(':telefono_emergencia', $telefono_emergencia);
+            $stmtCliente->bindParam(':ciudad', $ciudad);
+            $stmtCliente->bindParam(':sexo', $sexo);
 
-        $stmtCliente->execute();
+            $stmtCliente->execute();
 
-        $this->conexion->commit();
-        return ['resultado' => 'OK', 'mensaje' => 'Usuario y cliente guardados correctamente'];
+            $this->conexion->commit();
+            return ['resultado' => 'OK', 'mensaje' => 'Usuario y cliente guardados correctamente'];
 
-    } catch (PDOException $e) {
-        $this->conexion->rollBack();
-        return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        } catch (PDOException $e) {
+            $this->conexion->rollBack();
+            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        }
     }
-}
 }
 
 

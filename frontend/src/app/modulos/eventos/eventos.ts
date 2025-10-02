@@ -22,9 +22,9 @@ export class Eventos implements OnInit {
   mostrarEditarEvento = false;
   mostrarQrEvento = false;
   eventoSeleccionado: any = null;
-  qrEvento: any=null;
+  qrEvento: any = null;
 
-  constructor(private eventosService: EventosService) {}
+  constructor(private eventosService: EventosService) { }
 
   ngOnInit(): void {
     this.obtenerEventos();
@@ -44,14 +44,14 @@ export class Eventos implements OnInit {
 
   // 🔍 Filtrar eventos por texto
   filtrarEventos(): void {
-  const texto = this.filtroTexto.toLowerCase().trim();
-  this.eventosFiltrados = this.eventos.filter(evento =>
-    evento.nombre?.toLowerCase().includes(texto) ||
-    evento.lugar?.toLowerCase().includes(texto) ||
-    evento.instructor?.toLowerCase().includes(texto) ||
-    evento.fecha?.toLowerCase().includes(texto)
-  );
-}
+    const texto = this.filtroTexto.toLowerCase().trim();
+    this.eventosFiltrados = this.eventos.filter(evento =>
+      evento.nombre?.toLowerCase().includes(texto) ||
+      evento.lugar?.toLowerCase().includes(texto) ||
+      evento.instructor?.toLowerCase().includes(texto) ||
+      evento.fecha?.toLowerCase().includes(texto)
+    );
+  }
 
   limpiarFiltro(): void {
     this.filtroTexto = '';
@@ -79,10 +79,10 @@ export class Eventos implements OnInit {
   }
 
   abrirQrEvento(evento: any): void {
-  console.log('Evento recibido para QR:', evento);
-  this.qrEvento = evento;
-  this.mostrarQrEvento = true;
-}
+    console.log('Evento recibido para QR:', evento);
+    this.qrEvento = evento;
+    this.mostrarQrEvento = true;
+  }
 
 
   cerrarQrEvento(): void {
@@ -90,7 +90,7 @@ export class Eventos implements OnInit {
     this.qrEvento = null;
   }
 
-  
+
 
   eliminarEvento(idEvento: number): void {
     if (confirm('¿Estás seguro de eliminar este evento?')) {

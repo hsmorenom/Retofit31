@@ -27,10 +27,9 @@ class AsistenciaModelo
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO asistencia (cliente,qr,evento,notificacion) VALUES (:cliente,:qr,:evento,:notificacion)";
+            $sql = "INSERT INTO asistencia (cliente,evento,notificacion) VALUES (:cliente,:evento,:notificacion)";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':cliente', $parametros->cliente);
-            $stmt->bindParam(':qr', $parametros->qr);
             $stmt->bindParam(':evento', $parametros->evento);
             $stmt->bindParam(':notificacion', $parametros->notificacion);
             $stmt->execute();
@@ -64,7 +63,6 @@ class AsistenciaModelo
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':cliente', $parametros->cliente);
-            $stmt->bindParam(':qr', $parametros->qr);
             $stmt->bindParam(':evento', $parametros->evento);
             $stmt->bindParam(':notificacion', $parametros->notificacion);
             $stmt->execute();

@@ -27,7 +27,7 @@ class EventosModelo
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO eventos (nombre_evento,fecha_actividad, hora_inicio, hora_fin,duracion,lugar_de_actividad,observaciones,usuario) VALUES (:nombre_evento,:fecha_actividad,:hora_inicio,:hora_fin,:duracion,:lugar_de_actividad,:observaciones,:usuario)";
+            $sql = "INSERT INTO eventos (nombre_evento,fecha_actividad, hora_inicio, hora_fin,duracion,lugar_de_actividad,qr_de_evento, observaciones,usuario) VALUES (:nombre_evento,:fecha_actividad,:hora_inicio,:hora_fin,:duracion,:lugar_de_actividad,:qr_de_evento,:observaciones,:usuario)";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':nombre_evento', $parametros->nombre_evento);
             $stmt->bindParam(':fecha_actividad', $parametros->fecha_actividad);
@@ -35,6 +35,7 @@ class EventosModelo
             $stmt->bindParam(':hora_fin', $parametros->hora_fin);
             $stmt->bindParam(':duracion', $parametros->duracion);
             $stmt->bindParam(':lugar_de_actividad', $parametros->lugar_de_actividad);
+            $stmt->bindParam(':qr_de_evento', $parametros->qr_de_evento);
             $stmt->bindParam(':observaciones', $parametros->observaciones);
             $stmt->bindParam(':usuario', $parametros->usuario);
             $stmt->execute();
@@ -64,7 +65,7 @@ class EventosModelo
     public function editar($id, $parametros)
     {
         try {
-            $sql = "UPDATE eventos SET nombre_evento=:nombre_evento,fecha_actividad=:fecha_actividad, hora_inicio=:hora_inicio, hora_fin=:hora_fin,duracion=:duracion,lugar_de_actividad=:lugar_de_actividad,observaciones=:observaciones,usuario=:usuario WHERE id_eventos=:id";
+            $sql = "UPDATE eventos SET nombre_evento=:nombre_evento,fecha_actividad=:fecha_actividad, hora_inicio=:hora_inicio, hora_fin=:hora_fin,duracion=:duracion,lugar_de_actividad=:lugar_de_actividad, qr_de_evento=:qr_de_evento, observaciones=:observaciones,usuario=:usuario WHERE id_eventos=:id";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':nombre_evento', $parametros->nombre_evento);
@@ -73,6 +74,7 @@ class EventosModelo
             $stmt->bindParam(':hora_fin', $parametros->hora_fin);
             $stmt->bindParam(':duracion', $parametros->duracion);
             $stmt->bindParam(':lugar_de_actividad', $parametros->lugar_de_actividad);
+            $stmt->bindParam(':qr_de_evento', $parametros->qr_de_evento);
             $stmt->bindParam(':observaciones', $parametros->observaciones);
             $stmt->bindParam(':usuario', $parametros->usuario);
             $stmt->execute();

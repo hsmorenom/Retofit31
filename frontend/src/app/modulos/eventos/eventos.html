@@ -1,1 +1,93 @@
-<p>eventos works!</p>
+<div class="w-full sm:w-[90%] lg:w-[70%] mx-auto p-6 space-y-6">
+    <div class="flex justify-center ">
+        <h1 class="text-black text-center font-semibold text-2xl sm:text-3xl font-oswald m-4">EVENTOS</h1>
+    </div>
+    <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mt-4">
+        <div class="flex gap-3 mb-4">
+            <button type="button" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 font-oswald">
+                AGREGAR EVENTO
+            </button>
+        </div>
+
+
+        <div class="flex gap-3 mb-4">
+
+            <div class="relative flex-1 min-w-[520px]">
+                <div class="absolute inset-y-0 -left-3 flex items-center pl-3">
+                    <div
+                        class="bg-gray-600 text-black font-bold flex items-center justify-center w-10 h-10 rounded-full font-oswald">
+                        <i class="fas fa-search text-white"></i>
+                    </div>
+                </div>
+                <input type="text" placeholder="Buscar por nombre, fecha, lugar o instructor del evento "
+                    class="border border-gray-300 rounded-full pl-16 pr-4 py-2 w-full font-bold text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-600 bg-zinc-200" />
+            </div>
+            <button type="button" class="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 font-oswald">
+                LIMPIAR
+            </button>
+        </div>
+
+        <div
+            class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
+            <table class="min-w-full border-collapse">
+                <thead class="bg-zinc-400 text-zinc-800 font-oswald">
+                    <tr>
+                        <th class="px-4 py-2">Fecha</th>
+                        <th class="px-4 py-2">Hora inicial</th>
+                        <th class="px-4 py-2">Hora final</th>
+                        <th class="px-4 py-2">Duración</th>
+                        <th class="px-4 py-2">Instructor</th>
+                        <th class="px-4 py-2">Lugar</th>
+                        <th class="px-4 py-2">Evento</th>
+                        <th class="px-4 py-2">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-zinc-400">
+                    <!-- @for (cliente of clientesFiltrados; track ) { -->
+                    <tr class="bg-white text-center hover:bg-[#E1E1E1]">
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2">
+                            <div class="flex justify-center gap-2">
+                                <!-- Botón editar -->
+                                <button type="button"
+                                    class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                    <i class="fas fa-pencil text-2xl"></i>
+                                </button>
+
+                                <!-- Botón ver codigo qr -->
+                                <button type="button"
+                                    class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                    <i class="fas fa-eye text-2xl"></i>
+                                </button>
+
+                                <!-- Botón descargar -->
+                                <button type="button"
+                                    class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                    <i class="fas fa-download text-2xl"></i>
+                                </button>
+
+                                <!-- Botón eliminar -->
+                                <button type="button"
+                                    class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                    <i class="fas fa-trash text-2xl"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <app-agregar-evento></app-agregar-evento>
+
+    <app-editar-evento></app-editar-evento>
+</div>

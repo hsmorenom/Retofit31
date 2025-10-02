@@ -1,0 +1,12 @@
+<div class="flex flex-col text-center gap-2">
+    <img *ngIf="evento?.qr_de_evento" [src]="evento.qr_de_evento" alt="QR del evento" class="mx-auto w-48 h-48" />
+    <p *ngIf="!evento?.qr_de_evento" class="text-gray-500 mt-4">
+        No hay código QR disponible para este evento.
+    </p>
+    <div class="w-full flex justify-end ">
+        <button class="bg-black rounded-full p-2 text-white hover:bg-gray-800 ">
+            DESCARGAR
+        </button>
+    </div>
+
+</div>

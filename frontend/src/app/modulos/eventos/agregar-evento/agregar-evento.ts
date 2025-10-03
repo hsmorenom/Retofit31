@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, input, Input } from '@angular/core';
 
 @Component({
   selector: 'app-agregar-evento',
@@ -6,6 +6,10 @@ import { Component, Output, EventEmitter } from '@angular/core';
   templateUrl: './agregar-evento.html'
 })
 export class AgregarEvento {
-  @Output() cerrar = new EventEmitter<void>();
+  @Input() cerrarAgregarEvento = true;
+  
+
+  
+  
 }
 

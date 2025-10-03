@@ -13,4 +13,7 @@ export class QrEvento {
   ngOnInit() {
     console.log('Evento recibido en QR:', this.evento);
   }
+
+  
+
 }

@@ -13,7 +13,13 @@ class EventosModelo
     public function consultar()
     {
         try {
-            $sql = "SELECT *  FROM eventos";
+            $sql = "SELECT 
+                    e.*, 
+                    CONCAT(u.PRIMER_NOMBRE, ' ', u.PRIMER_APELLIDO) AS creado_por
+                FROM eventos e
+                INNER JOIN usuario u ON e.usuario = u.ID_USUARIO
+                ORDER BY e.fecha_actividad DESC";
+
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
 
@@ -24,16 +30,17 @@ class EventosModelo
         }
     }
 
+
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO eventos (nombre_evento,fecha_actividad, hora_inicio, hora_fin,duracion,lugar_de_actividad,qr_de_evento, observaciones,usuario) VALUES (:nombre_evento,:fecha_actividad,:hora_inicio,:hora_fin,:duracion,:lugar_de_actividad,:qr_de_evento,:observaciones,:usuario)";
+            $sql = "INSERT INTO eventos (nombre_evento,fecha_actividad, hora_inicio, hora_fin,instructor,lugar_de_actividad,qr_de_evento, observaciones,usuario) VALUES (:nombre_evento,:fecha_actividad,:hora_inicio,:hora_fin,:instructor,:lugar_de_actividad,:qr_de_evento,:observaciones,:usuario)";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':nombre_evento', $parametros->nombre_evento);
             $stmt->bindParam(':fecha_actividad', $parametros->fecha_actividad);
             $stmt->bindParam(':hora_inicio', $parametros->hora_inicio);
             $stmt->bindParam(':hora_fin', $parametros->hora_fin);
-            $stmt->bindParam(':duracion', $parametros->duracion);
+            $stmt->bindParam(':instructor', $parametros->instructor);
             $stmt->bindParam(':lugar_de_actividad', $parametros->lugar_de_actividad);
             $stmt->bindParam(':qr_de_evento', $parametros->qr_de_evento);
             $stmt->bindParam(':observaciones', $parametros->observaciones);
@@ -65,14 +72,14 @@ class EventosModelo
     public function editar($id, $parametros)
     {
         try {
-            $sql = "UPDATE eventos SET nombre_evento=:nombre_evento,fecha_actividad=:fecha_actividad, hora_inicio=:hora_inicio, hora_fin=:hora_fin,duracion=:duracion,lugar_de_actividad=:lugar_de_actividad, qr_de_evento=:qr_de_evento, observaciones=:observaciones,usuario=:usuario WHERE id_eventos=:id";
+            $sql = "UPDATE eventos SET nombre_evento=:nombre_evento,fecha_actividad=:fecha_actividad, hora_inicio=:hora_inicio, hora_fin=:hora_fin,instructor=:instructor,lugar_de_actividad=:lugar_de_actividad, qr_de_evento=:qr_de_evento, observaciones=:observaciones,usuario=:usuario WHERE id_eventos=:id";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':nombre_evento', $parametros->nombre_evento);
             $stmt->bindParam(':fecha_actividad', $parametros->fecha_actividad);
             $stmt->bindParam(':hora_inicio', $parametros->hora_inicio);
             $stmt->bindParam(':hora_fin', $parametros->hora_fin);
-            $stmt->bindParam(':duracion', $parametros->duracion);
+            $stmt->bindParam(':instructor', $parametros->instructor);
             $stmt->bindParam(':lugar_de_actividad', $parametros->lugar_de_actividad);
             $stmt->bindParam(':qr_de_evento', $parametros->qr_de_evento);
             $stmt->bindParam(':observaciones', $parametros->observaciones);
@@ -113,8 +120,13 @@ class EventosModelo
             }
 
             if (!empty($filtros->lugar_de_actividad)) {
-                $sql .= " AND lugar_de_actividad LIKE :lugar";
-                $params[':lugar'] = "%" . $filtros->lugar_de_actividad . "%";
+                $sql .= " AND lugar_de_actividad LIKE :lugar_de_actividad";
+                $params[':lugar_de_actividad'] = "%" . $filtros->lugar_de_actividad . "%";
+            }
+
+            if (!empty($filtros->instructor)) {
+                $sql .= " AND instructor LIKE :instructor";
+                $params[':instructor'] = "%" . $filtros->instructor . "%";
             }
 
             if (!empty($filtros->observaciones)) {

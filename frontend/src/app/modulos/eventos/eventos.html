@@ -46,12 +46,6 @@
                 </h3>
             </div>
 
-            <div class="flex align-top">
-                <button (click)="cerrarAgregarEvento()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">
-                    ✕
-                </button>
-            </div>
-
         </div>
         <div >
             <app-agregar-evento (cerrar)="cerrarAgregarEvento()"></app-agregar-evento>
@@ -66,12 +60,6 @@
                 <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">EDITAR EVENTO</h3>
             </div>
             
-            <div class="flex align-top">
-                <button (click)="cerrarEditarEvento()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">
-                ✕
-            </button>
-            </div>
-            
         </div>
 
         <app-editar-evento [evento]="eventoSeleccionado" (cerrar)="cerrarEditarEvento()"></app-editar-evento>
@@ -83,14 +71,7 @@
         <div class="flex justify-between items-center mb-4">
             <div class="w-full">
                 <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">QR EVENTO</h3>
-            </div>
-            
-            <div class="flex align-top">
-                <button (click)="cerrarQrEvento()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">
-                ✕
-            </button>
-            </div>
-            
+            </div> 
         </div>
 
         <app-qr-evento [evento]="qrEvento " (cerrar)="cerrarQrEvento()"></app-qr-evento>
@@ -109,6 +90,10 @@
                     <th class="py-2 px-4 border-b">Hora final</th>
                     <th class="py-2 px-4 border-b">Instructor</th>
                     <th class="py-2 px-4 border-b">Lugar</th>
+                    <th class="py-2 px-4 border-b">Observaciones</th>
+                    <th class="py-2 px-4 border-b">Creado por</th>
+
+
                     <th class="py-2 px-4 border-b text-center">Acciones</th>
                 </tr>
             </thead>
@@ -117,12 +102,14 @@
                 @for (e of eventosFiltrados; track e.id_evento; let i = $index) {
                 <tr class="bg-white text-center hover:bg-[#E1E1E1]">
                     <td class="py-2 px-4 border-zinc-400">{{ i + 1 }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.nombre }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.fecha }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_inicial }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_final }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.nombre_evento }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.fecha_actividad }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_inicio }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_fin }}</td>
                     <td class="py-2 px-4 border-zinc-400">{{ e.instructor }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.lugar }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.lugar_de_actividad }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.observaciones }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.creado_por}}</td>
                     <td class="py-2 px-4 border-zinc-400 flex justify-center gap-2">
                         <button (click)="abrirEditarEvento(e)"
                             class=" hover:bg-[#7ce54b] hover:text-white text-black p-2 rounded-full mr-2">

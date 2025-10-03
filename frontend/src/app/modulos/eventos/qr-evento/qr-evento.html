@@ -3,8 +3,12 @@
     <p *ngIf="!evento?.qr_de_evento" class="text-gray-500 mt-4">
         No hay código QR disponible para este evento.
     </p>
-    <div class="w-full flex justify-end ">
-        <button class="bg-black rounded-full p-2 text-white hover:bg-gray-800 ">
+    <div class="w-full flex justify-end gap-2 "> 
+        <button (click)="cerrarVentana()" class="bg-black rounded-full  px-6 py-2 font-semibold text-white hover:bg-gray-800 ">
+            CANCELAR
+        </button>
+
+        <button class="bg-[#7ce54b] text-black font-semibold rounded-full  px-6 py-2 hover:text-white hover:bg-[#004D00] ">
             DESCARGAR
         </button>
     </div>

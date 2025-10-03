@@ -15,7 +15,7 @@ class EventosModelo
         try {
             $sql = "SELECT 
                     e.*, 
-                    CONCAT(u.PRIMER_NOMBRE, ' ', u.PRIMER_APELLIDO) AS creado_por
+                    CONCAT(u.PRIMER_NOMBRE, ' ', u.PRIMER_APELLIDO) AS CREADO_POR
                 FROM eventos e
                 INNER JOIN usuario u ON e.usuario = u.ID_USUARIO
                 ORDER BY e.fecha_actividad DESC";

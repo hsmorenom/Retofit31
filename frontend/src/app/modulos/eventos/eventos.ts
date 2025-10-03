@@ -24,12 +24,14 @@ export class Eventos implements OnInit {
   eventoSeleccionado: any = null;
   qrEvento: any = null;
 
-  constructor(private eventosService: EventosService) { }
+  constructor(
+    private eventosService: EventosService
+  ) { }
 
   ngOnInit(): void {
     this.obtenerEventos();
   }
-
+  // Traer datos almacenados de la base de datos a la tabla
   obtenerEventos(): void {
     this.eventosService.consultar().subscribe({
       next: (data) => {

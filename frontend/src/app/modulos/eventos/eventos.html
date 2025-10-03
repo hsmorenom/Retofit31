@@ -47,19 +47,20 @@
             </div>
 
         </div>
-        <div >
+        <div>
             <app-agregar-evento (cerrar)="cerrarAgregarEvento()"></app-agregar-evento>
         </div>
-        
+
     </div>
     }
     @else if (mostrarEditarEvento) {
     <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-300">
         <div class="flex justify-between items-center mb-4">
             <div class="w-full">
-                <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">EDITAR EVENTO</h3>
+                <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">EDITAR
+                    EVENTO</h3>
             </div>
-            
+
         </div>
 
         <app-editar-evento [evento]="eventoSeleccionado" (cerrar)="cerrarEditarEvento()"></app-editar-evento>
@@ -70,8 +71,9 @@
     <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-300">
         <div class="flex justify-between items-center mb-4">
             <div class="w-full">
-                <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">QR EVENTO</h3>
-            </div> 
+                <h3 class="text-[#004D00] text-center font-semibold text- sm:text-3xl pl-6 font-oswald m-4">QR EVENTO
+                </h3>
+            </div>
         </div>
 
         <app-qr-evento [evento]="qrEvento " (cerrar)="cerrarQrEvento()"></app-qr-evento>
@@ -101,20 +103,21 @@
             <tbody class="divide-y divide-zinc-400">
                 @for (e of eventosFiltrados; track e.id_evento; let i = $index) {
                 <tr class="bg-white text-center hover:bg-[#E1E1E1]">
-                    <td class="py-2 px-4 border-zinc-400">{{ i + 1 }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.nombre_evento }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.fecha_actividad }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_inicio }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.hora_fin }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.instructor }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.lugar_de_actividad }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.observaciones }}</td>
-                    <td class="py-2 px-4 border-zinc-400">{{ e.creado_por}}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.ID_EVENTOS }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.NOMBRE_EVENTO}}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.FECHA_ACTIVIDAD }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.HORA_INICIO }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.HORA_FIN }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.INSTRUCTOR }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.LUGAR_DE_ACTIVIDAD }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.OBSERVACIONES }}</td>
+                    <td class="py-2 px-4 border-zinc-400">{{ e.CREADO_POR}}</td>
                     <td class="py-2 px-4 border-zinc-400 flex justify-center gap-2">
                         <button (click)="abrirEditarEvento(e)"
                             class=" hover:bg-[#7ce54b] hover:text-white text-black p-2 rounded-full mr-2">
                             <i class="fas fa-pencil text-2xl"></i>
                         </button>
+
                         <button (click)="abrirQrEvento(e)"
                             class=" hover:bg-[#7ce54b]  hover:text-white text-black p-2 rounded-full mr-2">
                             <i class="fas fa-eye text-2xl"></i>

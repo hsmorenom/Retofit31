@@ -89,6 +89,39 @@ class AsistenciaModelo
         }
     }
 
+
+    public function registrarPorQR($id_evento, $id_cliente)
+{
+    try {
+        // Verificar si ya existe asistencia registrada para ese cliente y evento
+        $sqlCheck = "SELECT COUNT(*) FROM asistencia WHERE cliente = :cliente AND evento = :evento";
+        $stmtCheck = $this->conexion->prepare($sqlCheck);
+        $stmtCheck->bindParam(':cliente', $id_cliente);
+        $stmtCheck->bindParam(':evento', $id_evento);
+        $stmtCheck->execute();
+
+        if ($stmtCheck->fetchColumn() > 0) {
+            return ['resultado' => 'DUPLICADO', 'mensaje' => 'Ya se registró la asistencia para este evento.'];
+        }
+
+        // Registrar la asistencia nueva
+        $sqlInsert = "INSERT INTO asistencia (cliente, evento, notificacion)
+                      VALUES (:cliente, :evento, :notificacion)";
+        $stmtInsert = $this->conexion->prepare($sqlInsert);
+        $notificacion = "Asistencia registrada automáticamente mediante QR.";
+        $stmtInsert->bindParam(':cliente', $id_cliente);
+        $stmtInsert->bindParam(':evento', $id_evento);
+        $stmtInsert->bindParam(':notificacion', $notificacion);
+        $stmtInsert->execute();
+
+        return ['resultado' => 'OK', 'mensaje' => 'Asistencia registrada correctamente.'];
+
+    } catch (PDOException $e) {
+        return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+    }
+}
+
+
 }
 
 

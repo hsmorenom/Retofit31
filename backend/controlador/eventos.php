@@ -17,18 +17,13 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 
 switch ($metodo) {
     case 'GET':
-        // Aca se valida si la variable blobal esta vacia, si lo es devuelve true si contiene algo da false y procede a hacer filtro
         if (empty($_GET)) {
             echo json_encode($eventos->consultar());
+        } else if (isset($_GET['texto'])) {
+            $filtro = $_GET['texto'];
+            echo json_encode($eventos->filtrar($filtro));
         } else {
-            // Convertimos los parámetros GET en un objeto, el $_GET segun la peticion esta en json como ?id= 1, esto se traduce como ["id"=>"1"], json_encode lo vuelve json así,{"id"="1"} y de ello se usa json_decode para volverlo     objeto en php
-            //  stdClass Object
-            // (
-            //   [id] => 1
-            // )
-            // al final, la funcion filtrar puede usar esto porque ya es un objeto
-            $filtros = json_decode(json_encode($_GET));
-            echo json_encode($eventos->filtrar($filtros));
+            echo json_encode($eventos->consultar());
         }
         break;
 
@@ -50,16 +45,15 @@ switch ($metodo) {
     case 'DELETE':
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            echo json_encode($eventos->eliminar($id));
+            $resultado = $eventos->eliminar($id);
+            http_response_code(200);
+            echo json_encode($resultado);
         } else {
+            http_response_code(400);
             echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado para eliminación']);
         }
         break;
 
-    default:
-
-        echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Método HTTP no permitido']);
-        break;
 }
 ;
 

@@ -3,39 +3,42 @@
         Datos del evento
     </h2>
 
+    <!-- <pre class="text-xs text-shadow-green-700 text-left">{{ data | json }}</pre> -->
+
+
     <form class="space-y-5 ">
 
-        <!-- Tipo de evento -->
+        <!-- Nombre de evento -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl  w-[200px] ">Evento:</h3>
-            <input type="text" name="Nombre de evento" placeholder="Escribe el evento"
+            <input type="text" name="nombre_evento" placeholder="Escribe el evento" [(ngModel)]="nombre_evento"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
         <!-- Fecha del evento -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Fecha del evento:</h3>
-            <input type="date" name="fecha"
+            <input type="date" name="fecha_actividad" [(ngModel)]="fecha_actividad" required
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <!-- Hora inicio -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Hora inicio:</h3>
-            <input type="time" name="HoraInicio"
+            <input type="time" name="HoraInicio" [(ngModel)]="hora_inicio"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <!-- Hora final -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Hora final:</h3>
-            <input type="time" name="HoraFinal"
+            <input type="time" name="HoraFinal" [(ngModel)]="hora_fin"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
         <!-- Instructor -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Instructor:</h3>
-            <input type="text" name="HoraFinal" placeholder="Escribe el instructor"
+            <input type="text" name="HoraFinal" placeholder="Escribe el instructor" [(ngModel)]="instructor"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
@@ -43,34 +46,51 @@
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Lugar del evento:</h3>
             <input type="text" name="LugarEvento" placeholder="Escribe el lugar del evento"
+                [(ngModel)]="lugar_de_actividad"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
         <!-- Observaciones -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">Observaciones:</h3>
-            <input type="text" name="Observaciones" placeholder="Escribe alguna observación"
+            <input type="text" name="Observaciones" placeholder="Escribe alguna observación" [(ngModel)]="observaciones"
                 class="w-2xl bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
 
+        @if(mostrarGenerarQr){
         <!-- QR del evento -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
             <h3 class="block text-gray-800 font-semibold text-2xl w-[200px] ">QR del evento:</h3>
-            <button type="button" class="bg-[#7ce54b] font-semibold text-black px-6 py-2 rounded-full hover:bg-[#0d542b] hover:text-white transition">
+            <button type="button" (click)="generarQR()"
+                class="bg-[#7ce54b] font-semibold text-black px-6 py-2 rounded-full hover:bg-[#0d542b] hover:text-white transition">
                 GENERAR QR
             </button>
         </div>
+        }
 
-        
+
+
 
         <!-- Botones -->
-        <div class="flex justify-end space-x-4 pt-6">
-            <button type="button"  (click)="cerrarVentana()"   class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition">
-                CANCELAR
+        <div class="flex flex-wrap justify-end gap-2 pt-6">
+            @if (mostrarGenerarQr) {
+            <button type="button" (click)="cerrarVentana()"
+                class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition w-full sm:w-auto">
+                CERRAR
             </button>
+            }
+            @if (!eventoGuardado) {
+            <button type="button" (click)="cerrarVentana()"
+                class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition w-full sm:w-auto">
+                CANCELAR
+            </button>}
 
-            <button type="submit" class="bg-[#7ce54b] font-semibold text-black px-6 py-2 rounded-full hover:bg-[#0d542b] hover:text-white transition">
+            @if (!eventoGuardado) {
+            <button type="button" (click)="guardarEvento()"
+                class="bg-[#7ce54b] font-semibold text-black px-6 py-2 rounded-full hover:bg-[#0d542b] hover:text-white transition w-full sm:w-auto">
                 GUARDAR
             </button>
+            }
         </div>
+
     </form>
 </div>

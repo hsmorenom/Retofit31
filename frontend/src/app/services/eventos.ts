@@ -15,25 +15,24 @@ export class EventosService {
     return this.http.get(this.apiUrl);
   }
 
-  // Filtrar usando cualquier campo (id, nombre_evento, usuario, etc.)
-  filtrar(filtros: any): Observable<any> {
-    // constructor que hace arma automaticamente la url
-    // URLSearchParams convierte un objeto en un texto de url
-    const parametros = new URLSearchParams();
-
-    for (const key in filtros) {
-      if (filtros[key] !== '' && filtros[key] !== null && filtros[key] !== undefined) {
-        parametros.append(key, filtros[key]);
-      }
+  // Filtrar segun prompt
+  filtrar(filtro: string): Observable<any> {
+    const params = new URLSearchParams();
+    if (filtro && filtro.trim() !== '') {
+      params.append('texto', filtro.trim());
     }
 
-    return this.http.get(`${this.apiUrl}?${parametros.toString()}`);
+    return this.http.get(`${this.apiUrl}?${params.toString()}`);
   }
+
 
   // Insertar nuevo evento
   insertar(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+    const idUsuario = localStorage.getItem('idUsuario');
+    const payload = { ...data, USUARIO: idUsuario };
+    return this.http.post(this.apiUrl, payload);
   }
+
 
   // Editar evento por ID
   editar(id: number, data: any): Observable<any> {
@@ -41,7 +40,8 @@ export class EventosService {
   }
 
   // Eliminar evento por ID
-  eliminar(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}?id=${id}`);
+  eliminar(id: number): Observable<{ resultado: string; mensaje: string }> {
+    return this.http.delete<{ resultado: string; mensaje: string }>(`${this.apiUrl}?id=${id}`);
   }
+
 }

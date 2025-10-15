@@ -5,6 +5,7 @@ import { EditarEvento } from "./editar-evento/editar-evento";
 import { AgregarEvento } from "./agregar-evento/agregar-evento";
 import { EventosService } from '../../services/eventos';
 import { QrEvento } from './qr-evento/qr-evento';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-eventos',
@@ -17,6 +18,8 @@ export class Eventos implements OnInit {
   eventos: any[] = [];
   eventosFiltrados: any[] = [];
   filtroTexto: string = '';
+  private filtroSubject: Subject<string> = new Subject();
+
 
   mostrarAgregarEvento = false;
   mostrarEditarEvento = false;
@@ -30,7 +33,17 @@ export class Eventos implements OnInit {
 
   ngOnInit(): void {
     this.obtenerEventos();
+    // Suscribirse al input con debounce
+    this.filtroSubject.pipe(
+      debounceTime(300), // espera 300ms después de escribir
+      distinctUntilChanged()
+    ).subscribe(texto => {
+      this.eventosService.filtrar(texto).subscribe(res => {
+        this.eventosFiltrados = res;
+      });
+    });
   }
+
   // Traer datos almacenados de la base de datos a la tabla
   obtenerEventos(): void {
     this.eventosService.consultar().subscribe({
@@ -44,16 +57,10 @@ export class Eventos implements OnInit {
     });
   }
 
-  // 🔍 Filtrar eventos por texto
-  filtrarEventos(): void {
-    const texto = this.filtroTexto.toLowerCase().trim();
-    this.eventosFiltrados = this.eventos.filter(evento =>
-      evento.nombre?.toLowerCase().includes(texto) ||
-      evento.lugar?.toLowerCase().includes(texto) ||
-      evento.instructor?.toLowerCase().includes(texto) ||
-      evento.fecha?.toLowerCase().includes(texto)
-    );
+  filtrarEventos() {
+    this.filtroSubject.next(this.filtroTexto);
   }
+
 
   limpiarFiltro(): void {
     this.filtroTexto = '';
@@ -94,18 +101,23 @@ export class Eventos implements OnInit {
 
 
 
-  eliminarEvento(idEvento: number): void {
-    if (confirm('¿Estás seguro de eliminar este evento?')) {
-      this.eventosService.eliminar(idEvento).subscribe({
-        next: () => {
-          alert('Evento eliminado correctamente.');
-          this.obtenerEventos();
-        },
-        error: (error) => {
-          console.error('Error al eliminar evento:', error);
-          alert('Hubo un error al eliminar el evento.');
+  eliminarEvento(id: number): void {
+    const confirmar = confirm('¿Estás seguro de eliminar este evento?');
+    if (!confirmar) return;
+
+    this.eventosService.eliminar(id).subscribe({
+      next: (resp) => {
+        if (resp.resultado === 'OK') {
+          alert('Evento eliminado correctamente');
+          this.obtenerEventos(); // refresca la lista
+        } else {
+          alert('Error: ' + resp.mensaje);
         }
-      });
-    }
+      },
+      error: (err) => {
+        console.error('Error al eliminar', err);
+        alert('Ocurrió un error al intentar eliminar el evento');
+      }
+    });
   }
 }

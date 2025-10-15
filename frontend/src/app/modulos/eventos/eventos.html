@@ -4,35 +4,30 @@
         EVENTOS</h2>
 
     <!-- 🔍 Filtro de búsqueda -->
-    <div class="flex flex-wrap justify-center">
-        <div class="flex  items-center  mb-4 space-x-2">
-            <div class="w-full">
-                <button (click)="abrirAgregarEvento()"
-                    class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 font-oswald">
-                    AGREGAR EVENTO
-                </button>
-            </div>
-            <div class="relative flex-1 min-w-[500px]">
-                <div class="absolute inset-y-0 -left-3 flex items-center pl-3">
-                    <div
-                        class="bg-gray-600 text-black font-bold flex items-center justify-center w-10 h-10 rounded-full font-oswald">
-                        <i class="fas fa-search text-white"></i>
-                    </div>
+    <div class="flex flex-wrap justify-center items-center gap-2 mb-4">
+        <button (click)="abrirAgregarEvento()"
+            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 font-oswald w-full sm:w-auto">
+            AGREGAR EVENTO
+        </button>
+
+        <div class="relative flex-1 max-w-[500px] min-w-[200px]">
+            <div class="absolute inset-y-0 left-0 flex items-center ">
+                <div
+                    class="bg-gray-600 text-black font-bold flex items-center justify-center w-10 h-10 rounded-full font-oswald">
+                    <i class="fas fa-search text-white"></i>
                 </div>
-
-                <input type="text" placeholder="Buscar por nombre, fecha, lugar o instructor del evento"
-                    [(ngModel)]="filtroTexto" (input)="filtrarEventos()"
-                    class="border border-gray-300 rounded-full pl-12 pr-4 py-2 w-full font-bold text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-600 bg-zinc-200" />
             </div>
-
-
-            <button (click)="limpiarFiltro()"
-                class="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 font-oswald">
-                LIMPIAR
-            </button>
-
+            <input type="text" placeholder="Buscar por nombre, fecha, lugar o instructor del evento"
+                [(ngModel)]="filtroTexto" (input)="filtrarEventos()"
+                class="border border-gray-300 rounded-full pl-13 pr-4 py-2 w-full font-bold text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-600 bg-zinc-200" />
         </div>
+
+        <button (click)="limpiarFiltro()"
+            class="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 font-oswald w-full sm:w-auto">
+            LIMPIAR
+        </button>
     </div>
+
 
     <!-- 🧩 Sección dinámica -->
     @if (mostrarAgregarEvento) {
@@ -123,7 +118,7 @@
                             <i class="fas fa-eye text-2xl"></i>
                         </button>
 
-                        <button (click)="eliminarEvento(e.id_evento)"
+                        <button (click)="eliminarEvento(e.ID_EVENTOS)"
                             class=" hover:bg-[#7ce54b]  hover:text-white text-black p-2 rounded-full mr-2">
                             <i class="fas fa-trash text-2xl"></i>
                         </button>

@@ -10,8 +10,8 @@ export class HistorialAsistencia {
 
   mostrarHistorialUsuario = false
 
-  buscarUsuario(){
-    
+  buscarUsuario() {
+
   }
 
   toggleConsulta(): void {
@@ -19,7 +19,7 @@ export class HistorialAsistencia {
     this.consultarHistorial();
   }
 
-  consultarHistorial(){
+  consultarHistorial() {
 
   }
 

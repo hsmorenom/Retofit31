@@ -1,6 +1,9 @@
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 # https://github.com/sebastianbergmann/phpunit/blob/main/.github/workflows/ci.yaml
 
+# yamllint disable rule:truthy
+# github-actions:disable-all
+
 on:
   push:
     branches:

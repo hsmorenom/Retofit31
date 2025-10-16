@@ -642,9 +642,9 @@ class ClienteModelo
 
 
     public function buscarPorDocumento($documento)
-{
-    try {
-        $sql = "SELECT c.ID_CLIENTE,u.ID_USUARIO, tu.TIPO AS TIPO_USUARIO, 
+    {
+        try {
+            $sql = "SELECT c.ID_CLIENTE,u.ID_USUARIO, tu.TIPO AS TIPO_USUARIO, 
                        u.PRIMER_NOMBRE, u.SEGUNDO_NOMBRE,u.PRIMER_APELLIDO, 
                        u.SEGUNDO_APELLIDO, u.EMAIL, u.ESTADO, 
                        c.TIPO_DOCUMENTO, c.IDENTIFICACION, c.FECHA_NACIMIENTO, 
@@ -655,17 +655,17 @@ class ClienteModelo
                 INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
                 LEFT JOIN tipo_usuario tu ON u.TIPO_USUARIO = tu.ID_TIPO_USUARIO
                 LEFT JOIN ciudad ciu ON c.CIUDAD = ciu.ID_CIUDAD
-                WHERE c.IDENTIFICACION = :documento LIMIT 1";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindParam(':documento', $documento);
-        $stmt->execute();
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                WHERE c.IDENTIFICACION = :documento AND u.TIPO_USUARIO = 4 LIMIT 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':documento', $documento);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $resultado ? $resultado : ['resultado' => 'NO_EXISTE', 'mensaje' => 'No se encontró cliente con ese documento'];
-    } catch (PDOException $e) {
-        return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+            return $resultado ? $resultado : ['resultado' => 'NO_EXISTE', 'mensaje' => 'No se encontró cliente con ese documento o no pertenece al tipo de usuario 4'];
+        } catch (PDOException $e) {
+            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        }
     }
-}
 
 }
 

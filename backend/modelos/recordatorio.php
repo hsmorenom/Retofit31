@@ -38,7 +38,7 @@ class RecordatorioModelo
             $stmt->bindParam(':estado', $parametros->estado);
             $stmt->execute();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Asistencia insertado'];
+            return ['resultado' => 'OK', 'mensaje' => 'Recordatorio programado'];
 
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
@@ -53,7 +53,7 @@ class RecordatorioModelo
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Asistencia eliminada correctamente'];
+            return ['resultado' => 'OK', 'mensaje' => 'Recordatorio eliminado correctamente'];
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
@@ -73,14 +73,14 @@ class RecordatorioModelo
             $stmt->bindParam(':estado', $parametros->estado);
             $stmt->execute();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Asistencia actualizados'];
+            return ['resultado' => 'OK', 'mensaje' => 'Recordatorio actualizado'];
 
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
 
-   
+
 
 
 }

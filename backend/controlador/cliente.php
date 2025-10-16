@@ -36,19 +36,17 @@ switch ($metodo) {
         } elseif (isset($_GET['modo']) && $_GET['modo'] === 'admon') {
             // Usar la nueva consulta especial para administrativo
             echo json_encode($cliente->consultarParaAdmon());
-        } 
-        elseif (isset($_GET['documento'])) {
-    $documento = $_GET['documento'];
-    $resultado = $cliente->buscarPorDocumento($documento);
+        } elseif (isset($_GET['documento'])) {
+            $documento = $_GET['documento'];
+            $resultado = $cliente->buscarPorDocumento($documento);
 
-    // ✅ Devolver SIEMPRE un arreglo
-    if ($resultado) {
-        echo json_encode([$resultado]);
-    } else {
-        echo json_encode([]);
-    }
-}
-else {
+            // ✅ Devolver SIEMPRE un arreglo
+            if ($resultado) {
+                echo json_encode([$resultado]);
+            } else {
+                echo json_encode([]);
+            }
+        } else {
             echo json_encode($cliente->consultar());
         }
         break;

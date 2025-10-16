@@ -11,11 +11,9 @@
                 Identificación del usuario:
             </h3>
             <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
-                <input type="text" placeholder="Ingrese aquí el ID del usuario"
-                    class="flex-1 outline-none text-sm pl-5" />
-                <label class="cursor-pointer">
-                    <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarUsuario()" />
-                </label>
+                <input type="text" placeholder="Ingrese aquí el ID del usuario" [(ngModel)]="filtroTexto"
+                    class="flex-1 outline-none text-sm pl-5 w-10 h-10" />
+
             </div>
         </div>
 
@@ -24,7 +22,8 @@
             <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Fecha inicial:
             </h3>
-            <input type="date" class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+            <input type="date" id="fechaInicial"
+                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
         </div>
 
         <!--Filtrar fecha final  -->
@@ -32,21 +31,29 @@
             <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Fecha final:
             </h3>
-            <input type="date" class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+            <input type="date" id="fechaFinal"
+                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
         </div>
     </div>
 
 
     <!-- Consultar Historial -->
-    <div class="flex justify-end">
-        <button (click)="toggleConsulta()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
-            {{ mostrarHistorialUsuario ? 'REGRESAR' : 'CONSULTAR' }}
+    <div class="flex flex-wrap justify-end gap-2">
+        <button (click)="toggleConsulta()"
+            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+            CONSULTAR
+        </button>
+
+        <button (click)="limpiarFiltro()"
+            class="bg-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-700 font-oswald">
+            LIMPIAR
         </button>
     </div>
 
     @if (mostrarHistorialUsuario) {
 
     <div class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
+
         <table class="min-w-full border-collapse text-sm">
             <thead class="bg-zinc-400 text-zinc-800 font-oswald">
                 <tr class="bg-zinc-400 text-lg text-center font-semibold">
@@ -58,46 +65,44 @@
                     <th class="px-4 py-2">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-400">
-                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
-                    <td class="px-4 py-2">123456789</td>
-                    <td class="px-4 py-2">John Michael</td>
-                    <td class="px-4 py-2">Smith Johnson</td>
-                    <td class="px-4 py-2">Nutrición</td>
-                    <td class="px-4 py-2">15/04/2025</td>
-                    <td class="px-4 py-2">
-                        <div class="flex justify-center">
-                            <button type="button"
-                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
-                                <i class="fas fa-trash text-2xl"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
-                    <td class="px-4 py-2">123456789</td>
-                    <td class="px-4 py-2">John Michael</td>
-                    <td class="px-4 py-2">Smith Johnson</td>
-                    <td class="px-4 py-2">Práctica</td>
-                    <td class="px-4 py-2">18/04/2025</td>
-                    <td class="px-4 py-2">
-                        <div class="flex justify-center">
-                            <button type="button"
-                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
-                                <i class="fas fa-trash text-2xl"></i>
-                            </button>
-                        </div>
 
+            <tbody class="divide-y divide-zinc-400">
+                <!-- 🔍 Si hay resultados -->
+                @if (asistenciasFiltradas.length > 0) {
+                @for (a of asistenciasFiltradas; track a.ID_ASISTENCIA) {
+                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
+                    <td class="px-4 py-2">{{ a.IDENTIFICACION }}</td>
+                    <td class="px-4 py-2">{{ a.NOMBRES }}</td>
+                    <td class="px-4 py-2">{{ a.APELLIDOS }}</td>
+                    <td class="px-4 py-2">{{ a.NOMBRE_EVENTO }}</td>
+                    <td class="px-4 py-2">{{ a.FECHA_ACTIVIDAD }}</td>
+                    <td class="px-4 py-2">
+                        <div class="flex justify-center">
+                            <button type="button" (click)="eliminarAsistencia(a.ID_ASISTENCIA)"
+                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                <i class="fas fa-trash text-2xl"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
-                <!-- Agrega más filas según sea necesario -->
+                }
+                }
+                <!-- ❌ Si no hay resultados -->
+                @else {
+                <tr class="bg-white text-center text-lg">
+                    <td colspan="6" class="px-4 py-4 text-zinc-500">
+                        No se encontraron registros de asistencia.
+                    </td>
+                </tr>
+                }
             </tbody>
         </table>
     </div>
 
 
+
     <div class="flex justify-end">
-        <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+        <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition" (click)="exportarPDF()">
             EXPORTAR
         </button>
     </div>

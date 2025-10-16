@@ -1,7 +1,7 @@
 <?php
 require_once '../conexion.php';
 
-class AsistenciaModelo
+class RecordatorioModelo
 {
     private $conexion;
 

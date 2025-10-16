@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AsistenciaService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/asistencia.php';
+export class RecordatorioService {
+  private apiUrl = 'http://localhost:8000/backend/controlador/recordatorio.php';
   constructor(private http: HttpClient) { }
 
   //se obtienen todos los registro

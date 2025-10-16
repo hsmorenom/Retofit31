@@ -9,9 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once '../modelos/asistencia.php';
+require_once '../modelos/recordatorio.php';
 
-$asistencia = new AsistenciaModelo();
+$recordatorio = new RecordatorioModelo();
 $metodo = $_SERVER['REQUEST_METHOD'];
 
 // ✅ Si hay un parámetro "accion" lo tomamos (por ejemplo: registrarQR)

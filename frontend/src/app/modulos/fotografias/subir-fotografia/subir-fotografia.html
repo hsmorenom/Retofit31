@@ -1,16 +1,46 @@
 <div class="w-full max-w-5xl mx-auto px-4 py-8">
   <!-- Barra de búsqueda de usuario -->
+<div class="w-full max-w-5xl mx-auto px-4 py-8">
+
+  <!-- Barra de búsqueda de usuario -->
   <div class="mb-8 flex justify-center">
     <input 
       type="text"
-      placeholder="Buscar usuario..." 
+      [(ngModel)]="terminoBusqueda"
+      placeholder="Buscar cliente por documento..." 
+      (input)="buscarCliente()"  
       class="w-full max-w-md rounded-full border border-gray-300 px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
     />
     <button 
-      class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-30">
+      (click)="buscarCliente()"
+      class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-30 ml-2">
       Buscar
     </button>
   </div>
+
+  <!-- Resultados de búsqueda -->
+  <div *ngIf="resultados.length > 0" class="bg-white shadow-md rounded-lg w-full max-w-md mx-auto mt-2 border p-2">
+    <ul>
+      <li 
+        *ngFor="let cliente of resultados"
+        (click)="seleccionarCliente(cliente)"
+        class="px-3 py-2 hover:bg-emerald-100 cursor-pointer rounded"
+      >
+        <!-- Ajustado a tus campos -->
+        {{ cliente.PRIMER_NOMBRE }} {{ cliente.PRIMER_APELLIDO }} - {{ cliente.IDENTIFICACION }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Cliente seleccionado -->
+  <div *ngIf="clienteSeleccionado" class="mt-4 w-full max-w-md mx-auto bg-emerald-50 p-3 rounded border border-emerald-300">
+    <p><strong>Cliente seleccionado:</strong></p>
+    <p>{{ clienteSeleccionado.PRIMER_NOMBRE }} {{ clienteSeleccionado.PRIMER_APELLIDO }}</p>
+    <p><strong>Documento:</strong> {{ clienteSeleccionado.IDENTIFICACION }}</p>
+  </div>
+
+</div>
+
 
   <!-- Título -->
   <header class="mb-8 text-center">
@@ -23,72 +53,135 @@
   </header>
 
   <!-- Grid principal -->
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Columna Izquierda (Frontal + Posterior) -->
-    <div class="space-y-10 relative">
-      <!-- Frontal -->
-      <div>
-        <h2 class="text-lg font-bold text-neutral-900 mb-3">
-          Frontal: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
-        </h2>
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-              <input type="file" accept="image/*" class="sr-only" />
-              Seleccionar foto
-            </label>
-            <span class="text-sm text-neutral-600 truncate max-w-[220px]"></span>
-            <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">×</button>
-          </div>
-          <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-          <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-        </div>
-      </div>
-
-      <!-- Posterior -->
-      <div>
-        <h2 class="text-lg font-bold text-neutral-900 mb-3">
-          Posterior: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
-        </h2>
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-              <input type="file" accept="image/*" class="sr-only" />
-              Seleccionar foto
-            </label>
-            <span class="text-sm text-neutral-600 truncate max-w-[220px]">—</span>
-            <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">×</button>
-          </div>
-          <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-          <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Columna Derecha (Lateral) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <!-- Columna Izquierda -->
+  <div class="space-y-10">
+    <!-- Frontal -->
     <div>
       <h2 class="text-lg font-bold text-neutral-900 mb-3">
-        Lateral: <span class="text-neutral-500 font-normal">(Solo puedes subir una foto)</span>
+        Frontal <span class="text-neutral-500 font-normal"></span>
       </h2>
       <div class="space-y-3">
         <div class="flex items-center gap-3">
-          <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-black/20">
-            <input type="file" accept="image/*" class="sr-only" />
+          <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90">
+            <input type="file" accept="image/*" class="sr-only"
+                   (change)="onFileSelected($event, 'frontal')" />
             Seleccionar foto
           </label>
-          <span class="text-sm text-neutral-600 truncate max-w-[220px]">—</span>
-          <button type="button" class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">×</button>
+          <span class="text-sm text-neutral-600 truncate max-w-[220px]">
+            {{ formFotos.frontal.archivo?.name || '—' }}
+          </span>
+          <button type="button"
+                  (click)="eliminarFoto('frontal')"
+                  class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">
+            ×
+          </button>
         </div>
-        <input type="text" placeholder="Escribe una descripción de la foto" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-        <input type="text" placeholder="Etiqueta la foto aquí" class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+        <!-- ✅ Vista previa -->
+        <div *ngIf="formFotos.frontal.preview" class="mt-2">
+          <img [src]="formFotos.frontal.preview"
+               alt="Vista previa frontal"
+               style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;">
+        </div>
+
+        <input type="text" [(ngModel)]="formFotos.frontal.descripcion"
+               placeholder="Descripción de la foto"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+
+        <input type="text" [(ngModel)]="formFotos.frontal.etiqueta"
+               placeholder="Etiqueta la foto"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
       </div>
     </div>
-  </section>
 
-  <!-- Botones centrados: SUBIR y VOLVER -->
-  <div class="mt-10 flex justify-center gap-4">
-    <button class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-50">
-      SUBIR FOTOS
-    </button>
+    <!-- Posterior -->
+    <div>
+      <h2 class="text-lg font-bold text-neutral-900 mb-3">
+        Posterior <span class="text-neutral-500 font-normal"></span>
+      </h2>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90">
+            <input type="file" accept="image/*" class="sr-only"
+                   (change)="onFileSelected($event, 'posterior')" />
+            Seleccionar foto
+          </label>
+          <span class="text-sm text-neutral-600 truncate max-w-[220px]">
+            {{ formFotos.posterior.archivo?.name || '—' }}
+          </span>
+          <button type="button"
+                  (click)="eliminarFoto('posterior')"
+                  class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">
+            ×
+          </button>
+        </div>
+
+        <div *ngIf="formFotos.posterior.preview" class="mt-2">
+          <img [src]="formFotos.posterior.preview"
+               alt="Vista previa posterior"
+               style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;">
+        </div>
+
+        <input type="text" [(ngModel)]="formFotos.posterior.descripcion"
+               placeholder="Descripción de la foto"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+
+        <input type="text" [(ngModel)]="formFotos.posterior.etiqueta"
+               placeholder="Etiqueta la foto"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+      </div>
+    </div>
   </div>
+
+  <!-- Columna Derecha -->
+  <div>
+    <h2 class="text-lg font-bold text-neutral-900 mb-3">
+      Lateral <span class="text-neutral-500 font-normal"></span>
+    </h2>
+    <div class="space-y-3">
+      <div class="flex items-center gap-3">
+        <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90">
+          <input type="file" accept="image/*" class="sr-only"
+                 (change)="onFileSelected($event, 'lateral')" />
+          Seleccionar foto
+        </label>
+        <span class="text-sm text-neutral-600 truncate max-w-[220px]">
+          {{ formFotos.lateral.archivo?.name || '—' }}
+        </span>
+        <button type="button"
+                (click)="eliminarFoto('lateral')"
+                class="ml-auto inline-flex items-center justify-center rounded-full border border-neutral-300 text-neutral-500 hover:text-neutral-700 hover:border-neutral-400 w-6 h-6">
+          ×
+        </button>
+      </div>
+
+      <div *ngIf="formFotos.lateral.preview" class="mt-2">
+        <img [src]="formFotos.lateral.preview"
+             alt="Vista previa lateral"
+             style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;">
+      </div>
+
+      <input type="text" [(ngModel)]="formFotos.lateral.descripcion"
+             placeholder="Descripción de la foto"
+             class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+
+      <input type="text" [(ngModel)]="formFotos.lateral.etiqueta"
+             placeholder="Etiqueta la foto"
+             class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+    </div>
+  </div>
+</section>
+
+<!-- Botón de acción -->
+<div class="mt-10 flex justify-center gap-4">
+  <button (click)="subirFotos()"
+          class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-50">
+    SUBIR FOTOS
+  </button>
+
+
+</div>
+
+
 </div>

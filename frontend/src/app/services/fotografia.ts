@@ -7,30 +7,33 @@ import { Observable } from 'rxjs';
 })
 export class FotografiaService {
   private apiUrl = 'http://localhost:8000/backend/controlador/fotografia.php';
+
   constructor(private http: HttpClient) { }
 
-  //se obtienen todos los registro
+  // ⏺ Consultar todas las fotografías
   consultar(): Observable<any> {
     return this.http.get(this.apiUrl);
   }
-  // se obtienen los registros que coincidan con el id
+
+  // 🔎 Filtrar fotografías por ID cliente
   filtrar(idCliente: number): Observable<any> {
     return this.http.get(`${this.apiUrl}?id=${idCliente}`);
   }
-  // se insertan nuevos registros a partir del api creado en backend
-  insertar(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+
+  // ➕ Insertar fotografía nueva (AJUSTADO PARA FORM DATA)
+  insertar(formData: FormData): Observable<any> {
+    return this.http.post(this.apiUrl, formData);
   }
-  //se edita registro existente segun id 
-  editar(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}?id=${id}`, data);
+
+  // ✏️ Editar una fotografía existente
+  editar(id: number, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}?id=${id}`, formData);
   }
-  //se elimina registro existente segun id
+
+  // 🗑️ Eliminar fotografía
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}?id=${id}`);
   }
 
-
+  
 }
-
-

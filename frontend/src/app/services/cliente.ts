@@ -55,6 +55,11 @@ export class ClienteService {
   }
 
   //------------------SAUL-----------------Administrativo //
+// Buscar cliente por número de documento
+buscarPorDocumento(documento: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}?documento=${documento}`);
+}
+
 
 
 }

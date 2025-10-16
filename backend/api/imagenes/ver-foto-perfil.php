@@ -37,3 +37,4 @@ header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($rutaArchivo));
 readfile($rutaArchivo);
 exit;
+

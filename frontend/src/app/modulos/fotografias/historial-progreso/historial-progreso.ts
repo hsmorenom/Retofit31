@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ClienteService } from '../../../services/cliente';
+import { FotografiaService } from '../../../services/fotografia';
+
 
 @Component({
   selector: 'app-historial-progreso',

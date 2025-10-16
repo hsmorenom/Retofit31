@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../modelos/recordatorio.php';
 
-$recordatorio = new RecordatorioModelo();
+$recorda = new RecordatorioModelo();
 $metodo = $_SERVER['REQUEST_METHOD'];
 
 // ✅ Si hay un parámetro "accion" lo tomamos (por ejemplo: registrarQR)
@@ -21,32 +21,17 @@ switch ($metodo) {
 
     // 🔹 Registrar asistencia mediante QR
     case 'POST':
-        if ($accion === 'registrarQR') {
-            // Esperamos recibir un JSON con { "evento": 1, "cliente": 2 }
-            $datos = json_decode(file_get_contents("php://input"));
 
-            if (!isset($datos->evento) || !isset($datos->cliente)) {
-                echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Faltan datos: evento o cliente']);
-                exit;
-            }
+        // Registro normal (manual)
+        $datos = json_decode(file_get_contents("php://input"));
+        echo json_encode($asistencia->insertar($datos));
 
-            echo json_encode(
-                $asistencia->registrarPorQR($datos->evento, $datos->cliente)
-            );
-        } else {
-            // Registro normal (manual)
-            $datos = json_decode(file_get_contents("php://input"));
-            echo json_encode($asistencia->insertar($datos));
-        }
         break;
 
     case 'GET':
-        if (isset($_GET['identificacion']) && is_numeric($_GET['identificacion'])) {
-            $identificacion = $_GET['identificacion'];
-            echo json_encode($asistencia->filtrarIdentificacion($identificacion));
-        } else {
-            echo json_encode($asistencia->consultar());
-        }
+
+        echo json_encode($asistencia->consultar());
+
         break;
 
 

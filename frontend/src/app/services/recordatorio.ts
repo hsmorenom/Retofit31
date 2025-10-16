@@ -13,10 +13,7 @@ export class RecordatorioService {
   consultar(): Observable<any> {
     return this.http.get(this.apiUrl);
   }
-  // se obtienen los registros que coincidan con la identificacion
-  filtrarIdentificacion(identificacion: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}?identificacion=${identificacion}`);
-  }
+
   // se insertan nuevos registros a partir del api creado en backend
   insertar(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);
@@ -30,13 +27,7 @@ export class RecordatorioService {
     return this.http.delete(`${this.apiUrl}?id=${id}`);
   }
 
-  // ✅ NUEVO: Registrar asistencia al escanear QR
-  registrarDesdeQR(evento: number, cliente: number): Observable<any> {
-    const url = `${this.apiUrl}?accion=registrarQR`;
-    const body = { evento, cliente };
 
-    return this.http.post(url, body);
-  }
 
 
 }

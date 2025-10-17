@@ -11,26 +11,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../modelos/recordatorio.php';
 
-$recorda = new RecordatorioModelo();
+$recordatorio = new RecordatorioModelo();
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-// ✅ Si hay un parámetro "accion" lo tomamos (por ejemplo: registrarQR)
 $accion = isset($_GET['accion']) ? $_GET['accion'] : null;
 
 switch ($metodo) {
 
-    // 🔹 Registrar asistencia mediante QR
     case 'POST':
-
-        // Registro normal (manual)
         $datos = json_decode(file_get_contents("php://input"));
-        echo json_encode($asistencia->insertar($datos));
 
+        if ($datos) {
+            echo json_encode($recordatorio->insertar($datos));
+        } else {
+            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Datos inválidos o incompletos.']);
+        }
         break;
+
 
     case 'GET':
 
-        echo json_encode($asistencia->consultar());
+        echo json_encode($recordatorio->consultar());
 
         break;
 
@@ -39,7 +40,7 @@ switch ($metodo) {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
             $datos = json_decode(file_get_contents("php://input"));
-            echo json_encode($asistencia->editar($id, $datos));
+            echo json_encode($recordatorio->editar($id, $datos));
         } else {
             echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado para actualización']);
         }
@@ -48,7 +49,7 @@ switch ($metodo) {
     case 'DELETE':
         if (!empty($_GET['id'])) {
             $id = (int) $_GET['id']; // aseguramos que sea numérico
-            echo json_encode($asistencia->eliminar($id));
+            echo json_encode($recordatorio->eliminar($id));
         } else {
             echo json_encode([
                 'resultado' => 'ERROR',

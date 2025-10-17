@@ -1,45 +1,59 @@
 <div class="mb-3 gap-5">
     <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
-        <h2 class=" text-xl font-semibold text-[#004D00]">PROGRAMACIÓN DE RECORDATORIOS</h2>
+        <h2 class="text-xl font-semibold text-[#004D00]">PROGRAMACIÓN DE RECORDATORIOS</h2>
         <p class="font-light">(Programa los recordatorios de los eventos para los usuarios)</p>
     </div>
+
     <div class="flex flex-col gap-4">
-        <!-- //Buscar ID del usuario -->
+        <!-- Buscar ID del usuario -->
         <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
-            <h3 class="text-black text-2xl font-semibold mb-1 w-64  md:mb-0">
+            <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Identificación del usuario:
             </h3>
+
             <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
-                <input type="text" placeholder="Ingrese aquí el ID del usuario"
-                    class="flex-1 outline-none text-sm pl-5" />
+                <input type="text" placeholder="Ingrese aquí el ID del usuario" class="flex-1 outline-none text-sm pl-5"
+                    [(ngModel)]="documentoBusqueda" />
                 <label class="cursor-pointer">
-                    <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarUsuario()" />
+                    <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
                 </label>
             </div>
         </div>
-        <!-- //Programar fecha y hora de recordatorios -->
-        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
-            <h3 class="text-black text-2xl font-semibold mb-1  md:mb-0 w-64 ">
-                Fecha y hora:
-            </h3>
-            <input type="datetime-local" placeholder=""
-                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+
+        <!-- Chips de clientes seleccionados -->
+        @if (clientesSeleccionados.length > 0) {
+        <div class="flex flex-wrap gap-2 mt-3">
+            @for (c of clientesSeleccionados; track c.ID_CLIENTE) {
+            <div class="bg-[#7ce54f] px-4 py-2 rounded-full flex items-center gap-2 text-black shadow-sm">
+                <span class="font-semibold text-sm">
+                    {{ c.PRIMER_NOMBRE }} {{ c.PRIMER_APELLIDO }}
+                </span>
+                <button (click)="eliminarCliente(c.ID_CLIENTE)" class="text-red-600 hover:text-red-800 font-bold">
+                    ×
+                </button>
+            </div>
+            }
         </div>
+        }
 
         <div class="flex flex-wrap justify-between gap-6 w-full">
-            <!-- //ver eventos disponibles -->
+            <!-- Ver eventos disponibles -->
             <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
                 <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                     Evento:
                 </h3>
                 <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
-                    <select class="p-2 rounded-full pl-5 w-62 outline-none">
-                        <option disabled>Seleccione el evento</option>
-                        <option value="Nutrición">Nutrición</option>
-                        <option value="Práctica deportiva">Práctica deportiva </option>
-                        <option value="Práctica deportiva"> Medición antropométrica </option>
-                    </select>
+                    <select [(ngModel)]="eventoSeleccionado"
+                        class="w-62 p-2 pl-5 rounded-full bg-[#E1E1E1] text-black outline-none"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !eventoSeleccionado}">
+                        <option [ngValue]="null" disabled selected>Seleccione un evento</option>
 
+                        @for (e of eventos; track e.ID_EVENTOS) {
+                        <option [ngValue]="e.ID_EVENTOS">
+                            {{ e.NOMBRE_EVENTO }}
+                        </option>
+                        }
+                    </select>
                 </div>
             </div>
 
@@ -49,40 +63,35 @@
                     Frecuencia:
                 </h3>
                 <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
-                    <select class="p-2 rounded-full pl-5 w-62 outline-none">
-                        <option disabled>Tipo de frecuencia</option>
-                        <option value="1 vez al dia">1 vez al dia</option>
-                        <option value="2 veces al dia">2 veces al dia </option>
+                    <select class="p-2 rounded-full pl-5 w-62 outline-none" [(ngModel)]="frecuencia">
+                        <option disabled selected>Tipo de frecuencia</option>
+                        <option value="1_dia">1 vez al día</option>
+                        <option value="2_dia">2 veces al día</option>
                     </select>
-
                 </div>
             </div>
-
         </div>
 
-
-        <!-- Tipo de notificacion -->
+        <!-- Tipo de notificación -->
         <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
-            <h3 class="text-black text-2xl font-semibold mb-1 w-64  md:mb-0">
+            <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Tipo de notificación:
             </h3>
-            <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65 ">
-                <select class="p-2 rounded-full pl-5 w-62 outline-none">
-                    <option disabled>Tipo de notificacion</option>
-                    <option value="Mensaje">Mensaje</option>
-                    <option value="LLamada">Llamada </option>
+            <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
+                <select class="p-2 rounded-full pl-5 w-62 outline-none" [(ngModel)]="tipoNotificacion">
+                    <option disabled selected>Tipo de notificación</option>
+                    <option value="correo">Correo</option>
+                    <option value="mensaje">Mensaje</option>
                 </select>
-
             </div>
         </div>
 
-
-
+        <!-- Botón programar -->
         <div class="flex justify-end">
             <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition"
                 (click)="programar()">
                 PROGRAMAR
             </button>
         </div>
-
     </div>
+</div>

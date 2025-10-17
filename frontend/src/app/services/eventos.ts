@@ -44,4 +44,9 @@ export class EventosService {
     return this.http.delete<{ resultado: string; mensaje: string }>(`${this.apiUrl}?id=${id}`);
   }
 
+  consultarVigentes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}?vigentes=true`);
+  }
+
+
 }

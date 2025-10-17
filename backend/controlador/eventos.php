@@ -17,15 +17,21 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 
 switch ($metodo) {
     case 'GET':
-        if (empty($_GET)) {
-            echo json_encode($eventos->consultar());
-        } else if (isset($_GET['texto'])) {
+        
+        if (isset($_GET['texto'])) {
             $filtro = $_GET['texto'];
             echo json_encode($eventos->filtrar($filtro));
-        } else {
+        }
+        // Consultar solo eventos vigentes
+        else if (isset($_GET['vigentes'])) {
+            echo json_encode($eventos->consultarVigentes());
+        }
+        // Cualquier otro caso por defecto
+        else {
             echo json_encode($eventos->consultar());
         }
         break;
+
 
     case 'POST':
         $datos = json_decode(file_get_contents("php://input"));

@@ -30,6 +30,24 @@ class EventosModelo
         }
     }
 
+    public function consultarVigentes()
+    {
+        try {
+            $sql = "SELECT * 
+                FROM eventos 
+                WHERE FECHA_ACTIVIDAD >= CURDATE()
+                ORDER BY FECHA_ACTIVIDAD ASC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        }
+    }
+
+
 
     public function insertar($parametros)
     {

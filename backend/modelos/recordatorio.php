@@ -28,22 +28,75 @@ class RecordatorioModelo
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO recordatorio (CLIENTE, EVENTO, FECHA_HORA, TIPO_NOTIFICACION, FRECUENCIA, ESTADO)VALUES (:cliente,:evento, :fecha_hora, :tipo_notificacion,:frecuencia,:estado);";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':cliente', $parametros->cliente);
-            $stmt->bindParam(':evento', $parametros->evento);
-            $stmt->bindParam(':fecha_hora', $parametros->fecha_hora);
-            $stmt->bindParam(':tipo_notificacion', $parametros->tipo_notificacion);
-            $stmt->bindParam(':frecuencia', $parametros->frecuencia);
-            $stmt->bindParam(':estado', $parametros->estado);
-            $stmt->execute();
+            // 🧩 Convertir a arreglo (soporta múltiples clientes o uno solo)
+            $clientes = is_array($parametros->cliente) ? $parametros->cliente : [$parametros->cliente];
+            $insertados = 0;
 
-            return ['resultado' => 'OK', 'mensaje' => 'Recordatorio programado'];
+            // 🧩 Obtener datos del evento
+            $verificarEvento = $this->conexion->prepare("
+            SELECT FECHA_ACTIVIDAD, HORA_INICIO 
+            FROM eventos 
+            WHERE ID_EVENTOS = :evento
+        ");
+            $verificarEvento->execute([':evento' => $parametros->evento]);
+            $evento = $verificarEvento->fetch(PDO::FETCH_ASSOC);
+
+            if (!$evento) {
+                return ['resultado' => 'ERROR', 'mensaje' => 'El evento no existe.'];
+            }
+
+            // 🕒 Calcular fecha y hora del recordatorio (1 día antes del evento)
+            $fechaCompletaEvento = new DateTime($evento['FECHA_ACTIVIDAD'] . ' ' . $evento['HORA_INICIO']);
+            $fechaCompletaEvento->modify('-24 hours'); // exactamente 1 día antes
+            $fechaRecordatorio = $fechaCompletaEvento->format('Y-m-d H:i:s');
+
+            // 🔁 Insertar para cada cliente
+            foreach ($clientes as $clienteId) {
+
+                // 🧩 Validar que el cliente sea tipo 4
+                $verificar = $this->conexion->prepare("
+                SELECT u.TIPO_USUARIO 
+                FROM cliente c 
+                INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO 
+                WHERE c.ID_CLIENTE = :cliente
+            ");
+                $verificar->execute([':cliente' => $clienteId]);
+                $tipoUsuario = $verificar->fetchColumn();
+
+                if (!$tipoUsuario || (int) $tipoUsuario !== 4) {
+                    // Saltar si no es cliente válido
+                    continue;
+                }
+
+                // ✅ Insertar el recordatorio
+                $sql = "INSERT INTO recordatorio 
+                    (CLIENTE, EVENTO, FECHA_HORA, TIPO_NOTIFICACION, FRECUENCIA, ESTADO)
+                    VALUES (:cliente, :evento, :fecha_hora, :tipo_notificacion, :frecuencia, :estado)";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->execute([
+                    ':cliente' => $clienteId,
+                    ':evento' => $parametros->evento,
+                    ':fecha_hora' => $fechaRecordatorio,
+                    ':tipo_notificacion' => $parametros->tipo_notificacion,
+                    ':frecuencia' => $parametros->frecuencia,
+                    ':estado' => $parametros->estado ?? 'pendiente'
+                ]);
+
+                $insertados++;
+            }
+
+            if ($insertados === 0) {
+                return ['resultado' => 'ERROR', 'mensaje' => 'No se pudo programar ningún recordatorio (clientes no válidos).'];
+            }
+
+            return ['resultado' => 'OK', 'mensaje' => "Recordatorios programados para $insertados cliente(s)."];
 
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
+
+
 
     public function eliminar($id)
     {

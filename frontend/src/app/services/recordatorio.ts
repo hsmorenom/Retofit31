@@ -15,9 +15,10 @@ export class RecordatorioService {
   }
 
   // se insertan nuevos registros a partir del api creado en backend
-  insertar(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+  insertar(data: any): Observable<{ resultado: string; mensaje: string }> {
+    return this.http.post<{ resultado: string; mensaje: string }>(this.apiUrl, data);
   }
+
   //se edita registro existente segun id 
   editar(id: number, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}?id=${id}`, data);

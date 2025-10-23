@@ -13,16 +13,27 @@ class RecordatorioModelo
     public function consultar()
     {
         try {
-            $sql = "SELECT * FROM recordatorio";
+            $sql = "SELECT 
+                    r.*, 
+                    e.NOMBRE_EVENTO,
+                    CONCAT(u.PRIMER_NOMBRE, ' ', u.PRIMER_APELLIDO) AS NOMBRE_CLIENTE
+                FROM recordatorio r
+                INNER JOIN cliente c ON r.CLIENTE = c.ID_CLIENTE
+                INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+                INNER JOIN eventos e ON r.EVENTO = e.ID_EVENTOS
+                WHERE r.FECHA_HORA < NOW()
+                ORDER BY r.FECHA_HORA DESC";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
+
 
 
     public function insertar($parametros)

@@ -30,10 +30,14 @@ switch ($metodo) {
 
 
     case 'GET':
-
-        echo json_encode($recordatorio->consultar());
-
+        if (isset($_GET['tipo']) && $_GET['tipo'] === 'vigencia') {
+            echo json_encode($recordatorio->consultarVigencia());
+        } else {
+            echo json_encode($recordatorio->consultar()); // por defecto, vigentes
+        }
         break;
+
+
 
 
     case 'PUT':

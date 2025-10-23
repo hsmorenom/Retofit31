@@ -11,6 +11,7 @@ import { RecordatorioService } from '../../../services/recordatorio';
 export class HistorialRecordatorios implements OnInit {
 
   recordatorio: any[] = [];
+  mostrarVigencia = false;
 
   recordatoriosVigentes: any[] = [];
 
@@ -19,10 +20,10 @@ export class HistorialRecordatorios implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.cargarRecordatorioVigentes();
+    this.cargarRecordatorioHistorial();
   }
 
-  cargarRecordatorioVigentes() {
+  cargarRecordatorioHistorial() {
     this.recordatorioService.consultar().subscribe({
       next: (data) => {
         this.recordatorio = data;
@@ -34,12 +35,41 @@ export class HistorialRecordatorios implements OnInit {
     });
   }
 
-  enviarRecordatorio(){
+  cargarVigentes(): void {
+    this.recordatorioService.consultarVigentes().subscribe({
+      next: (res) => (this.recordatorio = res),
+      error: (err) => console.error('Error al cargar recordatorios vigentes:', err)
+    });
+  }
+
+  toggleVista(): void {
+    this.mostrarVigencia = !this.mostrarVigencia;
+    if (this.mostrarVigencia) {
+      this.cargarVigentes();
+    } else {
+      this.cargarRecordatorioHistorial();
+    }
+  }
+
+  enviarRecordatorio() {
 
   }
 
-  eliminarRecordatorio(){
-    
+  eliminarRecordatorio(id: number): void {
+    if (confirm('¿Estás seguro de eliminar este registro de asistencia?')) {
+      this.recordatorioService.eliminar(id).subscribe({
+        next: (res) => {
+          alert('Asistencia eliminada correctamente.');
+          this.recordatorio = this.recordatorio.filter(a => a.ID_ASISTENCIA !== id);
+           this.cargarRecordatorioHistorial()
+        },
+        error: (err) => {
+          console.error('Error al eliminar asistencia:', err);
+          alert('Hubo un error al eliminar la asistencia.');
+        }
+      });
+    }
   }
+  
 
 }

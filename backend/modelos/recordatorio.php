@@ -34,6 +34,38 @@ class RecordatorioModelo
         }
     }
 
+    public function consultarVigencia()
+    {
+        try {
+            $sql = "SELECT 
+                    r.ID_RECORDATORIO,
+                    r.FECHA_HORA,
+                    r.TIPO_NOTIFICACION,
+                    r.FRECUENCIA,
+                    r.ESTADO,
+                    CONCAT(u.PRIMER_NOMBRE, ' ', 
+                           IFNULL(u.SEGUNDO_NOMBRE, ''), ' ', 
+                           u.PRIMER_APELLIDO, ' ', 
+                           IFNULL(u.SEGUNDO_APELLIDO, '')) AS NOMBRE_CLIENTE,
+                    c.IDENTIFICACION AS DOCUMENTO_CLIENTE,
+                    e.NOMBRE_EVENTO,
+                    e.FECHA_ACTIVIDAD
+                FROM recordatorio r
+                INNER JOIN cliente c ON r.CLIENTE = c.ID_CLIENTE
+                INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+                INNER JOIN eventos e ON r.EVENTO = e.ID_EVENTOS
+                WHERE r.FECHA_HORA >= NOW()  -- 🔹 Solo los recordatorios futuros o del momento actual
+                ORDER BY r.FECHA_HORA ASC";  //-- 🔹 //Los más próximos primero
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        }
+    }
 
 
     public function insertar($parametros)

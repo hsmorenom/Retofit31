@@ -48,12 +48,20 @@
                         [ngClass]="{'border-red-500 border-2': mostrarError && !eventoSeleccionado}">
                         <option [ngValue]="null" disabled selected>Seleccione un evento</option>
 
+                        @if (eventos.length > 0) {
                         @for (e of eventos; track e.ID_EVENTOS) {
                         <option [ngValue]="e.ID_EVENTOS">
                             {{ e.NOMBRE_EVENTO }}
                         </option>
                         }
+                        }
+
+                        <!-- Si NO hay eventos -->
+                        @else {
+                        <option disabled>No hay eventos próximos disponibles</option>
+                        }
                     </select>
+
                 </div>
             </div>
 

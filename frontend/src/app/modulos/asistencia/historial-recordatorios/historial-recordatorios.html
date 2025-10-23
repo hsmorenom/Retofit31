@@ -4,6 +4,16 @@
         <p class="font-light">(Observa el historial de recordatorios vigentes )</p>
     </div>
 
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold text-[#000000]">
+            {{ mostrarVigencia ? 'Recordatorios Programados' : ' Historial de Recordatorios' }}
+        </h2>
+
+        <button (click)="toggleVista()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">
+            {{ mostrarVigencia ? 'HISTORIAL' : 'PROGRAMADOS' }}
+        </button>
+    </div>
+
     <div class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
         <table class="min-w-full border-collapse text-sm">
             <thead class="bg-zinc-400 text-zinc-800 font-oswald">
@@ -21,8 +31,8 @@
 
             <tbody class="divide-y divide-zinc-400 border-collapse rounded-full">
                 <!-- 🔍 Si hay resultados -->
-                @if (recordatoriosVigentes.length > 0) {
-                @for (r of recordatoriosVigentes; track r.ID_RECORDATORIO) {
+                @if (recordatorio.length > 0) {
+                @for (r of recordatorio; track r.ID_RECORDATORIO) {
                 <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
                     <td class="px-4 py-2">{{ r.ID_RECORDATORIO }}</td>
                     <td class="px-4 py-2">{{ r.NOMBRE_CLIENTE }}</td>
@@ -37,7 +47,7 @@
                                 class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
                                 <i class=" fas fa-share-alt text 2xl:"></i>
                             </button>
-                            <button type="button" (click)="eliminarRecordatorio()"
+                            <button type="button" (click)="eliminarRecordatorio(r.ID_RECORDATORIO)"
                                 class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
                                 <i class="fas fa-trash text-2xl"></i>
                             </button>
@@ -48,15 +58,16 @@
                 }
                 <!-- ❌ Si no hay resultados -->
                 @else {
-                <tr class="bg-white text-center text-lg">
-                    <td colspan="6" class="px-4 py-4 text-zinc-500">
-                        No se encontraron registros de asistencia.
+                <tr class="bg-white text-center text-lg  ">
+                    <td colspan="8" class="px-4 py-4 text-zinc-500">
+                        No hay recordatorios {{ mostrarVigencia ? 'programados' : 'en el historial' }}.
                     </td>
                 </tr>
                 }
             </tbody>
         </table>
     </div>
+
 
 
 

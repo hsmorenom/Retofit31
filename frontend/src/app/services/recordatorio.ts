@@ -14,6 +14,10 @@ export class RecordatorioService {
     return this.http.get(this.apiUrl);
   }
 
+  consultarVigentes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}?tipo=vigencia`);
+  }
+
   // se insertan nuevos registros a partir del api creado en backend
   insertar(data: any): Observable<{ resultado: string; mensaje: string }> {
     return this.http.post<{ resultado: string; mensaje: string }>(this.apiUrl, data);

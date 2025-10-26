@@ -1,10 +1,36 @@
-<div class="mb-3 gap-5">
+<div class=" mb-3 gap-5">
+
+
     <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
         <h2 class=" text-xl font-semibold text-[#004D00]">CAPTURA DE ASISTENCIA</h2>
-        <p class="font-light">(Escanea el codigo QR para registrar la asistencia al evento)</p>
+        <p class="font-light">(Escanea el código QR del evento para registrar la asistencia)</p>
     </div>
-    <button (click)="registrarAsistencia(1, 2)"
-        class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
-        ESCANEAR QR
-    </button>
+
+
+    <!-- Mostrar cámara solo cuando scanning sea true -->
+    @if (scanning) {
+    <div class="w-full flex flex-col items-center">
+        <video #video width="400" height="400" autoplay muted></video>
+    </div>
+    }
+
+
+
+    <div class="flex gap-4 mt-3">
+        <button (click)="iniciarEscaneo()"
+            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+            ESCANEAR QR
+        </button>
+
+        <button (click)="detenerEscaneo()"
+            class="bg-gray-400 text-white px-4 py-2 rounded-full hover:bg-gray-500 transition">
+            DETENER
+        </button>
+    </div>
+
+    @if (resultadoQR) {
+    <p class="mt-4 text-green-700">
+        ✅ Código detectado: {{ resultadoQR }}
+    </p>
+    }
 </div>

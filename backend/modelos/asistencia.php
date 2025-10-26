@@ -118,36 +118,97 @@ class AsistenciaModelo
     }
 
 
-    public function registrarPorQR($id_evento, $id_cliente)
-    {
-        try {
-            // Verificar si ya existe asistencia registrada para ese cliente y evento
-            $sqlCheck = "SELECT COUNT(*) FROM asistencia WHERE cliente = :cliente AND evento = :evento";
-            $stmtCheck = $this->conexion->prepare($sqlCheck);
-            $stmtCheck->bindParam(':cliente', $id_cliente);
-            $stmtCheck->bindParam(':evento', $id_evento);
-            $stmtCheck->execute();
+   public function registrarPorQR($id_evento, $id_cliente)
+{
+    try {
+        // 📅 Obtener fecha y hora del evento
+        $sqlEvento = "SELECT FECHA_ACTIVIDAD, HORA_INICIO, HORA_FIN 
+                      FROM eventos 
+                      WHERE ID_EVENTOS = :evento";
+        $stmtEvento = $this->conexion->prepare($sqlEvento);
+        $stmtEvento->bindParam(':evento', $id_evento);
+        $stmtEvento->execute();
+        $evento = $stmtEvento->fetch(PDO::FETCH_ASSOC);
 
-            if ($stmtCheck->fetchColumn() > 0) {
-                return ['resultado' => 'DUPLICADO', 'mensaje' => 'Ya se registró la asistencia para este evento.'];
-            }
-
-            // Registrar la asistencia nueva
-            $sqlInsert = "INSERT INTO asistencia (cliente, evento, notificacion)
-                      VALUES (:cliente, :evento, :notificacion)";
-            $stmtInsert = $this->conexion->prepare($sqlInsert);
-            $notificacion = "Asistencia registrada automáticamente mediante QR.";
-            $stmtInsert->bindParam(':cliente', $id_cliente);
-            $stmtInsert->bindParam(':evento', $id_evento);
-            $stmtInsert->bindParam(':notificacion', $notificacion);
-            $stmtInsert->execute();
-
-            return ['resultado' => 'OK', 'mensaje' => 'Asistencia registrada correctamente.'];
-
-        } catch (PDOException $e) {
-            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+        if (!$evento) {
+            return ['resultado' => 'ERROR', 'mensaje' => 'El evento no existe.'];
         }
+
+        // 🔧 Establecer zona horaria Colombia
+        $zona = new DateTimeZone('America/Bogota');
+
+        $fechaActual = new DateTime('now', $zona);
+        $fechaEvento = new DateTime($evento['FECHA_ACTIVIDAD'] . ' ' . $evento['HORA_INICIO'], $zona);
+        $fechaFinEvento = new DateTime($evento['FECHA_ACTIVIDAD'] . ' ' . $evento['HORA_FIN'], $zona);
+
+        // 🕒 Comparaciones con hora local
+        if ($fechaActual < $fechaEvento) {
+            return [
+                'resultado' => 'PENDIENTE',
+                'mensaje' => 'El evento aún no ha comenzado. Intenta más tarde.'
+            ];
+        }
+
+        if ($fechaActual > $fechaFinEvento) {
+            return [
+                'resultado' => 'FINALIZADO',
+                'mensaje' => 'El evento ya finalizó. No se puede registrar asistencia.'
+            ];
+        }
+
+        // 🧩 Validar que el usuario sea tipo 4 (cliente)
+        $sqlTipo = "SELECT u.TIPO_USUARIO 
+                    FROM cliente c
+                    INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+                    WHERE c.ID_CLIENTE = :cliente";
+        $stmtTipo = $this->conexion->prepare($sqlTipo);
+        $stmtTipo->bindParam(':cliente', $id_cliente);
+        $stmtTipo->execute();
+        $tipoUsuario = $stmtTipo->fetchColumn();
+
+        if (!$tipoUsuario || (int)$tipoUsuario !== 4) {
+            return [
+                'resultado' => 'NO_CLIENTE',
+                'mensaje' => 'Solo los usuarios tipo cliente pueden registrar asistencia.'
+            ];
+        }
+
+        // ⚙️ Verificar duplicados
+        $sqlCheck = "SELECT COUNT(*) FROM asistencia WHERE cliente = :cliente AND evento = :evento";
+        $stmtCheck = $this->conexion->prepare($sqlCheck);
+        $stmtCheck->bindParam(':cliente', $id_cliente);
+        $stmtCheck->bindParam(':evento', $id_evento);
+        $stmtCheck->execute();
+
+        if ($stmtCheck->fetchColumn() > 0) {
+            return [
+                'resultado' => 'DUPLICADO',
+                'mensaje' => 'Ya se registró la asistencia para este evento.'
+            ];
+        }
+
+        // ✅ Registrar asistencia
+        $sqlInsert = "INSERT INTO asistencia (cliente, evento, notificacion)
+                      VALUES (:cliente, :evento, :notificacion)";
+        $stmtInsert = $this->conexion->prepare($sqlInsert);
+        $notificacion = "Asistencia registrada automáticamente mediante QR.";
+        $stmtInsert->bindParam(':cliente', $id_cliente);
+        $stmtInsert->bindParam(':evento', $id_evento);
+        $stmtInsert->bindParam(':notificacion', $notificacion);
+        $stmtInsert->execute();
+
+        return [
+            'resultado' => 'OK',
+            'mensaje' => 'Asistencia registrada correctamente.'
+        ];
+
+    } catch (PDOException $e) {
+        return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
     }
+}
+
+
+
 
 
 }

@@ -31,12 +31,10 @@ export class AsistenciaService {
   }
 
   // ✅ NUEVO: Registrar asistencia al escanear QR
-  registrarDesdeQR(evento: number, cliente: number): Observable<any> {
-    const url = `${this.apiUrl}?accion=registrarQR`;
-    const body = { evento, cliente };
-
-    return this.http.post(url, body);
+  registrarPorQR(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}?accion=registrarQR`, data);
   }
+
 
 
 }

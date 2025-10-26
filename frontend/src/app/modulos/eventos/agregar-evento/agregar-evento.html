@@ -9,10 +9,13 @@
     <form class="space-y-5 ">
 
         <!-- Nombre de evento -->
+         <p class="text-">(Por favor, escriba el evento con fecha. Ejm: Crossfit 30/11/2025 )</p>
         <div class="flex flex-wrap gap-3 sm: flex-row">
+            
             <h3 class="block text-gray-800 font-semibold text-2xl  w-[200px] ">Evento:</h3>
             <input type="text" name="nombre_evento" placeholder="Escribe el evento" [(ngModel)]="nombre_evento"
                 class="w-[250px] bg-[#e1e1e1] rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
+            
         </div>
         <!-- Fecha del evento -->
         <div class="flex flex-wrap gap-3 sm: flex-row">
@@ -73,13 +76,13 @@
         <!-- Botones -->
         <div class="flex flex-wrap justify-end gap-2 pt-6">
             @if (mostrarGenerarQr) {
-            <button type="button" (click)="cerrarVentana()"
-                class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition w-full sm:w-auto">
+            <button (click)="cerrarVentana()" [disabled]="eventoGuardado && !qrGenerado"
+                class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
                 CERRAR
             </button>
             }
             @if (!eventoGuardado) {
-            <button type="button" (click)="cerrarVentana()"
+            <button type="button" (click)="cancelarRegistro()"
                 class="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-gray-800 transition w-full sm:w-auto">
                 CANCELAR
             </button>}

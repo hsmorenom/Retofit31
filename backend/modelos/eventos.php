@@ -71,9 +71,10 @@ class EventosModelo
 
             ]);
             // Fin de la transacción
+            $idInsertado = $this->conexion->lastInsertId();
             $this->conexion->commit();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Evento insertado'];
+            return ['resultado' => 'OK', 'mensaje' => 'Evento insertado', 'id_evento' => $idInsertado];
 
         } catch (PDOException $e) {
             $this->conexion->rollBack();
@@ -85,15 +86,50 @@ class EventosModelo
     public function eliminar($id)
     {
         try {
+            // 🔹 Verificar asistencias asociadas
+            $sqlCheckAsist = "SELECT COUNT(*) AS total FROM asistencia WHERE EVENTO = :id";
+            $stmtAsist = $this->conexion->prepare($sqlCheckAsist);
+            $stmtAsist->execute([':id' => $id]);
+            $totalAsistencias = (int) $stmtAsist->fetch(PDO::FETCH_ASSOC)['total'];
+
+            // 🔹 Verificar recordatorios asociados
+            $sqlCheckRec = "SELECT COUNT(*) AS total FROM recordatorio WHERE EVENTO = :id";
+            $stmtRec = $this->conexion->prepare($sqlCheckRec);
+            $stmtRec->execute([':id' => $id]);
+            $totalRecordatorios = (int) $stmtRec->fetch(PDO::FETCH_ASSOC)['total'];
+
+            // 🔹 Si existen dependencias, cancelar eliminación
+            if ($totalAsistencias > 0 || $totalRecordatorios > 0) {
+                $detalles = [];
+                if ($totalAsistencias > 0)
+                    $detalles[] = "$totalAsistencias asistencia(s)";
+                if ($totalRecordatorios > 0)
+                    $detalles[] = "$totalRecordatorios recordatorio(s)";
+                $mensaje = "⚠️ No se puede eliminar este evento porque tiene " . implode(" y ", $detalles) . " registradas.";
+
+                return ['resultado' => 'ERROR', 'mensaje' => $mensaje];
+            }
+
+            // 🔹 Si no hay dependencias, eliminar evento
             $sql = "DELETE FROM eventos WHERE ID_EVENTOS = :id";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([':id' => $id]);
 
-            return ['resultado' => 'OK', 'mensaje' => 'Evento eliminado correctamente'];
+            return [
+                'resultado' => 'OK',
+                'mensaje' => '✅ Evento eliminado correctamente.'
+            ];
+
         } catch (PDOException $e) {
-            return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+            return [
+                'resultado' => 'ERROR',
+                'mensaje' => $e->getMessage()
+            ];
         }
     }
+
+
+
 
 
     public function editar($id, $parametros)

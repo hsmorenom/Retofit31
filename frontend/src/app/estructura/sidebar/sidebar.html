@@ -17,15 +17,17 @@
             <i class=" fas fa-user-cog"></i> ADMINISTRATIVO
         </a>
 
+        <a routerLink="/eventos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
+            [ngClass]="{'text-[#7CE54F]': router.url === '/eventos'}">
+            <i class=" fas fa-calendar-day"></i> EVENTOS
+        </a>
+
         <a routerLink="/asistencia" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/asistencia'}">
             <i class=" fas fa-clipboard"></i> GESTIÓN DE ASISTENCIA
         </a>
 
-        <a routerLink="/eventos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
-            [ngClass]="{'text-[#7CE54F]': router.url === '/eventos'}">
-            <i class=" fas fa-calendar-day"></i> EVENTOS
-        </a>
+
 
         <a routerLink="/fotografias" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/fotografias'}">

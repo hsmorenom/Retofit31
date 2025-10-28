@@ -9,7 +9,8 @@
             {{ mostrarVigencia ? 'Recordatorios Programados' : ' Historial de Recordatorios' }}
         </h2>
 
-        <button (click)="toggleVista()" class="bg-[#7ce54f] text-black font-semibold px-4 py-2 rounded-full hover:bg-[#0d542b] hover:text-white">
+        <button (click)="toggleVista()"
+            class="bg-[#7ce54f] text-black font-semibold px-4 py-2 rounded-full hover:bg-[#0d542b] hover:text-white">
             {{ mostrarVigencia ? 'HISTORIAL' : 'PROGRAMADOS' }}
         </button>
     </div>
@@ -43,10 +44,18 @@
                     <td class="px-4 py-2">{{ r.ESTADO }}</td>
                     <td class="px-4 py-2">
                         <div class="flex justify-center">
-                            <button type="button" (click)="enviarRecordatorio()"
-                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
-                                <i class=" fas fa-share-alt text 2xl:"></i>
+                            <button type="button" [disabled]="enviando === r.ID_RECORDATORIO"
+                                class="p-2 rounded-full transition text-black hover:bg-[#7ce54b] hover:text-white"
+                                (click)="enviarRecordatorio(r)">
+                                @if (enviando === r.ID_RECORDATORIO) {
+                                <i class="fas fa-spinner fa-spin text-2xl text-[#7ce54b]"></i>
+                                } @else if (enviado === r.ID_RECORDATORIO) {
+                                <i class="fas fa-check text-2xl text-[#7ce54b]"></i>
+                                } @else {
+                                <i class="fas fa-share-alt text-2xl"></i>
+                                }
                             </button>
+
                             <button type="button" (click)="eliminarRecordatorio(r.ID_RECORDATORIO)"
                                 class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
                                 <i class="fas fa-trash text-2xl"></i>

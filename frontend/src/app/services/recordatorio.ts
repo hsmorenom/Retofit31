@@ -32,6 +32,42 @@ export class RecordatorioService {
     return this.http.delete(`${this.apiUrl}?id=${id}`);
   }
 
+  enviarRecordatorio(
+    correo: string,
+    nombre: string,
+    evento: any,
+    tipo: string,
+    telefono?: string
+  ): Observable<{ resultado: string; mensaje: string; tipo?: string; sandbox?: boolean }> {
+    const data: any = {
+      tipo,
+      nombre,
+      evento
+    };
+
+    if (tipo === 'correo') {
+      data.correo = correo;
+    } else if (tipo === 'mensaje') {
+      data.telefono = telefono;
+    }
+
+    return this.http.post<{ resultado: string; mensaje: string; tipo?: string; sandbox?: boolean }>(
+      'http://localhost:8000/backend/api/correo/enviar-recordatorio.php',
+      data
+    );
+  }
+
+
+
+
+  actualizarEstado(id: number, estado: string): Observable<any> {
+    const url = `${this.apiUrl}?id=${id}&estado=${estado}`;
+    return this.http.put(url, {});
+  }
+
+
+
+
 
 
 

@@ -41,11 +41,19 @@ switch ($metodo) {
 
 
     case 'PUT':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
+        // 🔹 Si solo se quiere actualizar el estado
+        if (isset($_GET['id']) && isset($_GET['estado'])) {
+            $id = (int) $_GET['id'];
+            $nuevoEstado = $_GET['estado'];
+            echo json_encode($recordatorio->actualizarEstado($id, $nuevoEstado));
+        }
+        // 🔹 Si se quiere editar un registro completo
+        else if (isset($_GET['id'])) {
+            $id = (int) $_GET['id'];
             $datos = json_decode(file_get_contents("php://input"));
             echo json_encode($recordatorio->editar($id, $datos));
-        } else {
+        } 
+        else {
             echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado para actualización']);
         }
         break;

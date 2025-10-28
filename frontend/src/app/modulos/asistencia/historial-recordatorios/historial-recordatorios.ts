@@ -12,6 +12,9 @@ export class HistorialRecordatorios implements OnInit {
 
   recordatorio: any[] = [];
   mostrarVigencia = false;
+  enviando: number | null = null;   // almacena el ID del recordatorio en envío
+  enviado: number | null = null;    // almacena el ID del recordatorio ya enviado
+
 
   recordatoriosVigentes: any[] = [];
 
@@ -51,9 +54,71 @@ export class HistorialRecordatorios implements OnInit {
     }
   }
 
-  enviarRecordatorio() {
+ enviarRecordatorio(recordatorio: any) {
+  const tipo = recordatorio.TIPO_NOTIFICACION || 'correo'; // 🔹 Detecta el tipo desde la tabla
+  const correo = recordatorio.EMAIL;
+  const telefono = recordatorio.TELEFONO;
+  const nombre = recordatorio.NOMBRE_CLIENTE;
 
-  }
+  const fechaHora = recordatorio.FECHA_HORA || '';
+  const partes = fechaHora.split(' ');
+
+  const evento = {
+    nombre: recordatorio.NOMBRE_EVENTO,
+    fecha: partes[0] || '',
+    hora: partes[1] || '',
+    lugar: recordatorio.LUGAR_DE_ACTIVIDAD
+  };
+
+  this.enviando = recordatorio.ID_RECORDATORIO;
+  this.enviado = null;
+
+  // 🔹 Envío dinámico según el tipo
+  this.recordatorioService.enviarRecordatorio(correo, nombre, evento, tipo, telefono).subscribe({
+    next: (res) => {
+      this.enviando = null;
+
+      if (res.resultado === 'OK') {
+        console.log(`✅ Recordatorio por ${tipo} enviado correctamente:`, res);
+
+        // 🔹 1. Actualiza estado en la base de datos
+        this.recordatorioService
+          .actualizarEstado(recordatorio.ID_RECORDATORIO, 'enviado')
+          .subscribe({
+            next: (resp) => {
+              console.log('📬 Estado actualizado en BD:', resp);
+
+              // 🔹 2. Actualiza en la tabla sin recargar
+              const index = this.recordatorio.findIndex(
+                (r) => r.ID_RECORDATORIO === recordatorio.ID_RECORDATORIO
+              );
+              if (index !== -1) {
+                this.recordatorio[index].ESTADO = 'enviado';
+              }
+
+              // 🔹 3. Muestra visualmente el éxito del envío
+              this.enviado = recordatorio.ID_RECORDATORIO;
+              setTimeout(() => (this.enviado = null), 3000);
+            },
+            error: (err) => console.error('⚠️ Error al actualizar estado:', err),
+          });
+      } else {
+        alert('⚠️ ' + res.mensaje);
+      }
+    },
+    error: (err) => {
+      this.enviando = null;
+      console.error('❌ Error al enviar recordatorio:', err);
+      alert('Error al enviar recordatorio');
+    },
+  });
+}
+
+
+
+
+
+
 
   eliminarRecordatorio(id: number): void {
     if (confirm('¿Estás seguro de eliminar este registro de asistencia?')) {
@@ -61,7 +126,7 @@ export class HistorialRecordatorios implements OnInit {
         next: (res) => {
           alert('Asistencia eliminada correctamente.');
           this.recordatorio = this.recordatorio.filter(a => a.ID_ASISTENCIA !== id);
-           this.cargarRecordatorioHistorial()
+          this.cargarRecordatorioHistorial()
         },
         error: (err) => {
           console.error('Error al eliminar asistencia:', err);
@@ -70,6 +135,6 @@ export class HistorialRecordatorios implements OnInit {
       });
     }
   }
-  
+
 
 }

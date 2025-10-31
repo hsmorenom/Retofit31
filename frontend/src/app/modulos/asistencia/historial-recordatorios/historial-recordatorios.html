@@ -45,7 +45,8 @@
                     <td class="px-4 py-2">
                         <div class="flex justify-center">
                             <button type="button" [disabled]="enviando === r.ID_RECORDATORIO"
-                                class="p-2 rounded-full transition text-black hover:bg-[#7ce54b] hover:text-white"
+                                class="p-2 rounded-full transition text-black hover:bg-[#7ce54b] hover:text-white disabled:hidden"
+                                [disabled]="r.ESTADO === 'enviado'"
                                 (click)="enviarRecordatorio(r)">
                                 @if (enviando === r.ID_RECORDATORIO) {
                                 <i class="fas fa-spinner fa-spin text-2xl text-[#7ce54b]"></i>

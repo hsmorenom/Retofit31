@@ -38,8 +38,20 @@ switch ($metodo) {
     // json_decode hace lo contrario, de un lenguaje json lo traduce a un lenguaje de programacion que en este caso es php
     case 'POST':
         $datos = json_decode(file_get_contents("php://input"));
+
+        if (!$datos) {
+            echo json_encode([
+                'resultado' => 'ERROR',
+                'mensaje' => 'Datos incompletos o formato inválido'
+            ]);
+            break;
+        }
+
         echo json_encode($antropometricos->insertar($datos));
-        break;
+        break; // ✅✅✅ ESTE ES OBLIGATORIO
+
+
+
     // primero identifica si el id a editar esta dentro de la base de datos, cuando se reconozca el post recoge los datos guardados con este id y llama el metodo de editar
     case 'PUT':
         if (isset($_GET['id'])) {

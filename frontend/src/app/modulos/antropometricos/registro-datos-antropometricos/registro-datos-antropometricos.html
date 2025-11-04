@@ -69,21 +69,46 @@
         <!-- ✅ FILA 3: Sexo -->
         <div class="flex flex-col md:flex-row md:items-center gap-3">
 
-            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px] ">
+            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px]">
                 Sexo biológico:
             </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[600px]">
-                <span class="text-black text-xl font-semibold ">
-                    {{ sexoSeleccionado !== null ? sexoParaCalculo : '---' }}
-                </span>
+            <div class="flex flex-col w-full md:w-[600px] gap-3">
 
-                <p class="font-light text-sm hidden md:block whitespace-nowrap">
-                    (Solo para fines de cálculo antropométrico)
-                </p>
+                <!-- Mostrar sexo detectado -->
+
+                <div class="flex flex-row items-center justify-between">
+                    @if(sexoSeleccionado !== 'Otro'){
+                    <span class="text-black text-xl font-semibold">
+                        {{ sexoSeleccionado ? sexoSeleccionado : '---' }}
+                    </span>
+                    }
+                    <!-- ✅ SOLO aparece cuando el sexo es OTRO -->
+                    @if (sexoSeleccionado === 'Otro') {
+                    <div class="flex gap-2 bg-[#E1E1E1] pl-2 rounded-full w-64 h-10">
+                        <select [(ngModel)]="tipoCalculoGrasa" (change)="cambiarTipoCalculo(tipoCalculoGrasa)"
+                            class="  p-2 rounded-full mr-3 w-60 outline-none">
+                            <option disabled selected value="">Seleccione una opción</option>
+                            <option value="Masculino">Cálculo cuerpo masculino</option>
+                            <option value="Femenino">Cálculo cuerpo femenino</option>
+                        </select>
+
+                    </div>
+                    }
+
+
+                    <p class="font-light text-sm hidden md:block whitespace-nowrap">
+                        (Solo para fines de cálculo antropométrico)
+                    </p>
+                </div>
+
+
+
+
             </div>
 
         </div>
+
 
 
         <!-- ✅ FILA 4: Masa corporal -->
@@ -95,9 +120,8 @@
 
             <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
                 <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="number" placeholder="Ingrese la masa corporal en Kg"
-                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
-                    <!-- [(ngModel)]="peso" -->
+                    <input type="number" placeholder="Ingrese la masa corporal en Kg" [(ngModel)]="peso"
+                        (input)="actualizarIMC()" class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
                 </div>
 
                 <p class="font-light text-sm hidden md:block whitespace-nowrap">
@@ -117,8 +141,8 @@
             <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
                 <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
                     <input type="number" placeholder="Ingrese la altura en cm"
-                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
-                    <!-- [(ngModel)]="altura" -->
+                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="altura"
+                        (input)="actualizarIMC()" />
                 </div>
 
                 <p class="font-light text-sm hidden md:block whitespace-nowrap">
@@ -135,98 +159,148 @@
                 Indice de masa corporal (IMC) en Kg/m <sup>2</sup>:
             </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[430px]">
-                <span class="text-black text-xl font-semibold ">
-                    {{ sexoSeleccionado || null }}
+            @if (IMC !== null) {
+            <div class="flex flex-row items-center justify-between w-full  gap-3 md:w-[130px]">
+
+                <!-- Valor IMC -->
+                <span class="text-black text-xl font-semibold">
+                    {{ IMC }}
                 </span>
 
-                <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
-                    CALCULAR
-                </button>
+                <!-- Badges -->
+                @if (clasificacionIMC === 'normal') {
+                <span class="px-3 py-1 text-sm rounded-full bg-green-500 text-white">Normal</span>
+                }
+                @if (clasificacionIMC === 'bajo') {
+                <span class="px-3 py-1 text-sm rounded-full bg-blue-500 text-white">Bajo peso</span>
+                }
+                @if (clasificacionIMC === 'sobrepeso') {
+                <span class="px-3 py-1 text-sm rounded-full bg-yellow-500 text-black">Sobrepeso</span>
+                }
+                @if (clasificacionIMC === 'obesidad') {
+                <span class="px-3 py-1 text-sm rounded-full bg-red-600 text-white">Obesidad</span>
+                }
+
+            </div>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- ✅ FILA 7: Circunferencia de cuello en cm -->
+    <div class="flex flex-col md:flex-row md:items-center gap-3">
+
+        <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
+            Circunferencia de cuello en cm:
+        </h3>
+
+        <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
+            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
+                <input type="number" placeholder="Ingrese circunferencia en cm"
+                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cuello"
+                    (input)="calcularPGC()" />
             </div>
 
+            <p class="font-light text-sm hidden md:block whitespace-nowrap">
+                (Ingresa los datos sin unidad de medida)
+            </p>
         </div>
 
-        <!-- ✅ FILA 7: Circunferencia de cuello en cm -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+    </div>
 
-            <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
-                Circunferencia de cuello en cm:
-            </h3>
+    <!-- ✅ FILA 8: Circunferencia de cintura en cm -->
+    <div class="flex flex-col md:flex-row md:items-center gap-3">
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="number" placeholder="Ingrese circunferencia en cm"
-                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
-                    <!-- [(ngModel)]="circunferencia_cuello" -->
-                </div>
+        <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
+            Circunferencia de cintura en cm:
+        </h3>
 
-                <p class="font-light text-sm hidden md:block whitespace-nowrap">
-                    (Ingresa los datos sin unidad de medida)
-                </p>
+        <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
+            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
+                <input type="number" placeholder="Ingrese circunferencia en cm"
+                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cintura"
+                    (input)="calcularPGC()" />
             </div>
 
+            <p class="font-light text-sm hidden md:block whitespace-nowrap">
+                (Ingresa los datos sin unidad de medida)
+            </p>
         </div>
 
-        <!-- ✅ FILA 8: Circunferencia de cintura en cm -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+    </div>
 
-            <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
-                Circunferencia de cintura en cm:
-            </h3>
+    <!-- ✅ FILA 9: Circunferencia de cadera en cm -->
+    @if(sexoSeleccionado=== 'Femenino' || tipoCalculoGrasa==='Femenino'){
+    <div class="flex flex-col md:flex-row md:items-center gap-3">
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="number" placeholder="Ingrese circunferencia en cm"
-                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
-                    <!-- [(ngModel)]="circunferencia_cintura" -->
-                </div>
+        <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
+            Circunferencia de cadera en cm:
+        </h3>
 
-                <p class="font-light text-sm hidden md:block whitespace-nowrap">
-                    (Ingresa los datos sin unidad de medida)
-                </p>
+        <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
+            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
+                <input type="number" placeholder="Ingrese circunferencia en cm"
+                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cadera"
+                    (input)="calcularPGC()" />
             </div>
 
+            <p class="font-light text-sm hidden md:block whitespace-nowrap">
+                (Ingresa los datos sin unidad de medida)
+            </p>
         </div>
 
-        <!-- ✅ FILA 9: Porcentaje de grasa corporal -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+    </div>
+    }
 
-            <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
-                Porcentaje de grasa corporal (PGC):
-            </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[430px]">
-                <span class="text-black text-xl font-semibold ">
-                    {{ sexoSeleccionado || null }}
-                </span>
+    <!-- ✅ FILA 10: Porcentaje de grasa corporal -->
+    <div class="flex flex-col md:flex-row md:items-center gap-3">
 
-                <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
-                    CALCULAR
-                </button>
-            </div>
+        <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
+            Porcentaje de grasa corporal (PGC):
+        </h3>
+
+        @if (PGC !== null) {
+        <div class="flex flex-row gap-3 items-center">
+
+            <span class="text-black text-xl font-semibold">{{ PGC }} %</span>
+
+            @if (clasificacionPGC === 'normal') {
+            <span class="px-3 py-1 rounded-full bg-green-500 text-white text-sm">Normal</span>
+            }
+            @if (clasificacionPGC === 'bajo') {
+            <span class="px-3 py-1 rounded-full bg-blue-500 text-white text-sm">Bajo</span>
+            }
+            @if (clasificacionPGC === 'alto') {
+            <span class="px-3 py-1 rounded-full bg-yellow-500 text-black text-sm">Alto</span>
+            }
+            @if (clasificacionPGC === 'muy alto') {
+            <span class="px-3 py-1 rounded-full bg-red-600 text-white text-sm">Muy alto</span>
+            }
 
         </div>
-
-        <div>
-            <p> <b>Nota:</b> El porcentaje de grasa corporal fue calculado con la formula de la Marina Estadounidense y
-                cambia de acuerdo al genero del usuario, incorporando nuevas variables</p>
-        </div>
-
-        <!-- Botón programar -->
-        <div class="flex justify-end gap-4">
-            <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
-                CANCELAR
-            </button>
-            <button
-                class="bg-[#7CE54F] text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition">
-                GUARDAR
-            </button>
-        </div>
-
+        }
 
 
     </div>
+
+    <div class="mt-2">
+        <p> <b>Nota:</b> El porcentaje de grasa corporal fue calculado con la formula de la Marina Estadounidense y
+            cambia de acuerdo al sexo del usuario, incorporando nuevas variables</p>
+    </div>
+
+    <!-- Botón programar -->
+    <div class="flex justify-end gap-4">
+        <button (click)="limpiarFormulario()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
+            CANCELAR
+        </button>
+        <button
+            class="bg-[#7CE54F] cursor-pointer text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition" (click)="guardarDatos()">
+            GUARDAR
+        </button>
+    </div>
+
 
 
 </div>

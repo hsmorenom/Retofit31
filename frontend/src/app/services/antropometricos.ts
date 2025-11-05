@@ -16,9 +16,11 @@ export class AntropometricosService {
   }
 
   //aca se construye la url con el filtro segun el cliente, aca lo que se agrega al url es apiUrl+"?cliente=any" que este any puede ser cualquier id registrado en la db
+  // se obtienen los registros que coincidan con la identificacion
   filtrarIdCliente(cliente: number): Observable<any> {
     return this.http.get(`${this.apiUrl}?cliente=${cliente}`);
   }
+
   // se insertan nuevos registros a partir del api creado en backend
   insertar(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);

@@ -10,15 +10,34 @@ class AntropometricosModelo
         $this->conexion = DB::conectar();
     }
 
-    public function consultar()
+    public function consultar($tipoUsuario = 4)
     {
         try {
-            $sql = "SELECT * FROM antropometricos";
+            $sql = "SELECT 
+            a.ID_ANTROPOMETRICOS,
+            c.IDENTIFICACION,
+            TRIM(CONCAT(u.PRIMER_NOMBRE, ' ', IFNULL(u.SEGUNDO_NOMBRE, ''))) AS NOMBRES,
+            TRIM(CONCAT(u.PRIMER_APELLIDO, ' ', IFNULL(u.SEGUNDO_APELLIDO, ''))) AS APELLIDOS,
+            a.PESO,
+            a.ALTURA,
+            a.PORCENTAJE_GRASA_CORPORAL,
+            a.INDICE_DE_MASA_CORPORAL,
+            a.CIRCUNFERENCIA_CUELLO,
+            a.CIRCUNFERENCIA_CINTURA,
+            a.CIRCUNFERENCIA_CADERA,
+            a.FECHA_REGISTRO,
+            a.USUARIO,
+        FROM antropometricos a
+        INNER JOIN cliente c ON a.CLIENTE = c.ID_CLIENTE
+        INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+        WHERE u.TIPO_USUARIO = :tipo
+        ORDER BY e.FECHA_ACTIVIDAD DESC";
+
             $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':tipo', $tipoUsuario);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
@@ -109,9 +128,30 @@ class AntropometricosModelo
     public function filtrarIdCliente($id_cliente)
     {
         try {
-            $sql = "SELECT a.* FROM antropometricos a JOIN cliente c ON a.fotografia = c.id_cliente WHERE c.id_cliente = :id_cliente";
+            $sql = "SELECT 
+                    a.ID_ANTROPOMETRICOS,
+                    c.IDENTIFICACION,
+                    u.PRIMER_NOMBRE,
+                    u.SEGUNDO_NOMBRE,
+                    u.PRIMER_APELLIDO,
+                    u.SEGUNDO_APELLIDO,
+                    u.SEXO,
+                    a.PESO,
+                    a.ALTURA,
+                    a.PORCENTAJE_GRASA_CORPORAL AS PGC,
+                    a.INDICE_DE_MASA_CORPORAL AS IMC,
+                    a.CIRCUNFERENCIA_CUELLO AS CUELLO,
+                    a.CIRCUNFERENCIA_CINTURA AS CINTURA,
+                    a.CIRCUNFERENCIA_CADERA AS CADERA,
+                    a.FECHA_REGISTRO
+                FROM antropometricos a
+                INNER JOIN cliente c ON a.CLIENTE = c.ID_CLIENTE
+                INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+                WHERE c.ID_CLIENTE = :cliente
+                ORDER BY a.FECHA_REGISTRO ASC";
+
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':id_cliente', $id_cliente);
+            $stmt->bindParam(':cliente', $id_cliente);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -120,6 +160,8 @@ class AntropometricosModelo
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
+
+
 
 }
 

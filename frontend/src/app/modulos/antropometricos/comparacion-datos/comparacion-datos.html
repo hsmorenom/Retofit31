@@ -1,52 +1,136 @@
 <div class="mb-3 gap-5">
-    <!-- Título + descripción -->
-    <div class="flex flex-col md:flex-row md:items-center md:gap-3 mb-3 text-center md:text-left">
+
+    <!-- ✅ Título -->
+    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
         <h2 class="text-xl font-semibold text-[#004D00]">
             COMPARACIÓN DE DATOS
         </h2>
-        <p class="font-light text-sm md:text-base">
-            (Seleccione los registro antropométricos que desee consultar y comparar por fecha o tipo de dato)
+        <p class="font-light text-sm">
+            (Seleccione un tipo de dato y un rango de fechas para comparar)
         </p>
     </div>
 
+    <!-- ✅ FILTROS -->
+    <div class="flex flex-col gap-4">
 
-    <!-- ✅ FILA 1: Identificación -->
-    <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <!-- Identificación -->
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-72">
+                ID del Usuario:
+            </h3>
 
-        <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] pr-40">
-            Identificación del usuario:
-        </h3>
-
-        <div class="flex flex-col gap-4">
-
-            <div class="flex flex-col gap-3 w-full">
-
-                <!-- Input búsqueda -->
+            <div class="flex gap-3 items-center flex-wrap">
                 <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="text" placeholder="Ingrese aquí el ID del usuario"
+                    <input type="text" placeholder="Buscar por identificación"
                         class="flex-1 outline-none text-sm pl-5 bg-transparent" [(ngModel)]="documentoBusqueda" />
                     <label class="cursor-pointer">
                         <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
                     </label>
                 </div>
 
-                <!-- Chips -->
-                <div class="flex flex-wrap gap-3">
-                    @if (clientesSeleccionados.length > 0) {
-                    @for (c of clientesSeleccionados; track c.ID_CLIENTE) {
-                    <div class="bg-[#7ce54f] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                        <span class="font-semibold text-sm text-center">
-                            {{ c.PRIMER_NOMBRE }} {{ c.PRIMER_APELLIDO }}
-                        </span>
-                        <button (click)="eliminarCliente(c.ID_CLIENTE)"
-                            class="text-red-600 hover:text-red-800 font-bold">×</button>
-                    </div>
-                    }
-                    }
+                <!-- Chips Cliente -->
+                @for (c of clientesSeleccionados; track c.ID_CLIENTE) {
+                <div class="bg-[#7CE54F] px-3 py-1 rounded-full flex items-center gap-2">
+                    <span class="text-sm font-semibold">{{ c.PRIMER_NOMBRE }} {{ c.PRIMER_APELLIDO }}</span>
+                    <button class="text-red-600 font-bold" (click)="eliminarCliente(c.ID_CLIENTE)">×</button>
                 </div>
-
+                }
             </div>
         </div>
+
+        <!-- Tipo de dato -->
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-72">Tipo de dato:</h3>
+
+            <select class="bg-[#E1E1E1] w-full md:w-72 p-2 rounded-full text-black outline-none"
+                [(ngModel)]="tipoDatoSeleccionado" (change)="cambioTipoDato()">
+
+                <option disabled selected value="">Seleccione un dato</option>
+                <option value="PESO">Peso corporal (Kg)</option>
+                <option value="IMC">Índice de masa corporal (IMC)</option>
+                <option value="PGC">Porcentaje de grasa corporal (%)</option>
+                <option value="CUELLO">Circunferencia de cuello (cm)</option>
+                <option value="CINTURA">Circunferencia de cintura (cm)</option>
+
+                <!-- ✅ Solo si cadera aplica -->
+                @if (mostrarCadera) {
+                <option value="CADERA">Circunferencia de cadera (cm)</option>
+                }
+
+            </select>
+        </div>
+
+        <!-- Fecha inicio -->
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-72">Fecha inicio:</h3>
+            <input type="date" class="bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none"
+                [(ngModel)]="fechaInicio">
+        </div>
+
+        <!-- Fecha fin -->
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-72">Fecha fin:</h3>
+            <input type="date" class="bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" [(ngModel)]="fechaFin">
+        </div>
+
     </div>
+
+    <!-- BOTONES CONSULTAR -->
+    <div class="flex justify-end gap-2 mt-3">
+        <button (click)="consultarHistorial()" class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800">
+            CONSULTAR
+        </button>
+
+        <button (click)="limpiarFiltros()" class="bg-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-500">
+            LIMPIAR
+        </button>
+    </div>
+
+    <!-- ✅ TABLA DE RESULTADOS -->
+    @if (mostrarTabla) {
+    <div class="overflow-auto border-2 border-gray-300 rounded-xl mt-5">
+
+        <table class="min-w-full text-base text-center">
+            <thead class="bg-gray-200 text-black font-bold">
+                <tr>
+                    <th class="px-3 py-2">✔</th>
+                    <th class="px-3 py-2">ID</th>
+                    <th class="px-3 py-2">Nombres</th>
+                    <th class="px-3 py-2">Apellidos</th>
+                    <th class="px-3 py-2">{{ nombreColumnaDato }}</th>
+                    <th class="px-3 py-2">Fecha</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-400">
+                @for (d of datosFiltrados; track d.ID_ANTROPOMETRICOS) {
+                <tr class="hover:bg-[#E1E1E1]">
+                    <td class="px-3 py-2">
+                        <input type="checkbox" (change)="seleccionarRegistro(d)">
+                    </td>
+                    <td class="px-3 py-2">{{ d.IDENTIFICACION }}</td>
+                    <td class="px-3 py-2">{{ d.NOMBRE_COMPLETO }}</td>
+                    <td class="px-3 py-2">{{ d.APELLIDOS_COMPLETO }}</td>
+                    <td class="px-3 py-2">{{ d.valorMostrado }}</td>
+                    <td class="px-3 py-2">{{ d.FECHA_REGISTRO }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ✅ ACCIONES -->
+    <div class="flex justify-end gap-3 mt-4">
+        <button [disabled]="registrosSeleccionados.length < 2" (click)="verGrafica()"
+            class="px-6 py-2 rounded-full text-white"
+            [ngClass]="registrosSeleccionados.length < 2 ? 'bg-gray-400' : 'bg-black'">
+            VER GRÁFICA
+        </button>
+
+        <button (click)="exportarDatos()" class="bg-[#7CE54F] text-black px-6 py-2 rounded-full shadow">
+            EXPORTAR
+        </button>
+    </div>
+    }
 
 </div>

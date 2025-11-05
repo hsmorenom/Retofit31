@@ -7,6 +7,7 @@ import { AntropometricosService } from '../../../services/antropometricos';
 @Component({
   selector: 'app-evolucion-antropometrica',
   imports: [CommonModule, FormsModule],
+  standalone: true,
   templateUrl: './evolucion-antropometrica.html'
 })
 export class EvolucionAntropometrica {

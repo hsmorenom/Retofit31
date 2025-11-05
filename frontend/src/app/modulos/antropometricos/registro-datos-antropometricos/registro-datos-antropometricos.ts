@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-registro-datos-antropometricos',
   imports: [CommonModule, FormsModule],
+  standalone: true,
   templateUrl: './registro-datos-antropometricos.html'
 })
 export class RegistroDatosAntropometricos {

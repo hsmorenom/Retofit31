@@ -1,107 +1,111 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClienteService } from '../../../services/cliente';
-import { AntropometricosService } from '../../../services/antropometricos';
+
+import { Router } from '@angular/router';
+import { Chart, registerables } from 'chart.js';
+import { Evolucion_dataService } from '../../../services/evolucion-data';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-evolucion-antropometrica',
-  imports: [CommonModule, FormsModule],
   standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './evolucion-antropometrica.html'
 })
 export class EvolucionAntropometrica {
-  clientesSeleccionados: any[] = [];
-    documentoBusqueda: string = '';
-    fechaNacimiento: string | null = null;
-    edadCalculada: number | null = null;
-    sexoSeleccionado: string | null = null; // variable solo cuando el usuario se considera masculino o femenino
-    sexoParaCalculo: string | null = null; // variable en caso de que el usuario se considera otro sexo 
-  
-    constructor(
-      private clienteService: ClienteService,
-      private antropometricosService: AntropometricosService
-    ) { }
-  
-    buscarCliente() {
-    const doc = (this.documentoBusqueda || '').trim();
-    if (!doc) return;
-  
-    this.clienteService.buscarPorDocumento(doc).subscribe({
-      next: (res) => {
-        // 🔎 Normalizador: soporta varias formas de respuesta
-        let cliente: any = null;
-  
-        if (Array.isArray(res)) {
-          cliente = res.length ? res[0] : null;
-        } else if (res && typeof res === 'object') {
-          // casos comunes: {data:[...]}, {data:{...}}, {cliente:{...}}, {...}
-          if (Array.isArray((res as any).data)) cliente = (res as any).data[0] || null;
-          else if ((res as any).data && typeof (res as any).data === 'object') cliente = (res as any).data;
-          else if ((res as any).cliente && typeof (res as any).cliente === 'object') cliente = (res as any).cliente;
-          else cliente = res; // objeto plano
-        }
-  
-        // ✅ Validación mínima
-        if (!cliente || !cliente.ID_CLIENTE) {
-          console.warn('Respuesta del backend no reconocida:', res);
-          alert('❌ No se encontró ningún cliente con esa identificación.');
-          return;
-        }
-  
-        // ✅ Solo un cliente seleccionado (reemplaza)
-        this.clientesSeleccionados = [cliente];
-  
-        // ✅ Toma los datos desde la tabla CLIENTE
-        this.sexoSeleccionado = cliente.SEXO ?? 'otro';
-        this.fechaNacimiento  = cliente.FECHA_NACIMIENTO ?? null;
-  
-        // ✅ Calcula edad
-        this.calcularEdad();
-  
-        // Si sexo = 'otro', obliga a elegir sexoParaCalculo manual para fórmulas
-        this.sexoParaCalculo = (this.sexoSeleccionado === 'otro') ? null : this.sexoSeleccionado;
-  
-        this.documentoBusqueda = '';
+
+  registros: any[] = [];
+  grafica: any;
+
+  nombreCliente: string = '';
+  nombreColumnaDato: string = '';
+  tipoDatoSeleccionado: string = '';
+
+  constructor(
+    private evolucionDataService: Evolucion_dataService,
+    private router: Router
+  ) { }
+
+  ngOnInit() {
+    this.registros = this.evolucionDataService.datosSeleccionados;
+    this.tipoDatoSeleccionado = this.evolucionDataService.tipoDatoSeleccionado;
+
+    // ✅ Si no hay datos, no dibujamos nada todavía
+    if (!this.registros || this.registros.length === 0) {
+      return;
+    }
+
+    // ✅ Ahora sí podemos tomar info del cliente
+    const r = this.registros[0];
+    this.nombreCliente = `${r.NOMBRES ?? ''} ${r.APELLIDOS ?? ''}`.trim();
+
+
+    const nombres: any = {
+      PESO: "Peso corporal (Kg)",
+      IMC: "Índice de masa corporal (IMC)",
+      PGC: "Porcentaje de grasa corporal (%)",
+      CUELLO: "Circunferencia de cuello (cm)",
+      CINTURA: "Circunferencia de cintura (cm)",
+      CADERA: "Circunferencia de cadera (cm)"
+    };
+
+    this.nombreColumnaDato = nombres[this.tipoDatoSeleccionado] ?? '';
+
+    if (this.tipoDatoSeleccionado === 'PESO') {
+      this.generarGraficaPeso();
+    }
+  }
+
+  ngOnDestroy() {
+    this.grafica?.destroy();
+  }
+
+
+
+
+  generarGraficaPeso() {
+    const etiquetas = this.registros.map(r => {
+      const partes = r.FECHA_REGISTRO.split("-");
+      return `${partes[2]}/${partes[1]}/${partes[0]}`; // dd/mm/yyyy
+    });
+
+    const valores = this.registros.map(r => Number(r.PESO));
+
+    const canvas: any = document.getElementById('graficaEvolucion');
+    const ctx = canvas.getContext('2d');
+
+    if (this.grafica) this.grafica.destroy();
+
+    this.grafica = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: etiquetas,
+        datasets: [{
+          label: 'Peso (Kg)',
+          data: valores,
+          borderWidth: 3,
+          borderColor: '#004D00',
+          backgroundColor: 'rgba(124, 229, 79, 0.4)',
+          pointBackgroundColor: '#004D00',
+          pointBorderColor: '#004D00',
+          tension: 0.3
+        }]
       },
-      error: (err) => {
-        console.error('Error al buscar cliente:', err);
-        alert('⚠️ Hubo un problema al realizar la búsqueda.');
-      },
+      options: {
+        scales: {
+          y: { beginAtZero: false }
+        }
+      }
     });
   }
-  
-  
-  
-    eliminarCliente(id: number) {
-      this.clientesSeleccionados = this.clientesSeleccionados.filter(
-        (c) => c.ID_CLIENTE !== id);
-        this.limpiarFormulario();
-      ;
-    }
-  
-    limpiarFormulario() {
-      this.documentoBusqueda = '';
-      this.clientesSeleccionados = [];
-    }
-  
-    calcularEdad() {
-      if (!this.fechaNacimiento) {
-        this.edadCalculada = null;
-        return;
-      }
-  
-      const hoy = new Date();
-      const nacimiento = new Date(this.fechaNacimiento);
-  
-      let edad = hoy.getFullYear() - nacimiento.getFullYear();
-      const mes = hoy.getMonth() - nacimiento.getMonth();
-  
-      if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-        edad--;
-      }
-  
-      this.edadCalculada = edad;
-    }
+
+  exportarGrafica() {
+    const enlace = document.createElement('a');
+    enlace.href = this.grafica.toBase64Image();
+    enlace.download = `Evolucion_Peso_${new Date().getTime()}.png`;
+    enlace.click();
+  }
 
 }

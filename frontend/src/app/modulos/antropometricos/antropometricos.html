@@ -1,11 +1,15 @@
 <div class="w-full sm:w-[90%] lg:w-[70%] mx-auto p-6 space-y-6">
     <div class="flex justify-center ">
-        <h1 class="text-black text-center font-semibold text-2xl sm:text-3xl font-oswald m-4">MEDIDAS ANTROPOMÉTRICAS</h1>
+        <h1 class="text-black text-center font-semibold text-2xl sm:text-3xl font-oswald m-4">MEDIDAS ANTROPOMÉTRICAS
+        </h1>
     </div>
 
     <app-registro-datos-antropometricos></app-registro-datos-antropometricos>
-    <app-comparacion-datos>
-        [mostrarError]="mostrarError"
+    <app-comparacion-datos (mostrarEvolucion)="mostrarEvolucion = $event">
     </app-comparacion-datos>
+
+    @if (mostrarEvolucion) {
     <app-evolucion-antropometrica></app-evolucion-antropometrica>
+    }
+
 </div>

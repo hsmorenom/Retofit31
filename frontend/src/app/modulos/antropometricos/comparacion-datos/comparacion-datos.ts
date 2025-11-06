@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../../services/cliente';
 import { AntropometricosService } from '../../../services/antropometricos';
+import { Evolucion_dataService } from '../../../services/evolucion-data';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-comparacion-datos',
@@ -11,6 +13,9 @@ import { AntropometricosService } from '../../../services/antropometricos';
   templateUrl: './comparacion-datos.html'
 })
 export class ComparacionDatos {
+
+  @Output() mostrarEvolucion = new EventEmitter<boolean>();
+
 
   documentoBusqueda = '';
   clientesSeleccionados: any[] = [];
@@ -30,7 +35,9 @@ export class ComparacionDatos {
 
   constructor(
     private clienteService: ClienteService,
-    private antropometricosService: AntropometricosService
+    private antropometricosService: AntropometricosService,
+    private evolucionDataService: Evolucion_dataService,
+    private router: Router
   ) { }
 
   buscarCliente() {
@@ -72,38 +79,44 @@ export class ComparacionDatos {
   }
 
   consultarHistorial() {
+    const idCliente = this.clientesSeleccionados[0]?.ID_CLIENTE;
 
-    if (!this.clientesSeleccionados.length) return alert("Seleccione un usuario");
-    if (!this.tipoDatoSeleccionado) return alert("Seleccione un tipo de dato");
+    if (!idCliente) {
+      alert("Debe seleccionar un usuario primero");
+      return;
+    }
 
-    const ID_CLIENTE = this.clientesSeleccionados[0].ID_CLIENTE;
-
-    this.antropometricosService.filtrarIdCliente(ID_CLIENTE).subscribe({
+    this.antropometricosService.filtrarIdCliente(idCliente).subscribe({
       next: (res) => {
-        let datos = res || [];
+        console.log("Datos recibidos:", res);
 
-        if (this.fechaInicio && this.fechaFin) {
-          const inicio = new Date(this.fechaInicio);
-          const fin = new Date(this.fechaFin);
+        let datos = Array.isArray(res) ? res : [];
 
+        const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : null;
+        const fechaFin = this.fechaFin ? new Date(this.fechaFin) : null;
+
+        if (fechaInicio && fechaFin) {
           datos = datos.filter((d: any) => {
             const fecha = new Date(d.FECHA_REGISTRO);
-            return fecha >= inicio && fecha <= fin;
+            return (
+              fecha.toString() !== "Invalid Date" &&
+              fecha >= fechaInicio &&
+              fecha <= fechaFin
+            );
           });
         }
 
-        this.datosFiltrados = datos.map((d: any) => ({
-          ...d,
-          NOMBRE_COMPLETO: this.obtenerNombreCompleto(d),
-          APELLIDOS_COMPLETO: this.obtenerApellidosCompletos(d),
-          valorMostrado: this.obtenerValorMostrado(d)
-        }));
-
-
-        this.mostrarTabla = true;
-      }
+        this.datosFiltrados = datos;
+        this.mostrarTabla = datos.length > 0;
+      },
+      error: (err) => {
+        console.error("Error consultando datos:", err);
+        alert("No se pudieron cargar los datos");
+      },
     });
   }
+
+
 
   obtenerNombreCompleto(d: any): string {
     return `${d.PRIMER_NOMBRE || ''} ${d.SEGUNDO_NOMBRE || ''}`.trim();
@@ -160,9 +173,29 @@ export class ComparacionDatos {
     }
   }
 
-  verGrafica() {
-    alert("📈 Aquí haremos la gráfica con Chart.js 😎");
+  ocultarComparacion() {
+    this.mostrarTabla = false;
   }
+
+
+  verGrafica() {
+    if (this.registrosSeleccionados.length < 2) {
+      alert("Seleccione mínimo 2 registros para graficar");
+      return;
+    }
+
+    // Pasas la selección al service
+    this.evolucionDataService.datosSeleccionados = this.registrosSeleccionados;
+    this.evolucionDataService.tipoDatoSeleccionado = this.tipoDatoSeleccionado;
+
+    // Fuerzas re-montaje del subcomponente
+    this.mostrarEvolucion.emit(false);
+    setTimeout(() => this.mostrarEvolucion.emit(true), 0);
+  }
+
+
+
+
 
   exportarDatos() {
     alert("📥 Exportación lista para implementar ✅");

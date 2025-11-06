@@ -12,5 +12,12 @@ import { ComparacionDatos } from "./comparacion-datos/comparacion-datos";
   templateUrl: './antropometricos.html'
 })
 export class Antropometricos {
+  mostrarEvolucion = false;
+
+  onMostrarEvolucion(valor: boolean) {
+    this.mostrarEvolucion = valor;
+  }
+
+
 
 }

@@ -15,11 +15,11 @@
         <!-- ✅ FILA 1: Identificación -->
         <div class="flex flex-col md:flex-row md:items-center gap-3">
 
-            <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] pr-40">
+            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px]">
                 Identificación del usuario:
             </h3>
 
-            <div class="flex flex-col gap-3 w-full">
+            <div class="flex flex-row items-center justify-between w-full md:w-[600px]">
 
                 <!-- Input búsqueda -->
                 <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
@@ -56,7 +56,7 @@
                 Edad en años:
             </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[400px]">
+            <div class="flex flex-row items-center justify-between w-full md:w-[600px]">
                 <span class="text-black text-xl font-semibold  ">
                     {{ edadCalculada !== null ? (edadCalculada + ' años') : '---' }}
                 </span>
@@ -291,7 +291,7 @@
     </div>
 
     <!-- Botón programar -->
-    <div class="flex justify-end gap-4">
+    <div class="flex justify-end gap-2">
         <button (click)="limpiarFormulario()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
             CANCELAR
         </button>

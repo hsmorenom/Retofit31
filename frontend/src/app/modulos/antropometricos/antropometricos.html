@@ -9,7 +9,8 @@
     </app-comparacion-datos>
 
     @if (mostrarEvolucion) {
-    <app-evolucion-antropometrica></app-evolucion-antropometrica>
+    <app-evolucion-antropometrica (volver)="onVolverEvolucion()" ></app-evolucion-antropometrica>
     }
+    <app-historial-antropometricos></app-historial-antropometricos>
 
 </div>

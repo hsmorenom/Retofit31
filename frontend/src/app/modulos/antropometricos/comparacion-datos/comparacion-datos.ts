@@ -5,6 +5,8 @@ import { ClienteService } from '../../../services/cliente';
 import { AntropometricosService } from '../../../services/antropometricos';
 import { Evolucion_dataService } from '../../../services/evolucion-data';
 import { Router } from '@angular/router';
+import autoTable from 'jspdf-autotable';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-comparacion-datos',
@@ -37,7 +39,6 @@ export class ComparacionDatos {
     private clienteService: ClienteService,
     private antropometricosService: AntropometricosService,
     private evolucionDataService: Evolucion_dataService,
-    private router: Router
   ) { }
 
   buscarCliente() {
@@ -193,13 +194,46 @@ export class ComparacionDatos {
     setTimeout(() => this.mostrarEvolucion.emit(true), 0);
   }
 
-
-
-
-
   exportarDatos() {
-    alert("📥 Exportación lista para implementar ✅");
+    if (!this.datosFiltrados || this.datosFiltrados.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text('Comparación de Datos Antropométricos', 105, 15, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text(`Fecha de exportación: ${new Date().toLocaleDateString()}`, 14, 25);
+
+    // 🧩 Construimos la tabla con los datos actuales
+    const body = this.datosFiltrados.map((d: any) => [
+      d.IDENTIFICACION,
+      `${d.NOMBRES}`,
+      `${d.APELLIDOS}`,
+      d.SEXO,
+      d.PESO,
+      d.ALTURA,
+      d.IMC,
+      d.PGC,
+      d.CUELLO,
+      d.CINTURA,
+      d.CADERA,
+      d.FECHA_REGISTRO
+    ]);
+
+    autoTable(doc, {
+      head: [['ID', 'Nombres', 'Apellidos', 'Sexo', 'Peso', 'Altura', 'IMC', 'PGC', 'Cuello', 'Cintura', 'Cadera', 'Fecha']],
+      body,
+      startY: 30,
+      styles: { fontSize: 9, halign: 'center' },
+      headStyles: { fillColor: [0, 77, 0] }, // Verde institucional
+    });
+
+    // 💾 Guardar PDF
+    doc.save(`Comparacion_Antropometricos_${new Date().getTime()}.pdf`);
   }
+
 
   limpiarFiltros() {
     this.tipoDatoSeleccionado = '';

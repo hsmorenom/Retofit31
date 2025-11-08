@@ -1,0 +1,186 @@
+<div class="mb-3 gap-5 ">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
+        <h2 class=" text-xl font-semibold text-[#004D00]">HISTORIAL DE ANTROPOMÉTRICOS</h2>
+        <p class="font-light">(Consulta el historial de datos antropométricos de un usuario )</p>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        <!-- //Buscar ID del usuario -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-68">
+                Identificación del usuario:
+            </h3>
+            <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
+                <input type="text" placeholder="Ingrese aquí el ID del usuario" [(ngModel)]="filtroTexto"
+                    class="flex-1 outline-none text-sm pl-5 w-10 h-10" />
+
+            </div>
+        </div>
+
+        <!--Filtrar fecha inicial  -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-68">
+                Fecha inicial:
+            </h3>
+            <input type="date" id="fechaInicial"
+                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+        </div>
+
+        <!--Filtrar fecha final  -->
+        <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-68">
+                Fecha final:
+            </h3>
+            <input type="date" id="fechaFinal"
+                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+        </div>
+    </div>
+
+
+    <!-- Consultar Historial -->
+    <div class="flex flex-wrap justify-end gap-2">
+        <button (click)="toggleConsulta()"
+            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
+            CONSULTAR
+        </button>
+
+        <button (click)="limpiarFiltro()"
+            class="bg-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-700 font-oswald">
+            LIMPIAR
+        </button>
+    </div>
+
+    @if (mostrarHistorialUsuario) {
+
+    <div class="max-h-[1000px] overflow-y-auto overflow-x-auto m-4 mx-auto w-full border-4 border-zinc-400 rounded-lg">
+
+        <table class="min-w-full border-collapse text-sm">
+            <thead class="bg-zinc-400 text-zinc-800 font-oswald">
+                <tr class="bg-zinc-400 text-lg text-center font-semibold">
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Nombres</th>
+                    <th class="px-4 py-2">Apellidos</th>
+                    <th class="px-4 py-2">Sexo</th>
+                    <th class="px-4 py-2">Peso (kg)</th>
+                    <th class="px-4 py-2">Altura (cm)</th>
+                    <th class="px-4 py-2">PGC (%)</th>
+                    <th class="px-4 py-2">IMC</th>
+                    <th class="px-4 py-2">Cuello (cm)</th>
+                    <th class="px-4 py-2">Cintura (cm)</th>
+                    <th class="px-4 py-2">Cadera (cm)</th>
+                    <th class="px-4 py-2">Fecha registro</th>
+                    <th class="px-4 py-2">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-zinc-400">
+                <!-- 🔍 Si hay resultados -->
+                @if (antropometricosFiltrados.length > 0) {
+                @for (a of antropometricosFiltrados; track a.ID_ANTROPOMETRICOS) {
+                <tr class="bg-white text-lg text-center hover:bg-[#E1E1E1]">
+                    <td class="px-4 py-2">{{ a.IDENTIFICACION }}</td>
+                    <td class="px-4 py-2">{{ a.NOMBRES }}</td>
+                    <td class="px-4 py-2">{{ a.APELLIDOS }}</td>
+                    <td class="px-4 py-2">{{ a.SEXO }}</td>
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.PESO" class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.PESO }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.ALTURA" class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.ALTURA }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.PGC"
+                            class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.PGC }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.IMC"
+                            class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.IMC }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.CUELLO"
+                            class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.CUELLO }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.CINTURA"
+                            class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.CINTURA }}
+                        }
+                    </td>
+
+                    <td class="px-4 py-2">
+                        @if (a.editando) {
+                        <input type="number" [(ngModel)]="a.CADERA"
+                            class="border rounded w-20 text-center" />
+                        } @else {
+                        {{ a.CADERA }}
+                        }
+                    </td>
+                    <td class="px-4 py-2">{{ a.FECHA_REGISTRO}}</td>
+                    <td class="px-4 py-2">
+                        <div class="flex justify-center gap-2">
+
+                            <!-- ✏️ Editar -->
+                            <button type="button" (click)="editarFila(a)"
+                                class="p-2 rounded-full text-black hover:bg-[#004D00] hover:text-white transition">
+                                <i class="fas fa-pen text-2xl"></i>
+                            </button>
+
+                            <!-- 🗑 Eliminar -->
+                            <button type="button" (click)="eliminarAntropometrico(a.ID_ANTROPOMETRICOS)"
+                                class="p-2 rounded-full text-black hover:bg-[#7ce54b] hover:text-white transition">
+                                <i class="fas fa-trash text-2xl"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+                }
+                <!-- ❌ Si no hay resultados -->
+                @else {
+                <tr class="bg-white text-center text-lg">
+                    <td colspan="6" class="px-4 py-4 text-zinc-500">
+                        No se encontraron registros de datos antropometricos.
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="flex justify-end">
+        <button class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition" (click)="exportarPDF()">
+            EXPORTAR
+        </button>
+    </div>
+    }
+
+</div>

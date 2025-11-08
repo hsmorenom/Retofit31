@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Router } from '@angular/router';
@@ -17,6 +17,8 @@ Chart.register(...registerables, annotationPlugin);
   templateUrl: './evolucion-antropometrica.html'
 })
 export class EvolucionAntropometrica {
+
+  @Output() volver = new EventEmitter<void>(); // ⬅️ nuevo evento
 
   registros: any[] = [];
   grafica: any;
@@ -551,6 +553,10 @@ export class EvolucionAntropometrica {
     enlace.href = this.grafica.toBase64Image();
     enlace.download = `Evolucion_Antropométrica_${new Date().getTime()}.png`;
     enlace.click();
+  }
+
+  volverAComparacion() {
+    this.volver.emit();
   }
 
 }

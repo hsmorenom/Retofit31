@@ -95,35 +95,41 @@ class AntropometricosModelo
     {
         try {
             $sql = "UPDATE antropometricos SET
-                        cliente = :cliente,
-                        peso = :peso,
-                        altura = :altura,
-                        porcentaje_grasa_corporal = :porcentaje_grasa_corporal,
-                        indice_de_masa_corporal = :indice_de_masa_corporal,
-                        circunferencia_cuello = :circunferencia_cuello,
-                        circunferencia_cintura = :circunferencia_cintura,
-                        circunferencia_cadera = :circunferencia_cadera,
-                        usuario = :usuario
-                    WHERE id_antropometricos = :id";
+                    PESO = :peso,
+                    ALTURA = :altura,
+                    PORCENTAJE_GRASA_CORPORAL = :pgc,
+                    INDICE_DE_MASA_CORPORAL = :imc,
+                    CIRCUNFERENCIA_CUELLO = :cuello,
+                    CIRCUNFERENCIA_CINTURA = :cintura,
+                    CIRCUNFERENCIA_CADERA = :cadera
+                WHERE ID_ANTROPOMETRICOS = :id";
+
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':id', $id);
-            $stmt->bindParam(':cliente', $parametros->cliente);
-            $stmt->bindParam(':peso', $parametros->peso);
-            $stmt->bindParam(':altura', $parametros->altura);
-            $stmt->bindParam(':porcentaje_grasa_corporal', $parametros->porcentaje_grasa_corporal);
-            $stmt->bindParam(':indice_de_masa_corporal', $parametros->indice_de_masa_corporal);
-            $stmt->bindParam(':circunferencia_cuello', $parametros->circunferencia_cuello);
-            $stmt->bindParam(':circunferencia_cintura', $parametros->circunferencia_cintura);
-            $stmt->bindParam(':circunferencia_cadera', $parametros->circunferencia_cadera);
-            $stmt->bindParam(':usuario', $parametros->usuario);
+
+            // 🧩 Vincular parámetros de manera segura
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':peso', $parametros->PESO);
+            $stmt->bindParam(':altura', $parametros->ALTURA);
+            $stmt->bindParam(':pgc', $parametros->PGC);
+            $stmt->bindParam(':imc', $parametros->IMC);
+            $stmt->bindParam(':cuello', $parametros->CUELLO);
+            $stmt->bindParam(':cintura', $parametros->CINTURA);
+            $stmt->bindParam(':cadera', $parametros->CADERA);
+
             $stmt->execute();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Datos antropométricos actualizados'];
+            // Verificar cuántas filas se afectaron
+            if ($stmt->rowCount() > 0) {
+                return ['resultado' => 'OK', 'mensaje' => 'Datos antropométricos actualizados correctamente'];
+            } else {
+                return ['resultado' => 'SIN_CAMBIOS', 'mensaje' => 'No se modificó ningún valor'];
+            }
 
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
+
 
     public function filtrarIdCliente($id_cliente)
     {

@@ -1,7 +1,8 @@
 <div class="space-y-6">
+
   <!-- 🔹 Título del bloque -->
   <div class="flex flex-col items-center text-center">
-    <h2 class="text-2xl sm:text-3xl font-oswald font-semibold text-[#004D00]">
+    <h2 class="text-xl font-semibold text-[#004D00]">
       GESTIÓN DE ASISTENCIAS
     </h2>
     <p class="text-gray-600 font-roboto mt-1">
@@ -9,98 +10,160 @@
     </p>
   </div>
 
-  <!-- 🔸 Filtros -->
-  <div class="bg-[#E1E1E1] p-4 sm:p-6 rounded-2xl shadow-md space-y-4">
-    <div class="flex flex-wrap justify-center gap-4">
+  <!-- 🔸 Filtros PRINCIPALES -->
+  <div class="bg-[#E1E1E1] p-4 sm:p-6 rounded-2xl shadow-md space-y-6">
+
+    <div class="flex flex-wrap justify-center gap-6">
+
+      <!-- 🟦 Identificación -->
       <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">Identificación del usuario:</label>
-        <input type="text" [(ngModel)]="filtroIdentificacion" placeholder="Ingrese el número de documento"
-          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none" />
+        <label class="font-oswald text-lg text-gray-800 mb-1">
+          Identificación del usuario:
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="filtroIdentificacion"
+          placeholder="Ingrese el número de documento"
+          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none"
+        />
       </div>
 
+      <!-- 🟦 Evento -->
       <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">Tipo de informe:</label>
-        <select [(ngModel)]="filtroInforme"
-          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none">
-          <option value="">Tipo de informe</option>
+        <label class="font-oswald text-lg text-gray-800 mb-1">
+          Evento:
+        </label>
+        <select
+          [(ngModel)]="eventoSeleccionado"
+          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none"
+        >
+          <option value="">Seleccione un evento</option>
+
           @for (evento of eventosDisponibles; track evento.ID_EVENTOS) {
-            <option [value]="evento.ID_EVENTOS">{{ evento.NOMBRE_EVENTO }}</option>
+            <option [value]="evento.ID_EVENTOS">
+              {{ evento.NOMBRE_EVENTO }}
+            </option>
           }
         </select>
       </div>
 
+      <!-- 🟦 Tipo de informe -->
       <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">Fecha inicial:</label>
-        <input type="date" [(ngModel)]="fechaInicio"
-          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]" />
+        <label class="font-oswald text-lg text-gray-800 mb-1">
+          Tipo de informe:
+        </label>
+        <select
+          [(ngModel)]="tipoInformeSeleccionado"
+          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none"
+        >
+          <option value="">Seleccione el tipo de informe</option>
+          <option value="asistencias">Días asistidos</option>
+          <option value="inasistencias">Inasistencias</option>
+          <option value="porcentaje">Porcentaje de asistencia</option>
+        </select>
       </div>
 
+      <!-- 🟦 Fecha inicial -->
       <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">Fecha final:</label>
-        <input type="date" [(ngModel)]="fechaFin"
-          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]" />
+        <label class="font-oswald text-lg text-gray-800 mb-1">
+          Fecha inicial:
+        </label>
+        <input
+          type="date"
+          [(ngModel)]="fechaInicio"
+          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]"
+        />
       </div>
+
+      <!-- 🟦 Fecha final -->
+      <div class="flex flex-col items-start">
+        <label class="font-oswald text-lg text-gray-800 mb-1">
+          Fecha final:
+        </label>
+        <input
+          type="date"
+          [(ngModel)]="fechaFin"
+          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]"
+        />
+      </div>
+
     </div>
 
     <!-- 🔘 Botones -->
     <div class="flex flex-wrap justify-center sm:justify-end gap-3 mt-4">
-      <button (click)="consultarAsistencias()"
-        class="bg-[#004D00] text-white font-oswald px-6 py-2 rounded-full hover:bg-[#007000] transition">
+      <button
+        (click)="consultarAsistencias()"
+        class="bg-[#004D00] text-white font-oswald px-6 py-2 rounded-full hover:bg-[#007000] transition"
+      >
         CONSULTAR
       </button>
-      <button (click)="limpiarFiltros()"
-        class="bg-gray-600 text-white font-oswald px-6 py-2 rounded-full hover:bg-gray-700 transition">
+
+      <button
+        (click)="limpiarFiltros()"
+        class="bg-gray-600 text-white font-oswald px-6 py-2 rounded-full hover:bg-gray-700 transition"
+      >
         LIMPIAR
       </button>
     </div>
   </div>
 
-  <!-- 🔹 Tabla de resultados -->
+  <!-- 🔸 Tabla de resultados -->
   @if (asistenciasFiltradas.length > 0) {
-  <div class="overflow-x-auto border-4 border-zinc-400 rounded-2xl shadow-md">
-    <table class="min-w-full border-collapse text-sm font-roboto">
-      <thead class="bg-zinc-400 text-zinc-900 font-oswald">
-        <tr class="text-center text-lg font-semibold">
-          <th class="px-4 py-2">ID</th>
-          <th class="px-4 py-2">Nombre del cliente</th>
-          <th class="px-4 py-2">Tipo de informe</th>
-          <th class="px-4 py-2">Fecha</th>
-          <th class="px-4 py-2">Hora de ingreso</th>
-          <th class="px-4 py-2">Asistencia</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-zinc-300">
-        @for (a of asistenciasFiltradas; track a.ID_ASISTENCIA) {
-        <tr class="text-center text-base hover:bg-[#E1E1E1] transition">
-          <td class="px-4 py-2">{{ a.ID_ASISTENCIA }}</td>
-          <td class="px-4 py-2">{{ a.NOMBRES }} {{ a.APELLIDOS }}</td>
-          <td class="px-4 py-2">{{ a.NOMBRE_EVENTO }}</td>
-          <td class="px-4 py-2">{{ a.FECHA_ACTIVIDAD }}</td>
-          <td class="px-4 py-2">{{ a.HORA_REGISTRO }}</td>
-          <td class="px-4 py-2">
-            @if (a.ASISTIO === 'SI') {
-            <span class="text-green-700 font-semibold">Asistió</span>
-            } @else {
-            <span class="text-red-600 font-semibold">No asistió</span>
-            }
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
 
-  <div class="flex justify-end mt-4">
-    <button (click)="exportarPDF()"
-      class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition font-oswald">
-      EXPORTAR PDF
-    </button>
-  </div>
+    <div class="overflow-x-auto border-4 border-zinc-400 rounded-2xl shadow-md mt-6">
+      <table class="min-w-full border-collapse text-sm font-roboto">
+        <thead class="bg-zinc-400 text-zinc-900 font-oswald">
+          <tr class="text-center text-lg font-semibold">
+            <th class="px-4 py-2">Nombre</th>
+            <th class="px-4 py-2">Apellido</th>
+            <th class="px-4 py-2">Edad</th>
+            <th class="px-4 py-2">Sexo</th>
+
+            <th class="px-4 py-2">
+              <!-- Encabezado dinámico del resultado -->
+              @if (tipoInformeSeleccionado === 'asistencias') { Asistencias }
+              @else if (tipoInformeSeleccionado === 'inasistencias') { Inasistencias }
+              @else if (tipoInformeSeleccionado === 'porcentaje') { % de Asistencia }
+              @else { Resultado }
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-zinc-300">
+
+          @for (u of asistenciasFiltradas; track u.IDENTIFICACION) {
+            <tr class="text-center text-base hover:bg-[#E1E1E1] transition">
+
+              <td class="px-4 py-2">{{ u.NOMBRES }}</td>
+              <td class="px-4 py-2">{{ u.APELLIDOS }}</td>
+              <td class="px-4 py-2">{{ u.EDAD }}</td>
+              <td class="px-4 py-2">{{ u.SEXO }}</td>
+
+              <td class="px-4 py-2 font-semibold">
+                {{ u.RESULTADO }}
+              </td>
+
+            </tr>
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-end mt-4">
+      <button
+        (click)="exportarPDF()"
+        class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition font-oswald"
+      >
+        EXPORTAR PDF
+      </button>
+    </div>
+
   }
   @else {
-  <div class="text-center text-gray-500 italic font-roboto mt-8">
-    No se encontraron registros de asistencia para los filtros seleccionados.
-  </div>
+    <div class="text-center text-gray-500 italic font-roboto mt-8">
+      No se encontraron registros para los filtros seleccionados.
+    </div>
   }
-</div>
 
+</div>

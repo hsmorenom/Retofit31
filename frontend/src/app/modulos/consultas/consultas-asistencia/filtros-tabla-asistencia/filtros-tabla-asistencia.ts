@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AsistenciaService } from '../../../../services/asistencia';
 import { EventosService } from '../../../../services/eventos';
 import { ClienteService } from '../../../../services/cliente';
+import { InformeService } from '../../../../services/informe';
+import { ViewChild } from '@angular/core';
 
 
 
@@ -15,6 +17,11 @@ import { ClienteService } from '../../../../services/cliente';
 })
 export class FiltrosTablaAsistencia implements OnInit {
 
+  @Output() datosGraficos = new EventEmitter<any[]>();
+  @Output() datosParaInforme = new EventEmitter<any>();
+
+
+  dataGraficos: any[] = [];
   filtroIdentificacion = '';
   eventoSeleccionado = '';
   tipoInformeSeleccionado = '';
@@ -28,8 +35,9 @@ export class FiltrosTablaAsistencia implements OnInit {
   constructor(
     private asistenciaService: AsistenciaService,
     private eventosService: EventosService,
-    private clienteService: ClienteService
-  ) {}
+    private clienteService: ClienteService,
+    private informeService: InformeService
+  ) { }
 
   ngOnInit() {
     this.cargarEventos();
@@ -58,25 +66,29 @@ export class FiltrosTablaAsistencia implements OnInit {
     this.asistenciaService.resumenEvento(Number(this.eventoSeleccionado))
       .subscribe(res => {
 
-        // 🔹 TOMAR SEGÚN TIPO DE INFORME
-        let listaBase: any[] = [];
+        const programados = res.programados || [];
+        const asistencias = res.asistencias || [];
+        const inasistencias = res.inasistencias || [];
 
-        if (this.tipoInformeSeleccionado === 'asistencias') {
-          listaBase = res.asistencias;
-        }
 
-        if (this.tipoInformeSeleccionado === 'inasistencias') {
-          listaBase = res.inasistencias;
-        }
+        // 🔥 1. Eliminar duplicados por ID_CLIENTE
+        const unicos = new Map();
+        programados.forEach((p: any) => unicos.set(p.ID_CLIENTE, p));
+        const programadosUnicos = Array.from(unicos.values());
 
-        if (this.tipoInformeSeleccionado === 'porcentaje') {
-          // % necesita programados + asistencias
-          listaBase = res.programados;
-        }
+        // 🔹 2. BASE REAL: SIEMPRE USAMOS PROGRAMADOS ÚNICOS
+        let lista = programadosUnicos.map((p: any) => {
+          return {
+            ...p,
+            ASISTIO: asistencias.filter((a: any) => a.ID_CLIENTE === p.ID_CLIENTE).length,
+            NO_ASISTIO: inasistencias.filter((i: any) => i.ID_CLIENTE === p.ID_CLIENTE).length
+          };
+        });
+
 
         // 🔹 FILTRO POR IDENTIFICACIÓN
         if (this.filtroIdentificacion.trim() !== '') {
-          listaBase = listaBase.filter(a =>
+          lista = lista.filter((a: any) =>
             a.IDENTIFICACION === this.filtroIdentificacion.trim()
           );
         }
@@ -86,20 +98,53 @@ export class FiltrosTablaAsistencia implements OnInit {
           const inicio = new Date(this.fechaInicio);
           const fin = new Date(this.fechaFin);
 
-          listaBase = listaBase.filter(a => {
+          lista = lista.filter((a: any) => {
             const fecha = new Date(a.FECHA_ACTIVIDAD);
             return fecha >= inicio && fecha <= fin;
           });
         }
 
-        // 🔹 UNIR CON CLIENTE (EDAD + SEXO)
-        listaBase = this.unirDatosConCliente(listaBase);
+        // 🔹 UNIR CON CLIENTE PARA EDAD + SEXO
+        lista = this.unirDatosConCliente(lista);
 
-        // 🔹 CALCULAR RESULTADO PARA CADA TIPO
-        this.asistenciasFiltradas = this.procesarResultados(listaBase, res);
+        // 🔹 PROCESAR RESULTADO
+        this.asistenciasFiltradas = lista.map((p: any) => {
+
+          let resultado: number | string = 0;
+
+          if (this.tipoInformeSeleccionado === 'asistencias') {
+            resultado = p.ASISTIO;
+          }
+
+          if (this.tipoInformeSeleccionado === 'inasistencias') {
+            resultado = p.NO_ASISTIO;
+          }
+
+          if (this.tipoInformeSeleccionado === 'porcentaje') {
+            const total = p.ASISTIO + p.NO_ASISTIO;
+            resultado = total > 0 ? ((p.ASISTIO / total) * 100).toFixed(1) + '%' : '0%';
+          }
+
+          return {
+            ...p,
+            RESULTADO: resultado
+          };
+        });
+
+        // 🔹 ENVIAR DATOS A LOS GRÁFICOS
+        this.datosGraficos.emit(this.asistenciasFiltradas);
+        this.datosParaInforme.emit({
+          tipoInforme: this.tipoInformeSeleccionado,
+          evento: this.eventoSeleccionado,
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin,
+          datos: this.asistenciasFiltradas
+        });
+
 
       });
   }
+
 
   unirDatosConCliente(lista: any[]) {
     return lista.map(a => {
@@ -137,7 +182,7 @@ export class FiltrosTablaAsistencia implements OnInit {
       const asistencias = resCompleto.asistencias;
 
       return lista.map(p => {
-        const asistio = asistencias.filter((a:any) =>
+        const asistio = asistencias.filter((a: any) =>
           a.ID_CLIENTE === p.ID_CLIENTE
         ).length;
 
@@ -148,10 +193,14 @@ export class FiltrosTablaAsistencia implements OnInit {
           RESULTADO: ((asistio / total) * 100).toFixed(1) + '%'
         };
       });
+
+
     }
 
     return [];
   }
+
+
 
   calcularEdad(fecha: string): number {
     const hoy = new Date();
@@ -172,10 +221,11 @@ export class FiltrosTablaAsistencia implements OnInit {
     this.fechaInicio = '';
     this.fechaFin = '';
     this.asistenciasFiltradas = [];
+    this.datosGraficos.emit([]);
   }
 
-  exportarPDF() {
-    alert("Exportar PDF pendiente de implementar");
+  generarInforme(){
+    
   }
 
 }

@@ -1,2 +1,7 @@
-<app-filtros-tabla-asistencia></app-filtros-tabla-asistencia>
-<app-graficos-asistencia></app-graficos-asistencia>
+<app-filtros-tabla-asistencia  
+(datosGraficos)="recibirDatosGrafica($event)"
+(datosParaInforme)="recibirDatosParaInforme($event)">
+</app-filtros-tabla-asistencia>>
+<app-graficos-asistencia 
+[dataGraficos]="dataGraficos">
+</app-graficos-asistencia>

@@ -27,15 +27,23 @@ class InformeModelo
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO informe (fecha_creacion,tipo_informe,usuario,cliente) VALUES (:fecha_creacion,:tipo_informe,:usuario,:cliente)";
+            $sql = "INSERT INTO informe (FECHA_CREACION,TIPO_INFORME,USUARIO,CLIENTE, URL_PDF) VALUES (:fecha_creacion,:tipo_informe,:usuario,:cliente,:url_pdf)";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':fecha_creacion', $parametros->fecha_creacion);
-            $stmt->bindParam(':tipo_informe', $parametros->tipo_informe);
-            $stmt->bindParam(':usuario', $parametros->usuario);
-            $stmt->bindParam(':cliente', $parametros->cliente);
+            $stmt->bindParam(':fecha_creacion', $parametros->FECHA_CREACION);
+            $stmt->bindParam(':tipo_informe', $parametros->TIPO_INFORME);
+            $stmt->bindParam(':usuario', $parametros->USUARIO);
+            $stmt->bindParam(':cliente', $parametros->CLIENTE);
+            $stmt->bindParam(':url_pdf', $parametros->URL_PDF);
             $stmt->execute();
 
-            return ['resultado' => 'OK', 'mensaje' => 'Informe registrado'];
+            // ⬅️ AQUI DEVOLVEMOS EL ID DEL REGISTRO
+            $idGenerado = $this->conexion->lastInsertId();
+
+            return [
+                'resultado' => 'OK',
+                'mensaje' => 'Informe registrado',
+                'idInforme' => $idGenerado
+            ];
 
         } catch (PDOException $e) {
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
@@ -116,6 +124,12 @@ class InformeModelo
             return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
         }
     }
+
+    public function ultimoID()
+    {
+        return $this->conexion->lastInsertId();
+    }
+
 
 }
 

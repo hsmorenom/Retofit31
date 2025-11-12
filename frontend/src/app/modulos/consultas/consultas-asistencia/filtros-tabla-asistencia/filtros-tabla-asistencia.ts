@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AsistenciaService } from '../../../../services/asistencia';
 import { EventosService } from '../../../../services/eventos';
 import { ClienteService } from '../../../../services/cliente';
 import { InformeService } from '../../../../services/informe';
-import { ViewChild } from '@angular/core';
+
+
 
 
 
@@ -19,6 +20,8 @@ export class FiltrosTablaAsistencia implements OnInit {
 
   @Output() datosGraficos = new EventEmitter<any[]>();
   @Output() datosParaInforme = new EventEmitter<any>();
+  @Input() graficaBase64: string = '';
+
 
 
   dataGraficos: any[] = [];
@@ -27,6 +30,9 @@ export class FiltrosTablaAsistencia implements OnInit {
   tipoInformeSeleccionado = '';
   fechaInicio = '';
   fechaFin = '';
+
+
+
 
   eventosDisponibles: any[] = [];
   clientes: any[] = [];
@@ -224,8 +230,52 @@ export class FiltrosTablaAsistencia implements OnInit {
     this.datosGraficos.emit([]);
   }
 
-  generarInforme(){
-    
+
+  generarInforme() {
+
+    if (!this.asistenciasFiltradas.length) {
+      alert("Primero consulte las asistencias");
+      return;
+    }
+
+    if (!this.graficaBase64) {
+      alert("La gráfica aún no está generada");
+      return;
+    }
+
+    const idUsuario = Number(localStorage.getItem('idUsuario'));
+
+    // 👉 Obtener el cliente SOLO si se filtró por identificación
+    let clienteFinal = null;
+
+    if (this.filtroIdentificacion.trim() !== "") {
+      const cliente = this.asistenciasFiltradas[0]; // siempre será 1 si filtras por cédula
+      clienteFinal = cliente?.ID_CLIENTE ?? null;
+    }
+
+    const data = {
+      generarPDF: true,
+      tipoInforme: this.tipoInformeSeleccionado,
+      usuario: idUsuario,
+      evento: Number(this.eventoSeleccionado),
+      fechaInicio: this.fechaInicio,
+      fechaFin: this.fechaFin,
+      datos: this.asistenciasFiltradas,
+      grafica: this.graficaBase64,
+      cliente: clienteFinal   // 🔥 LO NUEVO
+    };
+
+    this.informeService.insertar(data).subscribe({
+      next: (res: any) => {
+        if (res.resultado === 'OK') {
+          window.open(res.urlPDF, '_blank');
+        }
+      },
+      error: err => console.error(err)
+    });
   }
+
+
+
 
 }

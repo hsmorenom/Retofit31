@@ -1,28 +1,28 @@
 <div class="mb-3 gap-5">
 
     <!-- Título + descripción -->
-    <div class="flex flex-col md:flex-row md:items-center md:gap-3 mb-3 text-center md:text-left">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
         <h2 class="text-xl font-semibold text-[#004D00]">
             REGISTRO DE DATOS ANTROPOMÉTRICOS
         </h2>
-        <p class="font-light text-sm md:text-base text-[#404040]">
+        <p class="font-light text-sm text-[#404040]">
             (Ingresa datos antropométricos asociando un usuario ya existente)
         </p>
     </div>
 
     <div class="flex flex-col gap-4">
 
-        <!-- ✅ FILA 1: Identificación -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <!-- FILA 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-start gap-3">
 
-            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px]">
+            <h3 class="text-black font-semibold text-2xl">
                 Identificación del usuario:
             </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[600px]">
+            <div class="flex flex-col md:flex-row md:items-center md:gap-4 w-full">
 
-                <!-- Input búsqueda -->
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
+                <!-- Input de búsqueda -->
+                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
                     <input type="text" placeholder="Ingrese aquí el ID del usuario"
                         class="flex-1 outline-none text-sm pl-5 bg-transparent" [(ngModel)]="documentoBusqueda" />
                     <label class="cursor-pointer">
@@ -31,11 +31,11 @@
                 </div>
 
                 <!-- Chips -->
-                <div class="flex flex-wrap gap-3">
+                <div class="flex flex-wrap gap-2 mt-3 md:mt-0">
                     @if (clientesSeleccionados.length > 0) {
                     @for (c of clientesSeleccionados; track c.ID_CLIENTE) {
                     <div class="bg-[#7ce54f] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                        <span class="font-semibold text-sm text-center">
+                        <span class="font-semibold text-sm">
                             {{ c.PRIMER_NOMBRE }} {{ c.PRIMER_APELLIDO }}
                         </span>
                         <button (click)="eliminarCliente(c.ID_CLIENTE)"
@@ -48,71 +48,51 @@
             </div>
         </div>
 
-
         <!-- ✅ FILA 2: Edad -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
-
-            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px]   ">
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
+            <h3 class="text-black font-semibold text-2xl">
                 Edad en años:
             </h3>
 
-            <div class="flex flex-row items-center justify-between w-full md:w-[600px]">
-                <span class="text-black text-xl font-semibold  ">
-                    {{ edadCalculada !== null ? (edadCalculada + ' años') : '---' }}
-                </span>
-
-            </div>
-
+            <span class="text-black text-xl font-semibold">
+                {{ edadCalculada !== null ? edadCalculada + ' años' : '---' }}
+            </span>
         </div>
+
 
 
         <!-- ✅ FILA 3: Sexo -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
+            <h3 class="text-black font-semibold text-2xl">Sexo biológico:</h3>
 
-            <h3 class="text-black font-semibold text-2xl w-full md:w-[288px]">
-                Sexo biológico:
-            </h3>
+            <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
 
-            <div class="flex flex-col w-full md:w-[600px] gap-3">
+                @if(sexoSeleccionado !== 'Otro'){
+                <span class="text-black text-xl font-semibold">
+                    {{ sexoSeleccionado || '---' }}
+                </span>
+                }
 
-                <!-- Mostrar sexo detectado -->
+                @if (sexoSeleccionado === 'Otro') {
+                <select [(ngModel)]="tipoCalculoGrasa" (change)="cambiarTipoCalculo(tipoCalculoGrasa)"
+                    class="bg-[#E1E1E1] p-2 rounded-full w-full md:w-64">
+                    <option disabled selected value="">Seleccione una opción</option>
+                    <option value="Masculino">Cálculo cuerpo masculino</option>
+                    <option value="Femenino">Cálculo cuerpo femenino</option>
+                </select>
+                }
 
-                <div class="flex flex-row items-center justify-between">
-                    @if(sexoSeleccionado !== 'Otro'){
-                    <span class="text-black text-xl font-semibold">
-                        {{ sexoSeleccionado ? sexoSeleccionado : '---' }}
-                    </span>
-                    }
-                    <!-- ✅ SOLO aparece cuando el sexo es OTRO -->
-                    @if (sexoSeleccionado === 'Otro') {
-                    <div class="flex gap-2 bg-[#E1E1E1] pl-2 rounded-full w-64 h-10">
-                        <select [(ngModel)]="tipoCalculoGrasa" (change)="cambiarTipoCalculo(tipoCalculoGrasa)"
-                            class="  p-2 rounded-full mr-3 w-60 outline-none">
-                            <option disabled selected value="">Seleccione una opción</option>
-                            <option value="Masculino">Cálculo cuerpo masculino</option>
-                            <option value="Femenino">Cálculo cuerpo femenino</option>
-                        </select>
-
-                    </div>
-                    }
-
-
-                    <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">
-                        (Solo para fines de cálculo antropométrico)
-                    </p>
-                </div>
-
-
-
-
+                <p class="font-light text-sm text-[#404040]">
+                    (Solo para fines de cálculo antropométrico)
+                </p>
             </div>
-
         </div>
+
 
 
 
         <!-- ✅ FILA 4: Masa corporal -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
             <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
                 Masa corporal en Kg:
@@ -132,7 +112,7 @@
         </div>
 
         <!-- ✅ FILA 5: Altura en cm -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
             <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
                 Altura en cm:
@@ -153,7 +133,7 @@
         </div>
 
         <!-- ✅ FILA 6: Indice de Masa Corporal -->
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
             <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
                 Indice de masa corporal (IMC) en Kg/m <sup>2</sup>:
@@ -189,7 +169,7 @@
     </div>
 
     <!-- ✅ FILA 7: Circunferencia de cuello en cm -->
-    <div class="flex flex-col md:flex-row md:items-center gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
         <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
             Circunferencia de cuello en cm:
@@ -210,7 +190,7 @@
     </div>
 
     <!-- ✅ FILA 8: Circunferencia de cintura en cm -->
-    <div class="flex flex-col md:flex-row md:items-center gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
         <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
             Circunferencia de cintura en cm:
@@ -232,7 +212,7 @@
 
     <!-- ✅ FILA 9: Circunferencia de cadera en cm -->
     @if(sexoSeleccionado=== 'Femenino' || tipoCalculoGrasa==='Femenino'){
-    <div class="flex flex-col md:flex-row md:items-center gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
         <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
             Circunferencia de cadera en cm:
@@ -255,7 +235,7 @@
 
 
     <!-- ✅ FILA 10: Porcentaje de grasa corporal -->
-    <div class="flex flex-col md:flex-row md:items-center gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-[300px_auto] items-center gap-3">
 
         <h3 class="text-black text-2xl font-semibold w-full md:w-[288px] ">
             Porcentaje de grasa corporal (PGC):
@@ -292,11 +272,13 @@
 
     <!-- Botón programar -->
     <div class="flex justify-end gap-2">
-        <button (click)="limpiarFormulario()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
+        <button (click)="limpiarFormulario()"
+            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
             CANCELAR
         </button>
         <button
-            class="bg-[#7CE54F] cursor-pointer text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition" (click)="guardarDatos()">
+            class="bg-[#7CE54F] cursor-pointer text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition"
+            (click)="guardarDatos()">
             GUARDAR
         </button>
     </div>

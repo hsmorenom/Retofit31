@@ -36,6 +36,8 @@ switch ($metodo) {
         if (isset($datos->generarPDF) && $datos->generarPDF === true) {
 
             // 1. Generar PDF
+            
+
             $pdf = generarInformePDF($datos);
 
             // 2. Registrar INFORME
@@ -43,7 +45,7 @@ switch ($metodo) {
                 'FECHA_CREACION' => $pdf['FECHA_CREACION'],
                 'TIPO_INFORME' => $datos->tipoInforme,
                 'USUARIO' => $datos->usuario,
-                'CLIENTE' => null,
+                'CLIENTE' => isset($datos->cliente) ? $datos->cliente : null,
                 'URL_PDF' => $pdf['urlPDF']
             ];
 

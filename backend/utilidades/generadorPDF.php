@@ -19,15 +19,16 @@ function generarInformePDF($datos)
     $verdeClaro = "#7CE54F";
 
     // LOGO (puede ser PNG o JPG)
-    $logoUrl = "http://localhost:8000/backend/assets/images/logo_retofit-removebg-preview.png";
-
+    $logoUrl = "http://127.0.0.1:8000/backend/assets/images/logo_retofit-removebg-preview.jpg";
     // si aún no tienes logo, te lo dejo comentado
     // $logoUrl = "";
 
     // ---- HTML del PDF ----
     $html = "
-    <html>
+    <!DOCTYPE html>
+    <html lang='es'>
     <head>
+        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -38,11 +39,10 @@ function generarInformePDF($datos)
             header {
                 text-align: center;
                 margin-bottom: 10px;
+                color:{$verdeOscuro};
+                text-size:30px;
             }
-            header img {
-                width: 110px;
-                margin-bottom: 10px;
-            }
+            
             .titlebox {
                 background: {$verdeOscuro};
                 color: white;
@@ -90,7 +90,7 @@ function generarInformePDF($datos)
     <body>
 
         <header>
-            <img src='{$logoUrl}' alt='Retofit31'>
+            <h2> Retofit31- Football Players Training</h2>
         </header>
 
         <div class='titlebox'>
@@ -125,6 +125,9 @@ function generarInformePDF($datos)
     if (!empty($datos->grafica)) {
         $html .= "
             <div class='section-title'>Gráfica asociada</div>
+            <br>
+            <br>
+            <br>
             <img src='{$datos->grafica}' style='width:100%; margin-top:10px;'>
         ";
     }

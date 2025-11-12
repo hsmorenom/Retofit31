@@ -1,5 +1,5 @@
 <div class="mb-3 gap-5 ">
-    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
         <h2 class=" text-xl font-semibold text-[#004D00]">HISTORIAL DE ANTROPOMÉTRICOS</h2>
         <p class="font-light text-[#404040]">(Consulta el historial de datos antropométricos de un usuario )</p>
     </div>
@@ -10,9 +10,9 @@
             <h3 class="text-black text-2xl font-semibold w-full md:w-68">
                 Identificación del usuario:
             </h3>
-            <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
-                <input type="text" placeholder="Ingrese aquí el ID del usuario" [(ngModel)]="filtroTexto"
-                    class="flex-1 outline-none text-sm pl-5 w-10 h-10" />
+            <div class="bg-[#E1E1E1] w-full md:w-64 p-2 pr-2 rounded-full outline-none">
+                <input type="text" placeholder="Ingrese ID del usuario" [(ngModel)]="filtroTexto"
+                    class="" />
 
             </div>
         </div>
@@ -23,7 +23,7 @@
                 Fecha inicial:
             </h3>
             <input type="date" id="fechaInicial"
-                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+                class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
         </div>
 
         <!--Filtrar fecha final  -->
@@ -32,13 +32,13 @@
                 Fecha final:
             </h3>
             <input type="date" id="fechaFinal"
-                class=" bg-[#E1E1E1] w-65 p-2 rounded-full pl-5 text-black outline-none" />
+                class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
         </div>
     </div>
 
 
     <!-- Consultar Historial -->
-    <div class="flex flex-wrap justify-end gap-2">
+    <div class="flex mt-3 justify-end gap-2">
         <button (click)="toggleConsulta()"
             class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition">
             CONSULTAR

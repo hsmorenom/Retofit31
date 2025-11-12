@@ -13,6 +13,8 @@ import { Entidad_informeService } from '../../../services/entidad-informe';
 })
 export class ConsultasAsistencia {
   dataGraficos: any[] = [];
+  graficaBase64: string = '';
+  datosParaPDF: any = null;
   asistenciasFiltradas: any[] = [];
   filtrosParaInforme: any = null;
   eventoSeleccionado = '';
@@ -33,27 +35,14 @@ export class ConsultasAsistencia {
     this.filtrosParaInforme = event;
   }
 
+  recibirGrafica(base64: string) {
+    console.log("Gráfica recibida desde graficos-asistencia");
+    this.graficaBase64 = base64;
+  }
+
   @ViewChild(GraficosAsistencia) grafico!: GraficosAsistencia;
 
-  generarInforme() {
 
-    const graficaBase64 = this.grafico?.obtenerImagenBase64();
-
-    const payload = {
-      generarPDF: true,
-      tipoInforme: this.tipoInformeSeleccionado,
-      evento: this.eventoSeleccionado,
-      fechaInicio: this.fechaInicio,
-      fechaFin: this.fechaFin,
-      datos: this.dataGraficos,
-      grafica: graficaBase64,
-      usuario: localStorage.getItem('idUsuario')
-    };
-
-    this.informeService.insertar(payload).subscribe(res => {
-      window.open(res.urlPDF, '_blank');
-    });
-  }
 
 }
 

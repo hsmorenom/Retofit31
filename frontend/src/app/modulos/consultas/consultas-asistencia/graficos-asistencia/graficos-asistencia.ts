@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { AsistenciaService } from '../../../../services/asistencia';
@@ -16,6 +16,8 @@ Chart.register(...registerables);
 })
 export class GraficosAsistencia implements OnChanges {
   @Input() dataGraficos: any[] = [];
+  @Output() graficaGenerada = new EventEmitter<string>();
+
 
   tipoGrafica: 'barras' | 'torta' = 'barras';
   grafica: any;
@@ -87,6 +89,10 @@ export class GraficosAsistencia implements OnChanges {
         }
       }
     });
+
+    // 🔥 Emitir imagen final para el PDF
+    const imagenBase64 = this.grafica.toBase64Image();
+    this.graficaGenerada.emit(imagenBase64);
   }
 
 

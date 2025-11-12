@@ -1,1 +1,57 @@
-<p>consultas works!</p>
+<div class="w-full sm:w-[90%] lg:w-[75%] mx-auto p-6 space-y-8">
+
+    <!-- 🔹 Título principal -->
+    <div class="flex justify-center">
+        <h1 class="text-black text-center font-semibold text-2xl sm:text-3xl font-oswald m-4">
+            CONSULTAS
+        </h1>
+    </div>
+
+    <!-- 🔹 Selector del tipo de informe -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+        <label class="font-oswald text-xl text-gray-800">Area de consulta:</label>
+        <select [(ngModel)]="tipoSeleccionado"
+            class="rounded-full bg-[#E1E1E1] px-6 py-2 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-[#7CE54F] font-roboto">
+            <option value="">Seleccione un tipo de informe</option>
+            <option value="asistencia">Gestión de Asistencia</option>
+            <option value="antropometricos">Medidas Antropométricas</option>
+            <option value="administrativo">Administrativo</option>
+        </select>
+    </div>
+
+    <!-- <div class="flex flex-wrap justify-center gap-3 mb-6">
+        <div>
+            <label class="font-oswald text-lg mr-2">Fecha inicial:</label>
+            <input type="date" [(ngModel)]="fechaInicio"
+                class="rounded-full bg-[#E1E1E1] px-4 py-2 focus:ring-[#7CE54F]" />
+        </div>
+
+        <div>
+            <label class="font-oswald text-lg mr-2">Fecha final:</label>
+            <input type="date" [(ngModel)]="fechaFin"
+                class="rounded-full bg-[#E1E1E1] px-4 py-2 focus:ring-[#7CE54F]" />
+        </div>
+    </div> -->
+
+    <hr class="border-t border-gray-300 my-4" />
+
+    <!-- 🔹 Renderizado condicional del subcomponente -->
+    @if (tipoSeleccionado === 'asistencia') {
+    <app-consultas-asistencia></app-consultas-asistencia>
+    }
+    @else if (tipoSeleccionado === 'antropometricos') {
+    <app-consultas-antropometricos></app-consultas-antropometricos>
+    }
+    @else if (tipoSeleccionado === 'administrativo') {
+    <app-consultas-administrativo></app-consultas-administrativo>
+    }
+    @else {
+    <div class="text-center text-gray-500 italic font-roboto mt-10">
+        Selecciona un tipo de informe para comenzar la consulta.
+    </div>
+    }
+
+
+
+
+</div>

@@ -35,6 +35,10 @@ export class AsistenciaService {
     return this.http.post(`${this.apiUrl}?accion=registrarQR`, data);
   }
 
+  resumenEvento(idEvento: number): Observable<any> {
+  return this.http.get(`${this.apiUrl}?resumenEvento=${idEvento}`);
+}
+
 
 
 }

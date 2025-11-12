@@ -11,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once '../modelos/informe.php';
+require_once '../utilidades/generadorPDF.php';
+
 
 $informe = new InformeModelo();
 $metodo = $_SERVER['REQUEST_METHOD'];
@@ -29,8 +31,58 @@ switch ($metodo) {
 
     case 'POST':
         $datos = json_decode(file_get_contents("php://input"));
+
+        // --- Si es generación de PDF ---
+        if (isset($datos->generarPDF) && $datos->generarPDF === true) {
+
+            // 1. Generar PDF
+            
+
+            $pdf = generarInformePDF($datos);
+
+            // 2. Registrar INFORME
+            $parametrosInforme = (object) [
+                'FECHA_CREACION' => $pdf['FECHA_CREACION'],
+                'TIPO_INFORME' => $datos->tipoInforme,
+                'USUARIO' => $datos->usuario,
+                'CLIENTE' => isset($datos->cliente) ? $datos->cliente : null,
+                'URL_PDF' => $pdf['urlPDF']
+            ];
+
+            $respuestaInforme = $informe->insertar($parametrosInforme);
+
+            if ($respuestaInforme['resultado'] !== 'OK') {
+                echo json_encode($respuestaInforme);
+                break;
+            }
+
+            $idInforme = $respuestaInforme['idInforme'];
+
+            $paramEntidad = (object) [
+                'INFORME' => $idInforme,
+                'ENTIDAD' => 'evento',
+                'ID_REFERENCIA' => $datos->evento
+            ];
+
+            require_once '../modelos/entidad-informe.php';
+            $entidad = new Entidad_informeModelo();
+            $respuestaEntidad = $entidad->insertar($paramEntidad);
+
+            echo json_encode([
+                'resultado' => 'OK',
+                'urlPDF' => $pdf['urlPDF'],
+                'informe' => $respuestaInforme,
+                'entidad' => $respuestaEntidad
+            ]);
+            break;
+        }
+
+        // Inserción normal
         echo json_encode($informe->insertar($datos));
         break;
+
+
+
 
     case 'PUT':
         if (isset($_GET['id'])) {

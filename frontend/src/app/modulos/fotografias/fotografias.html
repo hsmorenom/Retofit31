@@ -30,7 +30,7 @@
   <app-subir-fotografia></app-subir-fotografia>
 
   <!-- Botón Volver centrado -->
-  <div class="mt-6 flex justify-center">
+  <div class="mt-6 mb-3 flex justify-center">
     <button 
       (click)="volverBotones()" 
       class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-50">
@@ -41,7 +41,7 @@
 
 <div *ngIf="componenteActivo === 'historial'">
   <app-historial-progreso></app-historial-progreso>
-  <div class="mt-6 flex justify-center">
+  <div class="mt-6 mb-3 flex justify-center">
     <button 
       (click)="volverBotones()" 
       class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-50">
@@ -52,7 +52,7 @@
 
 <div *ngIf="componenteActivo === 'comparacion'">
   <app-comparacion-fotografica></app-comparacion-fotografica>
-  <div class="mt-6 flex justify-center">
+  <div class="mt-6 mb-3 flex justify-center">
     <button 
       (click)="volverBotones()" 
       class="bg-[#7ce54f] text-black text-xl font-semibold py-2 px-6 rounded-full shadow hover:bg-[#004d00] hover:text-white transition w-50">

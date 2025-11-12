@@ -44,6 +44,10 @@ switch ($metodo) {
         if (isset($_GET['identificacion']) && is_numeric($_GET['identificacion'])) {
             $identificacion = $_GET['identificacion'];
             echo json_encode($asistencia->filtrarIdentificacion($identificacion));
+        }
+        else if (isset($_GET['resumenEvento']) && is_numeric($_GET['resumenEvento'])) {
+            $idEvento = $_GET['resumenEvento'];
+            echo json_encode($asistencia->resumenEvento($idEvento));
         } else {
             echo json_encode($asistencia->consultar());
         }

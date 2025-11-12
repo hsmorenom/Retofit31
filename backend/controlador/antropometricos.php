@@ -28,18 +28,31 @@ switch ($metodo) {
     // json_encode convierte cualquier objeto,array y cualquier cosa en lenguaje universal de json
     case 'GET':
         if (isset($_GET['cliente'])) {
-            $id_cliente = $_GET['cliente'];
-            echo json_encode($antropometricos->filtrarIdCliente($id_cliente));
+            $id = $_GET['cliente'];
+            echo json_encode($antropometricos->filtrarIdCliente($id));
         } else {
             echo json_encode($antropometricos->consultar());
         }
         break;
+
     // Crea un nuevo registro leyendo que mediante el json se recibio, json_decode decodifica esta estructura, y lo pasa al metodo de insertar relacionado por antropometricos
     // json_decode hace lo contrario, de un lenguaje json lo traduce a un lenguaje de programacion que en este caso es php
     case 'POST':
         $datos = json_decode(file_get_contents("php://input"));
+
+        if (!$datos) {
+            echo json_encode([
+                'resultado' => 'ERROR',
+                'mensaje' => 'Datos incompletos o formato inválido'
+            ]);
+            break;
+        }
+
         echo json_encode($antropometricos->insertar($datos));
-        break;
+        break; // ✅✅✅ ESTE ES OBLIGATORIO
+
+
+
     // primero identifica si el id a editar esta dentro de la base de datos, cuando se reconozca el post recoge los datos guardados con este id y llama el metodo de editar
     case 'PUT':
         if (isset($_GET['id'])) {

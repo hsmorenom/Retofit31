@@ -55,7 +55,7 @@ export class HistorialRecordatorios implements OnInit {
   }
 
  enviarRecordatorio(recordatorio: any) {
-  const tipo = recordatorio.TIPO_NOTIFICACION || 'correo'; // 🔹 Detecta el tipo desde la tabla
+  const tipo = recordatorio.TIPO_NOTIFICACION || 'correo';
   const correo = recordatorio.EMAIL;
   const telefono = recordatorio.TELEFONO;
   const nombre = recordatorio.NOMBRE_CLIENTE;
@@ -74,45 +74,56 @@ export class HistorialRecordatorios implements OnInit {
   this.enviado = null;
 
   // 🔹 Envío dinámico según el tipo
-  this.recordatorioService.enviarRecordatorio(correo, nombre, evento, tipo, telefono).subscribe({
-    next: (res) => {
-      this.enviando = null;
+  this.recordatorioService
+    .enviarRecordatorio(correo, nombre, evento, tipo, telefono)
+    .subscribe({
+      next: (res) => {
+        this.enviando = null;
 
-      if (res.resultado === 'OK') {
-        console.log(`✅ Recordatorio por ${tipo} enviado correctamente:`, res);
+        if (res.resultado === 'OK') {
+          console.log(`✅ Recordatorio por ${tipo} enviado correctamente:`, res);
 
-        // 🔹 1. Actualiza estado en la base de datos
-        this.recordatorioService
-          .actualizarEstado(recordatorio.ID_RECORDATORIO, 'enviado')
-          .subscribe({
-            next: (resp) => {
-              console.log('📬 Estado actualizado en BD:', resp);
+          // 🔹 Determinar nuevo estado según frecuencia y estado actual
+          let nuevoEstado = 'enviado';
+          if (recordatorio.FRECUENCIA === '2_dia' &&
+              recordatorio.ESTADO === 'pendiente') {
+            nuevoEstado = 'parcial';
+          }
 
-              // 🔹 2. Actualiza en la tabla sin recargar
-              const index = this.recordatorio.findIndex(
-                (r) => r.ID_RECORDATORIO === recordatorio.ID_RECORDATORIO
-              );
-              if (index !== -1) {
-                this.recordatorio[index].ESTADO = 'enviado';
-              }
+          // 🔹 Actualizar en BD
+          this.recordatorioService
+            .actualizarEstado(recordatorio.ID_RECORDATORIO, nuevoEstado)
+            .subscribe({
+              next: () => {
+                console.log(`📬 Estado cambiado a ${nuevoEstado}`);
 
-              // 🔹 3. Muestra visualmente el éxito del envío
-              this.enviado = recordatorio.ID_RECORDATORIO;
-              setTimeout(() => (this.enviado = null), 3000);
-            },
-            error: (err) => console.error('⚠️ Error al actualizar estado:', err),
-          });
-      } else {
-        alert('⚠️ ' + res.mensaje);
-      }
-    },
-    error: (err) => {
-      this.enviando = null;
-      console.error('❌ Error al enviar recordatorio:', err);
-      alert('Error al enviar recordatorio');
-    },
-  });
+                // 🔹 Actualizar en la tabla visual
+                const index = this.recordatorio.findIndex(
+                  (r) => r.ID_RECORDATORIO === recordatorio.ID_RECORDATORIO
+                );
+                if (index !== -1) {
+                  this.recordatorio[index].ESTADO = nuevoEstado;
+                }
+
+                // 🔹 Animación del botón
+                this.enviado = recordatorio.ID_RECORDATORIO;
+                setTimeout(() => (this.enviado = null), 3000);
+              },
+              error: (err) =>
+                console.error('⚠️ Error al actualizar estado:', err),
+            });
+        } else {
+          alert('⚠️ ' + res.mensaje);
+        }
+      },
+      error: (err) => {
+        this.enviando = null;
+        console.error('❌ Error al enviar recordatorio:', err);
+        alert('Error al enviar recordatorio');
+      },
+    });
 }
+
 
 
 

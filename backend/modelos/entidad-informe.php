@@ -27,11 +27,11 @@ class Entidad_informeModelo
     public function insertar($parametros)
     {
         try {
-            $sql = "INSERT INTO entidad_informe (informe,entidad,id_referencia) VALUES (:informe,:entidad,:id_referencia)";
+            $sql = "INSERT INTO entidad_informe (INFORME,ENTIDAD,ID_REFERENCIA) VALUES (:informe,:entidad,:id_referencia)";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':informe', $parametros->informe);
-            $stmt->bindParam(':entidad', $parametros->entidad);
-            $stmt->bindParam(':id_referencia', $parametros->id_referencia);
+            $stmt->bindParam(':informe', $parametros->INFORME);
+            $stmt->bindParam(':entidad', $parametros->ENTIDAD);
+            $stmt->bindParam(':id_referencia', $parametros->ID_REFERENCIA);
             $stmt->execute();
 
             return ['resultado' => 'OK', 'mensaje' => 'Entidad Informe registrado'];

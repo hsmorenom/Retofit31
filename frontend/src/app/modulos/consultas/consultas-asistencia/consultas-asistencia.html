@@ -1,0 +1,10 @@
+<app-filtros-tabla-asistencia  
+  (datosGraficos)="recibirDatosGrafica($event)"
+  (datosParaInforme)="recibirDatosParaInforme($event)"
+  [graficaBase64]="graficaBase64">
+</app-filtros-tabla-asistencia>
+
+<app-graficos-asistencia
+  [dataGraficos]="dataGraficos"
+  (graficaGenerada)="recibirGrafica($event)">
+</app-graficos-asistencia>

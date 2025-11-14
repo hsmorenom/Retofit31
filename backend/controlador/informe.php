@@ -36,8 +36,6 @@ switch ($metodo) {
         if (isset($datos->generarPDF) && $datos->generarPDF === true) {
 
             // 1. Generar PDF
-            
-
             $pdf = generarInformePDF($datos);
 
             // 2. Registrar INFORME
@@ -58,21 +56,50 @@ switch ($metodo) {
 
             $idInforme = $respuestaInforme['idInforme'];
 
-            $paramEntidad = (object) [
-                'INFORME' => $idInforme,
-                'ENTIDAD' => 'evento',
-                'ID_REFERENCIA' => $datos->evento
-            ];
+            /* ======================================================
+               REGISTRO EN ENTIDAD INFORME SEGÚN TIPO DE INFORME
+            ====================================================== */
 
             require_once '../modelos/entidad-informe.php';
             $entidad = new Entidad_informeModelo();
-            $respuestaEntidad = $entidad->insertar($paramEntidad);
+
+            // ▶ CASO 1: INFORMES DE ASISTENCIA (asistencias, inasistencias, porcentaje)
+            $informesAsistencia = ["asistencias", "inasistencias", "porcentaje"];
+
+            if (in_array($datos->tipoInforme, $informesAsistencia)) {
+
+                $paramEntidad = (object) [
+                    'INFORME' => $idInforme,
+                    'ENTIDAD' => 'evento',
+                    'ID_REFERENCIA' => $datos->evento
+                ];
+
+                $respuestaEntidad = $entidad->insertar($paramEntidad);
+
+            }
+
+            // ▶ CASO 2: INFORME ADMINISTRATIVO POR USUARIO (listado detallado con filtro)
+            if (
+                $datos->tipoInforme === "listado_detallado" &&
+                isset($datos->cliente) &&
+                !empty($datos->cliente)
+            ) {
+
+                $paramEntidad = (object) [
+                    'INFORME' => $idInforme,
+                    'ENTIDAD' => 'cliente',
+                    'ID_REFERENCIA' => $datos->cliente
+                ];
+
+                $respuestaEntidad = $entidad->insertar($paramEntidad);
+
+            }
 
             echo json_encode([
                 'resultado' => 'OK',
                 'urlPDF' => $pdf['urlPDF'],
                 'informe' => $respuestaInforme,
-                'entidad' => $respuestaEntidad
+                'entidad' => isset($respuestaEntidad) ? $respuestaEntidad : null
             ]);
             break;
         }

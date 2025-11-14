@@ -11,83 +11,89 @@
   </div>
 
   <!-- 🔸 Filtros PRINCIPALES -->
-  <div class="bg-[#E1E1E1] p-4 sm:p-6 rounded-2xl shadow-md space-y-6">
+<div class="bg-[#E1E1E1] p-4 sm:p-6 rounded-2xl shadow-md space-y-6">
 
-    <div class="flex flex-wrap justify-center gap-6">
+    <!-- GRID RESPONSIVE -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-      <!-- 🟦 Identificación -->
-      <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">
-          Identificación del usuario:
-        </label>
-        <input type="text" [(ngModel)]="filtroIdentificacion" placeholder="Ingrese el número de documento"
-          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none" />
-      </div>
+        <!-- 🟦 Identificación -->
+        <div class="flex flex-col">
+            <label class="font-oswald text-lg text-gray-800 mb-1">
+                Identificación del usuario:
+            </label>
+            <input type="text"
+                [(ngModel)]="filtroIdentificacion"
+                placeholder="Ingrese el número de documento"
+                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F] outline-none" />
+        </div>
 
-      <!-- 🟦 Evento -->
-      <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">
-          Evento:
-        </label>
-        <select [(ngModel)]="eventoSeleccionado"
-          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none">
-          <option value="">Seleccione un evento</option>
+        <!-- 🟦 Evento -->
+        <div class="flex flex-col">
+            <label class="font-oswald text-lg text-gray-800 mb-1">
+                Evento:
+            </label>
+            <select [(ngModel)]="eventoSeleccionado"
+                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F] outline-none">
+                <option value="">Seleccione un evento</option>
 
-          @for (evento of eventosDisponibles; track evento.ID_EVENTOS) {
-          <option [value]="evento.ID_EVENTOS">
-            {{ evento.NOMBRE_EVENTO }}
-          </option>
-          }
-        </select>
-      </div>
+                @for (evento of eventosDisponibles; track evento.ID_EVENTOS) {
+                <option [value]="evento.ID_EVENTOS">{{ evento.NOMBRE_EVENTO }}</option>
+                }
+            </select>
+        </div>
 
-      <!-- 🟦 Tipo de informe -->
-      <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">
-          Tipo de informe:
-        </label>
-        <select [(ngModel)]="tipoInformeSeleccionado"
-          class="rounded-full bg-white px-4 py-2 w-64 focus:ring-2 focus:ring-[#7CE54F] outline-none">
-          <option value="">Seleccione el tipo de informe</option>
-          <option value="asistencias">Días asistidos</option>
-          <option value="inasistencias">Inasistencias</option>
-          <option value="porcentaje">Porcentaje de asistencia</option>
-        </select>
-      </div>
+        <!-- 🟦 Tipo de informe -->
+        <div class="flex flex-col">
+            <label class="font-oswald text-lg text-gray-800 mb-1">
+                Tipo de informe:
+            </label>
+            <select [(ngModel)]="tipoInformeSeleccionado"
+                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F] outline-none">
+                <option value="">Seleccione el tipo de informe</option>
+                <option value="asistencias">Días asistidos</option>
+                <option value="inasistencias">Inasistencias</option>
+                <option value="porcentaje">Porcentaje de asistencia</option>
+            </select>
+        </div>
 
-      <!-- 🟦 Fecha inicial -->
-      <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">
-          Fecha inicial:
-        </label>
-        <input type="date" [(ngModel)]="fechaInicio"
-          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]" />
-      </div>
+        <!-- 🟦 Fecha inicial -->
+        <div class="flex flex-col">
+            <label class="font-oswald text-lg text-gray-800 mb-1">
+                Fecha inicial:
+            </label>
+            <input type="date"
+                [(ngModel)]="fechaInicio"
+                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
+        </div>
 
-      <!-- 🟦 Fecha final -->
-      <div class="flex flex-col items-start">
-        <label class="font-oswald text-lg text-gray-800 mb-1">
-          Fecha final:
-        </label>
-        <input type="date" [(ngModel)]="fechaFin"
-          class="rounded-full bg-white px-4 py-2 w-56 focus:ring-2 focus:ring-[#7CE54F]" />
-      </div>
+        <!-- 🟦 Fecha final -->
+        <div class="flex flex-col">
+            <label class="font-oswald text-lg text-gray-800 mb-1">
+                Fecha final:
+            </label>
+            <input type="date"
+                [(ngModel)]="fechaFin"
+                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
+        </div>
 
     </div>
 
     <!-- 🔘 Botones -->
     <div class="flex flex-wrap justify-center sm:justify-end gap-3 mt-4">
-      <button (click)="consultarAsistencias()"
-        class="bg-[#004D00] text-white font-oswald px-4 py-2 rounded-full hover:bg-[#007000] transition">
-        CONSULTAR
-      </button>
+        <button (click)="consultarAsistencias()"
+            class="bg-[#004D00] text-white font-oswald px-4 py-2 rounded-full hover:bg-[#007000] transition">
+            CONSULTAR
+        </button>
 
-      <button (click)="limpiarFiltros()"
-        class="bg-gray-600 text-white font-oswald px-4 py-2 rounded-full hover:bg-gray-700 transition">
-        LIMPIAR
-      </button>
+        <button (click)="limpiarFiltros()"
+            class="bg-gray-600 text-white font-oswald px-4 py-2 rounded-full hover:bg-gray-700 transition">
+            LIMPIAR
+        </button>
     </div>
-  </div>
+
+</div>
+
+
 
   <!-- 🔸 Tabla de resultados -->
   @if (asistenciasFiltradas.length > 0) {
@@ -146,8 +152,6 @@
   </div>
   }
 
-  
+
 
 </div>
-
-

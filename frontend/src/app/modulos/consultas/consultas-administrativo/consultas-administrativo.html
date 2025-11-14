@@ -1,2 +1,9 @@
-<app-filtros-tabla-administrativo></app-filtros-tabla-administrativo>
-<app-graficos-administrativo></app-graficos-administrativo>
+<app-filtros-tabla-administrativo
+    (datosGraficos)="recibirDatosGrafica($event)"
+    (datosParaInforme)="recibirDatosParaInforme($event)"
+    [graficaBase64]="graficaBase64">
+</app-filtros-tabla-administrativo>
+<app-graficos-administrativo 
+    (graficaGenerada)="recibirGrafica($event)"
+    [dataGraficos]="dataGraficos">
+</app-graficos-administrativo>

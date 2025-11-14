@@ -14,21 +14,31 @@ function generarInformePDF($datos)
 
     $pdf = new Dompdf($options);
 
-    // COLORS RETROFIT 31
+    // COLORES RETROFIT 31
     $verdeOscuro = "#004D00";
     $verdeClaro = "#7CE54F";
 
-    // LOGO (puede ser PNG o JPG)
-    $logoUrl = "http://127.0.0.1:8000/backend/assets/images/logo_retofit-removebg-preview.jpg";
-    // si aún no tienes logo, te lo dejo comentado
-    // $logoUrl = "";
+    // ---- TÍTULO AUTOMÁTICO SEGÚN INFORME ----
+    $titulos = [
+        "cantidad_estados" => "Informe de Usuarios por Estado",
+        "cantidad_sexos" => "Informe de Usuarios por Sexo",
+        "cantidad_por_tipo_usuario" => "Informe de Usuarios por Tipo",
+        "listado_detallado" => "Listado Detallado de Usuarios",
+        "asistencias" => "Informe de Asistencias",
+        "inasistencias" => "Informe de Inasistencias",
+        "porcentaje" => "Informe de Porcentaje de Asistencia"
+    ];
 
-    // ---- HTML del PDF ----
+    $titulo = isset($titulos[$datos->tipoInforme])
+        ? $titulos[$datos->tipoInforme]
+        : "Informe del Sistema";
+
+    // ---- INICIO HTML ----
     $html = "
     <!DOCTYPE html>
     <html lang='es'>
     <head>
-        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+        <meta charset='UTF-8'>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -36,17 +46,18 @@ function generarInformePDF($datos)
                 padding: 0 25px;
                 font-size: 12px;
             }
-            header {
+
+            header { 
                 text-align: center;
                 margin-bottom: 10px;
                 color:{$verdeOscuro};
                 text-size:30px;
             }
-            
+
             .titlebox {
                 background: {$verdeOscuro};
                 color: white;
-                padding: 10px;
+                padding: 12px;
                 text-align: center;
                 font-size: 20px;
                 border-radius: 6px;
@@ -56,7 +67,7 @@ function generarInformePDF($datos)
                 font-size: 14px;
                 font-weight: bold;
                 color: {$verdeOscuro};
-                margin: 10px 0 5px;
+                margin: 15px 0 8px;
             }
             table {
                 width: 100%;
@@ -86,48 +97,109 @@ function generarInformePDF($datos)
             }
         </style>
     </head>
-
     <body>
+        <header> <h2> Retofit31- Football Players Training</h2> </header>
 
-        <header>
-            <h2> Retofit31- Football Players Training</h2>
-        </header>
+        <div class='titlebox'>{$titulo}</div>
 
-        <div class='titlebox'>
-            INFORME DE ASISTENCIA
-        </div>
+                <p><b>Fecha de generación:</b> " . date('Y-m-d H:i') . "</p>
 
-        <p><b>Tipo de informe:</b> {$datos->tipoInforme}</p>
-        <p><b>Evento:</b> {$datos->evento}</p>
-        <p><b>Rango de fechas:</b> {$datos->fechaInicio} a {$datos->fechaFin}</p>
-        <p><b>Fecha de generación:</b> " . date('Y-m-d H:i') . "</p>
+        <!-- INFORMACIÓN ESPECIAL PARA ASISTENCIA -->
+    ";
 
-        <div class='section-title'>Resultados:</div>
+    $informesAsistencia = ["asistencias", "inasistencias", "porcentaje"];
 
-        <table>
-            <tr>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Resultado</th>
-            </tr>";
+    if (in_array($datos->tipoInforme, $informesAsistencia)) {
 
-    foreach ($datos->datos as $item) {
+        // Mostrar evento si viene desde Angular
         $html .= "
-            <tr>
-                <td>{$item->NOMBRES}</td>
-                <td>{$item->APELLIDOS}</td>
-                <td>{$item->RESULTADO}</td>
-            </tr>";
+        <p><b>Tipo de informe:</b> {$datos->tipoInforme}</p>
+        <p><b>ID del evento:</b> {$datos->evento}</p>
+    ";
+
+        // Mostrar rangos de fechas solo si fueron enviados
+        if (!empty($datos->fechaInicio) && !empty($datos->fechaFin)) {
+            $html .= "
+            <p><b>Rango de fechas:</b> {$datos->fechaInicio} a {$datos->fechaFin}</p>
+        ";
+        }
+
+        // Título de resultados
+        $html .= "
+        <div class='section-title'>Resultados:</div>
+    ";
+
+    } else {
+
+        // Caso administrativo
+        $html .= "
+        <div class='section-title'>Resultados:</div>
+    ";
     }
 
-    $html .= "</table>";
+    // -------------------------
+    // TABLAS SEGÚN INFORME
+    // -------------------------
 
+    // ▶ INFORMES ESTADÍSTICOS
+    if (
+        $datos->tipoInforme === "cantidad_estados" ||
+        $datos->tipoInforme === "cantidad_sexos" ||
+        $datos->tipoInforme === "cantidad_por_tipo_usuario"
+    ) {
+
+        $html .= "
+        <table>
+            <tr>
+                <th>Descripción</th>
+                <th>Valor</th>
+            </tr>";
+
+        foreach ($datos->datos as $item) {
+            $html .= "
+            <tr>
+                <td>{$item->ETIQUETA}</td>
+                <td>{$item->VALOR}</td>
+            </tr>";
+        }
+
+        $html .= "</table>";
+    }
+
+    // ▶ INFORME DETALLADO DE USUARIOS
+    if ($datos->tipoInforme === "listado_detallado") {
+
+        $html .= "
+        <table>
+            <tr>
+                <th>Identificación</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Sexo</th>
+                <th>Estado</th>
+                <th>Tipo</th>
+            </tr>";
+
+        foreach ($datos->datos as $item) {
+            $html .= "
+            <tr>
+                <td>{$item->IDENTIFICACION}</td>
+                <td>{$item->NOMBRES}</td>
+                <td>{$item->APELLIDOS}</td>
+                <td>{$item->SEXO}</td>
+                <td>{$item->ESTADO}</td>
+                <td>{$item->TIPO_USUARIO_NOMBRE}</td>
+            </tr>";
+        }
+
+        $html .= "</table>";
+    }
+
+    // ▶ GRÁFICA (solo si viene)
     if (!empty($datos->grafica)) {
         $html .= "
-            <div class='section-title'>Gráfica asociada</div>
-            <br>
-            <br>
-            <br>
+            <div class='section-title'>Gráfica</div>
+            <br><br>
             <img src='{$datos->grafica}' style='width:100%; margin-top:10px;'>
         ";
     }
@@ -137,10 +209,9 @@ function generarInformePDF($datos)
             Página {PAGE_NUM} de {PAGE_COUNT}
         </div>
 
-    </body>
-    </html>";
+    </body></html>";
 
-    // Renderizar
+    // Renderizar PDF
     $pdf->loadHtml($html);
     $pdf->setPaper('A4', 'vertical');
     $pdf->render();

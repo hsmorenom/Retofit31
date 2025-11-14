@@ -10,24 +10,23 @@ export class FotografiaService {
 
   constructor(private http: HttpClient) { }
 
-  // ⏺ Consultar todas las fotografías
-  consultar(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  consultar(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
-  // 🔎 Filtrar fotografías por ID cliente
-  filtrar(idCliente: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}?id=${idCliente}`);
+  // 🔎 Filtrar fotografías por cliente
+  filtrar(idCliente: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?id=${idCliente}`);
   }
 
-  // ➕ Insertar fotografía nueva (AJUSTADO PARA FORM DATA)
+  // ➕ Insertar fotografía nueva
   insertar(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData);
   }
 
   // ✏️ Editar una fotografía existente
   editar(id: number, formData: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}?id=${id}`, formData);
+    return this.http.post(`${this.apiUrl}?accion=editar&id=${id}`, formData);
   }
 
   // 🗑️ Eliminar fotografía
@@ -35,5 +34,29 @@ export class FotografiaService {
     return this.http.delete(`${this.apiUrl}?id=${id}`);
   }
 
-  
+  // ======================================================
+  // ⬇⬇⬇ NUEVAS FUNCIONES PARA HISTORIAL DE PROGRESO ⬇⬇⬇
+  // ======================================================
+
+  // 1️⃣ OBTENER LAS 10 ÚLTIMAS FECHAS DE FOTOS
+  obtenerFechasPorCliente(idCliente: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}?accion=fechas&idCliente=${idCliente}`
+    );
+  }
+
+  // 2️⃣ OBTENER FOTOS DE UNA FECHA ESPECÍFICA
+  obtenerFotosPorFecha(idCliente: number, fecha: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}?accion=fotosPorFecha&idCliente=${idCliente}&fecha=${fecha}`
+    );
+  }
+
+  // 3️⃣ GUARDAR OBSERVACIÓN (SOLO TEXTO)
+  guardarObservacion(data: any): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}?accion=guardarObservacion`,
+      data
+    );
+  }
 }

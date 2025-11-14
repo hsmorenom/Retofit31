@@ -7,22 +7,12 @@ import { ComparacionFotografica } from './comparacion-fotografica/comparacion-fo
 @Component({
   selector: 'app-fotografias',
   standalone: true,
+  templateUrl: './fotografias.html',
   imports: [
-    CommonModule
-    , HistorialProgreso
-    , SubirFotografia
-    , ComparacionFotografica
+    CommonModule,
+    HistorialProgreso,
+    SubirFotografia,
+    ComparacionFotografica
   ],
-  templateUrl: './fotografias.html'
 })
-export class Fotografias {
-componenteActivo: 'subir' | 'historial' | 'comparacion' | null = null;
-
-  mostrarComponente(tipo: 'subir' | 'historial' | 'comparacion') {
-    this.componenteActivo = tipo;
-  }
-
-  volverBotones() {
-    this.componenteActivo = null;
-  }
-}
+export class Fotografias {}

@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+  Options +Indexes
+RewriteEngine On
+RewriteBase /Retofit31/backend/
+
+RewriteRule ^uploads/(.*)$ uploads/$1 [L]
+
+</IfModule>

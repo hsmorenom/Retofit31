@@ -1,8 +1,8 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -12,91 +12,141 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../modelos/fotografia.php';
 
 $fotografia = new FotografiaModelo();
-$metodo = $_SERVER['REQUEST_METHOD'];
+$method = $_SERVER['REQUEST_METHOD'];
 
-switch ($metodo) {
+switch ($method) {
 
+    // =====================================================
+    // 🔍 GET
+    // =====================================================
     case 'GET':
+
+        // 1️⃣ Obtener últimas fechas
+        if (isset($_GET['accion']) && $_GET['accion'] === 'fechas') {
+            if (!isset($_GET['idCliente'])) {
+                echo json_encode([]);
+                exit();
+            }
+
+            echo json_encode(
+                $fotografia->obtenerFechasPorCliente($_GET['idCliente'])
+            );
+            exit();
+        }
+
+        // 2️⃣ Obtener fotos por fecha seleccionada
+        if (isset($_GET['accion']) && $_GET['accion'] === 'fotosPorFecha') {
+
+            if (!isset($_GET['idCliente']) || !isset($_GET['fecha'])) {
+                echo json_encode(null);
+                exit();
+            }
+
+            echo json_encode(
+                $fotografia->obtenerFotosPorFecha($_GET['idCliente'], $_GET['fecha'])
+            );
+            exit();
+        }
+
+        // 3️⃣ Filtrar por ID cliente
         if (isset($_GET['id'])) {
             echo json_encode($fotografia->filtrar($_GET['id']));
-        } else {
-            echo json_encode($fotografia->consultar());
+            exit();
         }
+
+        // 4️⃣ Consultar todas
+        echo json_encode($fotografia->consultar());
         break;
 
-case 'POST':
-
-    $datos = (object) [
-        'fecha_inicio' => date("Y-m-d"), // Fecha del servidor
-        'fecha_final' => date("Y-m-d"),
-        'cliente' => $_POST['cliente'],
-        'usuario' => $_POST['usuario'],
-        'imagen_url' => $_POST['imagen_url'] ?? ''
-    ];
-
-    $ruta = "C:/xampp/htdocs/retofit31/backend/uploads/fotografias/";
-    if (!file_exists($ruta)) mkdir($ruta, 0777, true);
-
-    $documento = $_POST['identificacion']; // Documento para renombrar
-
-    // ---------- FOTO FRONTAL ----------
-    if (!empty($_FILES['foto_frontal']['name'])) {
-        $ext = pathinfo($_FILES['foto_frontal']['name'], PATHINFO_EXTENSION);
-        $nombreFrontal = $documento . "-" . date("d-m-Y") . "-frontal." . $ext;
-        move_uploaded_file($_FILES['foto_frontal']['tmp_name'], $ruta . $nombreFrontal);
-        $datos->foto_frontal = $nombreFrontal;
-        $datos->desc_frontal = $_POST['desc_frontal'] ?? null;
-        $datos->etiqueta_frontal = $_POST['etiqueta_frontal'] ?? null;
-    }
-
-    // ---------- FOTO LATERAL ----------
-    if (!empty($_FILES['foto_lateral']['name'])) {
-        $ext = pathinfo($_FILES['foto_lateral']['name'], PATHINFO_EXTENSION);
-        $nombreLateral = $documento . "-" . date("d-m-Y") . "-lateral." . $ext;
-        move_uploaded_file($_FILES['foto_lateral']['tmp_name'], $ruta . $nombreLateral);
-        $datos->foto_lateral = $nombreLateral;
-        $datos->desc_lateral = $_POST['desc_lateral'] ?? null;
-        $datos->etiqueta_lateral = $_POST['etiqueta_lateral'] ?? null;
-    }
-
-    // ---------- FOTO POSTERIOR ----------
-    if (!empty($_FILES['foto_posterior']['name'])) {
-        $ext = pathinfo($_FILES['foto_posterior']['name'], PATHINFO_EXTENSION);
-        $nombrePosterior = $documento . "-" . date("d-m-Y") . "-posterior." . $ext;
-        move_uploaded_file($_FILES['foto_posterior']['tmp_name'], $ruta . $nombrePosterior);
-        $datos->foto_posterior = $nombrePosterior;
-        $datos->desc_posterior = $_POST['desc_posterior'] ?? null;
-        $datos->etiqueta_posterior = $_POST['etiqueta_posterior'] ?? null;
-    }
-
-    echo json_encode($fotografia->insertar($datos));
-    break;
 
 
+    // =====================================================
+    // ✏️ POST (Crear, editar, guardar observación)
+    // =====================================================
+    case 'POST':
+
+        // 1️⃣ Guardar observación
+        if (isset($_GET['accion']) && $_GET['accion'] === 'guardarObservacion') {
+
+            $input = json_decode(file_get_contents("php://input"), true);
+
+            if (!$input) {
+                echo json_encode(['error' => 'Datos inválidos']);
+                exit();
+            }
+
+            echo json_encode($fotografia->guardarObservacion($input));
+            exit();
+        }
 
 
+        // 2️⃣ Editar fotos
+        if (isset($_GET['accion']) && $_GET['accion'] === 'editar') {
 
-    case 'PUT':
-        parse_str(file_get_contents("php://input"), $put_vars);
+            if (!isset($_GET['id'])) {
+                echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID requerido']);
+                exit();
+            }
 
-        $datos = (object) $put_vars;
-        if (isset($_GET['id'])) {
+            $datos = (object)[
+                'desc_frontal'      => $_POST['desc_frontal'] ?? null,
+                'etiqueta_frontal'  => $_POST['etiqueta_frontal'] ?? null,
+
+                'desc_lateral'      => $_POST['desc_lateral'] ?? null,
+                'etiqueta_lateral'  => $_POST['etiqueta_lateral'] ?? null,
+
+                'desc_posterior'    => $_POST['desc_posterior'] ?? null,
+                'etiqueta_posterior'=> $_POST['etiqueta_posterior'] ?? null,
+
+                'cliente'           => $_POST['cliente'] ?? null
+            ];
+
             echo json_encode($fotografia->editar($_GET['id'], $datos));
-        } else {
-            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado para actualización']);
+            exit();
         }
+
+
+        // 3️⃣ Insertar fotos (registro normal)
+        if (!isset($_POST['cliente'])) {
+            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Falta cliente']);
+            exit();
+        }
+
+        $datos = (object)[
+            'cliente'  => $_POST['cliente'],
+            'usuario'  => $_POST['usuario'] ?? null,
+            'identificacion' => $_POST['identificacion'],
+
+            'desc_frontal'   => $_POST['desc_frontal'] ?? '',
+            'etiqueta_frontal' => $_POST['etiqueta_frontal'] ?? '',
+
+            'desc_lateral'   => $_POST['desc_lateral'] ?? '',
+            'etiqueta_lateral' => $_POST['etiqueta_lateral'] ?? '',
+
+            'desc_posterior' => $_POST['desc_posterior'] ?? '',
+            'etiqueta_posterior' => $_POST['etiqueta_posterior'] ?? ''
+        ];
+
+        echo json_encode($fotografia->insertar($datos));
+        exit();
+
+
+    // =====================================================
+    // ❌ DELETE
+    // =====================================================
+    case 'DELETE':
+        if (!isset($_GET['id'])) {
+            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID requerido']);
+            exit();
+        }
+
+        echo json_encode($fotografia->eliminar($_GET['id']));
         break;
 
-    case 'DELETE':
-        if (isset($_GET['id'])) {
-            echo json_encode($fotografia->eliminar($_GET['id']));
-        } else {
-            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado para eliminación']);
-        }
-        break;
+
 
     default:
-        echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Método HTTP no permitido']);
+        echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Método no permitido']);
         break;
 }
 ?>

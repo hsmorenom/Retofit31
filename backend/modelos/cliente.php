@@ -12,12 +12,40 @@ class ClienteModelo
     public function consultar()
     {
         try {
-            $sql = "SELECT c.ID_CLIENTE,u.ID_USUARIO, tu.TIPO AS TIPO_USUARIO, u.PRIMER_NOMBRE, u.SEGUNDO_NOMBRE,u.PRIMER_APELLIDO, u.SEGUNDO_APELLIDO, u.EMAIL, u.CLAVE,u.ESTADO, c.TIPO_DOCUMENTO, c.IDENTIFICACION,   c.FECHA_NACIMIENTO, c.SEXO, c.FOTO_PERFIL_URL, c.DIRECCION, c.TELEFONO, c.CONTACTO_EMERGENCIA, c.TELEFONO_EMERGENCIA,ciu.ID_CIUDAD, ciu.NOMBRE AS CIUDAD, 
-            
-            CONCAT(u.PRIMER_NOMBRE, ' ', IFNULL(u.SEGUNDO_NOMBRE, '')) AS NOMBRES,
-            CONCAT(u.PRIMER_APELLIDO, ' ', IFNULL(u.SEGUNDO_APELLIDO, '')) AS APELLIDOS
+            $sql = "SELECT 
+    c.ID_CLIENTE,
+    u.ID_USUARIO,
+    tu.TIPO AS TIPO_USUARIO,
+    u.PRIMER_NOMBRE,
+    u.SEGUNDO_NOMBRE,
+    u.PRIMER_APELLIDO,
+    u.SEGUNDO_APELLIDO,
+    u.EMAIL,
+    u.CLAVE,
+    u.ESTADO,
+    c.TIPO_DOCUMENTO,
+    c.IDENTIFICACION,
+    c.FECHA_NACIMIENTO,
+    c.SEXO,
+    c.FOTO_PERFIL_URL,
+    c.DIRECCION,
+    c.TELEFONO,
+    c.CONTACTO_EMERGENCIA,
+    c.TELEFONO_EMERGENCIA,
+    ciu.ID_CIUDAD,
+    ciu.NOMBRE AS CIUDAD,
 
-            FROM cliente c INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO LEFT JOIN tipo_usuario tu ON u.TIPO_USUARIO = tu.ID_TIPO_USUARIO LEFT JOIN ciudad ciu ON c.CIUDAD = ciu.ID_CIUDAD ";
+    -- 👍 AQUÍ ESTÁ TU CAMPO DE FECHA
+    c.FECHA_REGISTRO,
+
+    CONCAT(u.PRIMER_NOMBRE, ' ', IFNULL(u.SEGUNDO_NOMBRE, '')) AS NOMBRES,
+    CONCAT(u.PRIMER_APELLIDO, ' ', IFNULL(u.SEGUNDO_APELLIDO, '')) AS APELLIDOS
+
+FROM cliente c
+INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+LEFT JOIN tipo_usuario tu ON u.TIPO_USUARIO = tu.ID_TIPO_USUARIO
+LEFT JOIN ciudad ciu ON c.CIUDAD = ciu.ID_CIUDAD;
+";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

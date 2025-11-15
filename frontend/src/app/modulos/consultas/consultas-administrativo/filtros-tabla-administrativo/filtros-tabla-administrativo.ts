@@ -16,7 +16,6 @@ export class FiltrosTablaAdministrativo implements OnInit {
   @Output() datosParaInforme = new EventEmitter<any>();
   @Input() graficaBase64: string = '';
 
-  // Filtros
   filtroIdentificacion = '';
   tipoUsuarioSeleccionado = '';
   tipoInformeSeleccionado = '';
@@ -39,9 +38,9 @@ export class FiltrosTablaAdministrativo implements OnInit {
     });
   }
 
-  // ========================
+  // ==================================
   // ▶ CONSULTAR INFORMACIÓN
-  // ========================
+  // ==================================
   consultarAdministrativo() {
 
     if (!this.tipoInformeSeleccionado) {
@@ -51,58 +50,55 @@ export class FiltrosTablaAdministrativo implements OnInit {
 
     let lista = [...this.usuarios];
 
-    // 🔹 FILTRO POR IDENTIFICACIÓN
+    // Filtro por identificación
     if (this.filtroIdentificacion.trim() !== '') {
       lista = lista.filter(u =>
         String(u.IDENTIFICACION) === this.filtroIdentificacion.trim()
       );
     }
 
-    // 🔹 FILTRO POR TIPO DE USUARIO (texto)
+    // Filtro por tipo de usuario
     if (this.tipoUsuarioSeleccionado !== '') {
       lista = lista.filter(u =>
         String(u.TIPO_USUARIO) === this.tipoUsuarioSeleccionado
       );
     }
 
-    // 🔹 PROCESAR EL TIPO DE INFORME
+    // Procesar informe
     const resultado = this.procesarInforme(lista);
-
     this.usuariosFiltrados = resultado;
 
-    // 🔹 ENVIAR DATOS A GRÁFICOS
+    // Datos para gráficas
     const dataGrafico = this.armarDatosGrafico(resultado);
     this.datosGraficos.emit(dataGrafico);
 
+    // 👇 Cliente solo si hay filtro e info detallada
     let clienteFinal = null;
-
-    // si filtró por identificación, tomar el primer resultado (siempre es 1)
-    if (this.filtroIdentificacion.trim() !== "" && this.usuariosFiltrados.length > 0) {
+    if (
+      this.tipoInformeSeleccionado === 'listado_detallado' &&
+      this.filtroIdentificacion.trim() !== '' &&
+      this.usuariosFiltrados.length === 1
+    ) {
       clienteFinal = this.usuariosFiltrados[0].ID_CLIENTE;
     }
 
-    // 🔹 ENVIAR A PDF
+    // Enviar info al padre (por si se necesita)
     this.datosParaInforme.emit({
       tipoInforme: this.tipoInformeSeleccionado,
       datos: this.usuariosFiltrados,
       cliente: clienteFinal
     });
-
-
-
-
   }
 
-  // ========================
+  // ==================================
   // ▶ PROCESAR INFORME
-  // ========================
+  // ==================================
   procesarInforme(lista: any[]) {
 
     const tipo = this.tipoInformeSeleccionado;
 
-    // --ESTADOS--
+    // Cantidad por estados
     if (tipo === 'cantidad_estados') {
-
       const activos = lista.filter(u => Number(u.ESTADO) === 1).length;
       const inactivos = lista.filter(u => Number(u.ESTADO) === 0).length;
 
@@ -112,10 +108,8 @@ export class FiltrosTablaAdministrativo implements OnInit {
       ];
     }
 
-    // --- CANTIDAD SEXO---
-
+    // Cantidad por sexo
     if (tipo === 'cantidad_sexos') {
-
       const masculino = lista.filter(u => u.SEXO === 'Masculino').length;
       const femenino = lista.filter(u => u.SEXO === 'Femenino').length;
       const otro = lista.filter(u => u.SEXO === 'Otro').length;
@@ -127,7 +121,7 @@ export class FiltrosTablaAdministrativo implements OnInit {
       ];
     }
 
-    // --- TIPO DE USUARIO (ADMINISTRADOR, CLIENTE, ETC.) ---
+    // Cantidad por tipo de usuario
     if (tipo === 'cantidad_por_tipo_usuario') {
 
       const tipos = [
@@ -143,29 +137,27 @@ export class FiltrosTablaAdministrativo implements OnInit {
       }));
     }
 
-    // --- LISTADO DETALLADO ---
+    // Listado detallado
     if (tipo === 'listado_detallado') {
       return lista.map(u => ({
-        ID_CLIENTE: u.ID_CLIENTE,
+        ID_CLIENTE: u.ID_CLIENTE,                    // 👈 IMPORTANTE
         IDENTIFICACION: u.IDENTIFICACION,
         NOMBRES: u.NOMBRES,
         APELLIDOS: u.APELLIDOS,
         SEXO: u.SEXO,
         ESTADO: Number(u.ESTADO) === 1 ? 'ACTIVO' : 'INACTIVO',
         TIPO_USUARIO: u.TIPO_USUARIO,
-        TIPO_USUARIO_NOMBRE: u.TIPO_USUARIO // ya viene con nombre
+        TIPO_USUARIO_NOMBRE: u.TIPO_USUARIO        // ya viene con nombre
       }));
     }
 
     return [];
   }
 
-  // ========================
-  // ▶ ARMAR DATOS PARA GRAFICOS
-  // ========================
+  // ==================================
+  // ▶ ARMAR DATOS PARA GRÁFICOS
+  // ==================================
   armarDatosGrafico(lista: any[]) {
-
-    // No graficamos listado detallado
     if (this.tipoInformeSeleccionado === 'listado_detallado') {
       return [];
     }
@@ -176,9 +168,6 @@ export class FiltrosTablaAdministrativo implements OnInit {
     }));
   }
 
-  // ========================
-  // ▶ LIMPIAR
-  // ========================
   limpiarFiltros() {
     this.filtroIdentificacion = '';
     this.tipoUsuarioSeleccionado = '';
@@ -187,9 +176,9 @@ export class FiltrosTablaAdministrativo implements OnInit {
     this.datosGraficos.emit([]);
   }
 
-  // ========================
-  // ▶ GENERAR INFORME PDF
-  // ========================
+  // ==================================
+  // ▶ GENERAR PDF ADMINISTRATIVO
+  // ==================================
   generarInformeAdministrativo() {
 
     if (!this.usuariosFiltrados.length) {
@@ -204,22 +193,12 @@ export class FiltrosTablaAdministrativo implements OnInit {
 
     const idUsuario = Number(localStorage.getItem('idUsuario'));
 
-    // 🔥 IDENTIFICAR CLIENTE SOLO SI SE FILTRÓ POR CÉDULA Y ES LISTADO DETALLADO
+    // Si filtró por cédula entonces sí hay CLIENTE
     let clienteFinal = null;
 
-    if (
-      this.tipoInformeSeleccionado === 'listado_detallado' &&
-      this.filtroIdentificacion.trim() !== '' &&
-      this.usuariosFiltrados.length === 1
-    ) {
-      // Aquí toma el ID real del cliente desde la lista original de usuarios
-      const cliente = this.usuarios.find(
-        u => String(u.IDENTIFICACION) === this.filtroIdentificacion.trim()
-      );
-
-      if (cliente) {
-        clienteFinal = cliente.ID_CLIENTE;
-      }
+    if (this.filtroIdentificacion.trim() !== "") {
+      const user = this.usuariosFiltrados[0];
+      clienteFinal = user?.ID_CLIENTE ?? null;
     }
 
     const data = {
@@ -228,7 +207,13 @@ export class FiltrosTablaAdministrativo implements OnInit {
       usuario: idUsuario,
       datos: this.usuariosFiltrados,
       grafica: this.graficaBase64,
-      cliente: clienteFinal   // 🔥🔥 SE AGREGA AQUÍ
+      cliente: clienteFinal,
+
+      // 🔥 NUEVO: ENVIAMOS LA ENTIDAD
+      entidad: "usuario",
+
+      // 🔥 NUEVO: ENVIAMOS EL ID DEL USUARIO FILTRADO O NULL
+      id_referencia: clienteFinal
     };
 
     this.informeService.insertar(data).subscribe(res => {
@@ -237,6 +222,5 @@ export class FiltrosTablaAdministrativo implements OnInit {
       }
     });
   }
-
 
 }

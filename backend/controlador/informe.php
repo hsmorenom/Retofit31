@@ -56,14 +56,12 @@ switch ($metodo) {
 
             $idInforme = $respuestaInforme['idInforme'];
 
-            /* ======================================================
-               REGISTRO EN ENTIDAD INFORME SEGÚN TIPO DE INFORME
-            ====================================================== */
-
             require_once '../modelos/entidad-informe.php';
             $entidad = new Entidad_informeModelo();
 
-            // ▶ CASO 1: INFORMES DE ASISTENCIA (asistencias, inasistencias, porcentaje)
+            // ==============================
+            // ▶ CASO 1: INFORMES DE ASISTENCIA
+            // ==============================
             $informesAsistencia = ["asistencias", "inasistencias", "porcentaje"];
 
             if (in_array($datos->tipoInforme, $informesAsistencia)) {
@@ -75,31 +73,43 @@ switch ($metodo) {
                 ];
 
                 $respuestaEntidad = $entidad->insertar($paramEntidad);
-
             }
 
-            // ▶ CASO 2: INFORME ADMINISTRATIVO POR USUARIO (listado detallado con filtro)
-            if (
-                $datos->tipoInforme === "listado_detallado" &&
-                isset($datos->cliente) &&
-                !empty($datos->cliente)
-            ) {
+            // ==============================
+            // ▶ CASO 2: INFORMES ADMINISTRATIVOS
+            // ==============================
+            $informesAdministrativos = [
+                "cantidad_estados",
+                "cantidad_sexos",
+                "cantidad_por_tipo_usuario",
+                "listado_detallado"
+            ];
 
-                $paramEntidad = (object) [
+            if (in_array($datos->tipoInforme, $informesAdministrativos)) {
+
+                // Fila 1: marca que es un informe administrativo
+                $paramAdm = (object) [
                     'INFORME' => $idInforme,
-                    'ENTIDAD' => 'cliente',
-                    'ID_REFERENCIA' => $datos->cliente
+                    'ENTIDAD' => 'administrativo',
+                    'ID_REFERENCIA' => null
                 ];
+                $entidad->insertar($paramAdm);
 
-                $respuestaEntidad = $entidad->insertar($paramEntidad);
-
+                // Fila 2 (opcional): si hay cliente específico, lo relaciona
+                if (isset($datos->cliente) && !empty($datos->cliente)) {
+                    $paramCli = (object) [
+                        'INFORME' => $idInforme,
+                        'ENTIDAD' => 'cliente',
+                        'ID_REFERENCIA' => $datos->cliente
+                    ];
+                    $entidad->insertar($paramCli);
+                }
             }
 
             echo json_encode([
                 'resultado' => 'OK',
                 'urlPDF' => $pdf['urlPDF'],
-                'informe' => $respuestaInforme,
-                'entidad' => isset($respuestaEntidad) ? $respuestaEntidad : null
+                'informe' => $respuestaInforme
             ]);
             break;
         }
@@ -107,6 +117,7 @@ switch ($metodo) {
         // Inserción normal
         echo json_encode($informe->insertar($datos));
         break;
+
 
 
 

@@ -2,66 +2,113 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <!-- Siguiente evento -->
-    <div class="bg-white shadow-lg rounded-xl p-6">
-      <h2 class="text-lg font-semibold mb-2">Siguiente evento</h2>
-      <p class="text-3xl font-bold">7 de Junio de 2025</p>
-      <p class="text-gray-600 text-lg">7:00 PM</p>
-    </div>
+<div class="bg-white shadow-lg rounded-xl p-6">
+  <h2 class="text-lg font-semibold mb-4">Próximos eventos</h2>
+
+  <!-- Si no hay eventos -->
+  <p *ngIf="eventosProximos.length === 0" class="text-gray-500">
+    No hay eventos programados.
+  </p>
+
+  <!-- Lista de eventos -->
+  <div *ngFor="let evento of eventosProximos" class="border-b last:border-b-0 py-3">
+    
+    <p class="text-xl font-bold">
+      {{ evento.NOMBRE_EVENTO }}
+    </p>
+
+    <p class="text-gray-700 font-medium">
+      📅 {{ evento.FECHA_ACTIVIDAD | date:'longDate' }}
+    </p>
+
+    <p class="text-gray-600">
+      🕒 {{ evento.HORA_INICIO }} - {{ evento.HORA_FIN }}
+    </p>
+
+    <p class="text-gray-600">
+      📍 {{ evento.LUGAR_DE_ACTIVIDAD }}
+    </p>
+
+  </div>
+</div>
+
 
     <!-- Resumen estado físico -->
     <div class="bg-white shadow-lg rounded-xl p-6 col-span-1 lg:col-span-2">
-      <h2 class="text-lg font-semibold mb-4">Resumen estado físico</h2>
+  <h2 class="text-lg font-semibold mb-4">Resumen estado físico</h2>
 
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
 
-        <!-- Peso -->
-        <div>
-          <p class="text-gray-800 font-medium">Peso</p>
-          <p class="text-3xl font-bold">75 <span class="text-sm font-medium">kg</span></p>
-        </div>
-
-        <!-- PGC -->
-        <div>
-          <p class="text-gray-800 font-medium">PGC</p>
-          <p class="text-3xl font-bold">20,3 <span class="text-sm font-medium">%</span></p>
-        </div>
-
-        <!-- IMC -->
-        <div>
-          <p class="text-gray-800 font-medium">IMC</p>
-          <p class="text-3xl font-bold">23,4</p>
-        </div>
-
-        <!-- Mediciones corporales -->
-        <div class="border-l pl-5">
-          <p class="font-medium">Circunferencia cintura <span class="font-bold">49 cm</span></p>
-          <p class="font-medium">Circunferencia cuello <span class="font-bold">19 cm</span></p>
-          <p class="font-medium">Circunferencia cadera <span class="font-bold">52 cm</span></p>
-        </div>
-
-      </div>
+    <!-- Peso -->
+    <div>
+      <p class="text-gray-800 font-medium">Peso</p>
+      <p class="text-3xl font-bold">{{ peso }} <span class="text-sm font-medium">kg</span></p>
     </div>
+
+    <!-- PGC -->
+    <div>
+      <p class="text-gray-800 font-medium">PGC</p>
+      <p class="text-3xl font-bold">{{ pgc }} <span class="text-sm font-medium">%</span></p>
+    </div>
+
+    <!-- IMC -->
+    <div>
+      <p class="text-gray-800 font-medium">IMC</p>
+      <p class="text-3xl font-bold">{{ imc }}</p>
+    </div>
+
+    <!-- Mediciones corporales -->
+    <div class="border-l pl-5">
+      <p class="font-medium">Circunferencia cintura <span class="font-bold">{{ cintura }} cm</span></p>
+      <p class="font-medium">Circunferencia cuello <span class="font-bold">{{ cuello }} cm</span></p>
+      <p class="font-medium">Altura <span class="font-bold">{{ altura }} cm</span></p>
+    </div>
+
+  </div>
+</div>
+
 
   </div>
 
   <!-- Segunda fila -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
-    <!-- Tendencias del peso -->
-    <div class="bg-white shadow-lg rounded-xl p-6">
-      <h2 class="text-lg font-semibold mb-4">Tendencias del peso respecto al tiempo</h2>
-      <div class="bg-green-200 h-40 flex items-center justify-center text-gray-600">
-        (Gráfico de peso aquí)
-      </div>
-    </div>
+<div class="bg-white shadow-lg rounded-xl p-6">
+  <h2 class="text-lg font-semibold mb-4">Tendencias del peso respecto al tiempo</h2>
+
+  <div class="w-full h-64">
+    <canvas id="graficoPeso"></canvas>
+  </div>
+</div>
+
+
 
     <!-- Registro última foto -->
-    <div class="bg-white shadow-lg rounded-xl p-6">
-      <h2 class="text-lg font-semibold mb-4">Registro última foto</h2>
-      <div class="flex items-center justify-center">
-        <img src="https://i.ibb.co/09R8pPZ/musculoso.png" class="h-64" />
-      </div>
-    </div>
+<div class="bg-white shadow-lg rounded-xl p-6">
+  <h2 class="text-lg font-semibold mb-4">Registro última foto</h2>
+
+  <div class="flex items-center justify-center">
+
+    <!-- FOTO REAL -->
+    <img 
+      *ngIf="fotoFrontal"
+      [src]="fotoFrontal"
+      class="h-72 w-56 object-cover rounded-xl border shadow-md"
+      alt="Foto frontal"
+    />
+
+    <!-- FOTO POR DEFECTO -->
+    <img 
+      *ngIf="!fotoFrontal"
+      src="https://i.ibb.co/09R8pPZ/musculoso.png" 
+      class="h-72 w-56 object-cover opacity-70 rounded-xl border"
+      alt="Foto no disponible"
+    />
+
+  </div>
+</div>
+
+
 
   </div>
 
@@ -69,14 +116,14 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
     <!-- Notificaciones -->
-    <div class="bg-white shadow-lg rounded-xl p-6">
+    <!-- <div class="bg-white shadow-lg rounded-xl p-6">
       <h2 class="text-lg font-semibold mb-4">Notificaciones</h2>
 
       <ul class="list-disc ml-6 text-gray-700 text-lg">
         <li>Evento de nutrición: <strong>15/06/2026</strong></li>
         <li>Comer <strong>3000 Kcal</strong> para aumentar de peso</li>
       </ul>
-    </div>
+    </div> -->
 
     <!-- Estado de suscripción -->
     <div class="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center">

@@ -27,29 +27,35 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 switch ($metodo) {
     // GET: devuelve todos los clientes o filtra por nombre si se envía un parámetro "buscar"
     case 'GET':
-        if (isset($_GET['usuario'])) {
-            $idUsuario = $_GET['usuario'];
-            echo json_encode($cliente->obtenerClientePorUsuario($idUsuario));
-        } elseif (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            echo json_encode($cliente->filtrarPorId($id));
-        } elseif (isset($_GET['modo']) && $_GET['modo'] === 'admon') {
-            // Usar la nueva consulta especial para administrativo
-            echo json_encode($cliente->consultarParaAdmon());
-        } elseif (isset($_GET['documento'])) {
-            $documento = $_GET['documento'];
-            $resultado = $cliente->buscarPorDocumento($documento);
+    if (isset($_GET['usuario'])) {
+        $idUsuario = $_GET['usuario'];
+        echo json_encode($cliente->obtenerClientePorUsuario($idUsuario));
 
-            // ✅ Devolver SIEMPRE un arreglo
-            if ($resultado) {
-                echo json_encode([$resultado]);
-            } else {
-                echo json_encode([]);
-            }
-        } else {
-            echo json_encode($cliente->consultar());
-        }
-        break;
+    } elseif (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        echo json_encode($cliente->filtrarPorId($id));
+
+    } elseif (isset($_GET['modo']) && $_GET['modo'] === 'admon') {
+        echo json_encode($cliente->consultarParaAdmon());
+
+    } elseif (isset($_GET['documento'])) {
+        $documento = $_GET['documento'];
+        $resultado = $cliente->buscarPorDocumento($documento);
+
+        echo json_encode($resultado ? [$resultado] : []);
+
+    } elseif (isset($_GET['identificacion'])) { 
+        // 🔥 NUEVA RUTA SOLICITADA
+        $identificacion = $_GET['identificacion'];
+        $resultado = $cliente->buscarPorDocumento($identificacion);
+
+        echo json_encode($resultado ? [$resultado] : []);
+
+    } else {
+        echo json_encode($cliente->consultar());
+    }
+    break;
+
 
     // POST: se crea un nuevo cliente
     case 'POST':

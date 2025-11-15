@@ -13,12 +13,12 @@
     </p>
 
     <p *ngIf="idEdicion" class="font-light text-sm text-[#404040]">
-      Modo edición activado
+      Modo edición activado ✔
     </p>
   </div>
 
   <!-- Búsqueda -->
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-4 mb-4">
     <h3 class="text-black font-semibold text-2xl whitespace-nowrap">
       Identificación del usuario:
     </h3>
@@ -31,13 +31,11 @@
         class="flex-1 outline-none text-sm pl-5 bg-transparent"
       />
 
-      <label class="cursor-pointer">
-        <img
-          src="assets/images/asistencia/lupa.png"
-          class="w-10 h-10"
-          (click)="buscarCliente(true)"
-        />
-      </label>
+      <img
+        src="assets/images/asistencia/lupa.png"
+        class="w-10 h-10 cursor-pointer"
+        (click)="buscarCliente(true)"
+      />
     </div>
 
     <!-- CHIP -->
@@ -52,7 +50,7 @@
       </span>
 
       <button
-        (click)="clienteSeleccionado=null; clienteCargado=false"
+        (click)="cancelarAccion()"
         class="text-red-700 hover:text-red-900 font-bold"
       >
         ×
@@ -60,36 +58,34 @@
     </div>
   </div>
 
-  <br />
-
   <!-- Sección de fotos -->
   <section *ngIf="clienteCargado" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Columna Izquierda -->
+
+    <!-- COLUMNA IZQUIERDA -->
     <div class="space-y-10">
-      
+
       <!-- FOTO FRONTAL -->
       <div>
-        <h2 class="text-lg font-bold text-neutral-900 mb-3">
-          Frontal
-        </h2>
+        <h2 class="text-lg font-bold text-neutral-900 mb-3">Frontal</h2>
 
         <div class="space-y-3">
+
+          <!-- Selector -->
           <div class="flex items-center gap-3">
             <label
               class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
             >
-              <input
-                type="file"
-                accept="image/*"
-                class="sr-only"
-                (change)="onFileSelected($event, 'frontal')"
-              />
+              <input type="file" accept="image/*" class="sr-only"
+                     (change)="onFileSelected($event, 'frontal')" />
               Seleccionar foto
             </label>
+
+            <!-- NOMBRE DEL ARCHIVO -->
             <span class="text-sm text-neutral-600 truncate max-w-[220px]">
-              {{ formFotos.frontal.archivo?.name || '—' }}
+              {{ formFotos.frontal.archivo?.name || formFotos.frontal.archivoNombre || '—' }}
             </span>
 
+            <!-- ELIMINAR -->
             <button
               type="button"
               (click)="eliminarFoto('frontal')"
@@ -99,174 +95,116 @@
             </button>
           </div>
 
-          <div *ngIf="formFotos.frontal.preview" class="mt-2">
-            <img
-              [src]="formFotos.frontal.preview"
-              alt="Vista previa frontal"
-              style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;"
-            />
-          </div>
+          <!-- PREVIEW -->
+          <img *ngIf="formFotos.frontal.preview" [src]="formFotos.frontal.preview"
+               style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
-          <input
-            type="text"
-            [(ngModel)]="formFotos.frontal.descripcion"
-            placeholder="Descripción"
-            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-          />
+          <!-- Campos -->
+          <input type="text" [(ngModel)]="formFotos.frontal.descripcion"
+                 placeholder="Descripción"
+                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-          <input
-            type="text"
-            [(ngModel)]="formFotos.frontal.etiqueta"
-            placeholder="Etiqueta"
-            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-          />
+          <input type="text" [(ngModel)]="formFotos.frontal.etiqueta"
+                 placeholder="Etiqueta"
+                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+
         </div>
       </div>
 
       <!-- FOTO POSTERIOR -->
       <div>
-        <h2 class="text-lg font-bold text-neutral-900 mb-3">
-          Posterior
-        </h2>
+        <h2 class="text-lg font-bold text-neutral-900 mb-3">Posterior</h2>
 
         <div class="space-y-3">
+
           <div class="flex items-center gap-3">
-            <label
-              class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
-            >
-              <input
-                type="file"
-                accept="image/*"
-                class="sr-only"
-                (change)="onFileSelected($event, 'posterior')"
-              />
+            <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm text-white">
+              <input type="file" accept="image/*" class="sr-only"
+                     (change)="onFileSelected($event, 'posterior')" />
               Seleccionar foto
             </label>
 
             <span class="text-sm text-neutral-600 truncate max-w-[220px]">
-              {{ formFotos.posterior.archivo?.name || '—' }}
+              {{ formFotos.posterior.archivo?.name || formFotos.posterior.archivoNombre || '—' }}
             </span>
 
-            <button
-              type="button"
-              (click)="eliminarFoto('posterior')"
-              class="ml-auto inline-flex items-center justify-center rounded-full bg-black text-white hover:bg-neutral-800 w-6 h-6"
-            >
-              ×
-            </button>
+            <button type="button" (click)="eliminarFoto('posterior')"
+              class="ml-auto w-6 h-6 rounded-full bg-black text-white text-center hover:bg-neutral-800">×</button>
           </div>
 
-          <div *ngIf="formFotos.posterior.preview" class="mt-2">
-            <img
-              [src]="formFotos.posterior.preview"
-              alt="Vista previa posterior"
-              style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;"
-            />
-          </div>
+          <img *ngIf="formFotos.posterior.preview" [src]="formFotos.posterior.preview"
+               style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
-          <input
-            type="text"
-            [(ngModel)]="formFotos.posterior.descripcion"
-            placeholder="Descripción"
-            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-          />
+          <input type="text" [(ngModel)]="formFotos.posterior.descripcion"
+                 placeholder="Descripción"
+                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-          <input
-            type="text"
-            [(ngModel)]="formFotos.posterior.etiqueta"
-            placeholder="Etiqueta"
-            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-          />
+          <input type="text" [(ngModel)]="formFotos.posterior.etiqueta"
+                 placeholder="Etiqueta"
+                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
         </div>
       </div>
+
     </div>
 
-    <!-- Columna Derecha (Lateral) -->
+    <!-- COLUMNA DERECHA (LATERAL) -->
     <div>
-      <h2 class="text-lg font-bold text-neutral-900 mb-3">
-        Lateral
-      </h2>
+      <h2 class="text-lg font-bold text-neutral-900 mb-3">Lateral</h2>
 
       <div class="space-y-3">
+
         <div class="flex items-center gap-3">
-          <label
-            class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
-          >
-            <input
-              type="file"
-              accept="image/*"
-              class="sr-only"
-              (change)="onFileSelected($event, 'lateral')"
-            />
+          <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm text-white">
+            <input type="file" accept="image/*" class="sr-only"
+                   (change)="onFileSelected($event, 'lateral')" />
             Seleccionar foto
           </label>
 
           <span class="text-sm text-neutral-600 truncate max-w-[220px]">
-            {{ formFotos.lateral.archivo?.name || '—' }}
+            {{ formFotos.lateral.archivo?.name || formFotos.lateral.archivoNombre || '—' }}
           </span>
 
-          <button
-            type="button"
-            (click)="eliminarFoto('lateral')"
-            class="ml-auto inline-flex items-center justify-center rounded-full bg-black text-white hover:bg-neutral-800 w-6 h-6"
-          >
-            ×
-          </button>
+          <button type="button" (click)="eliminarFoto('lateral')"
+            class="ml-auto w-6 h-6 rounded-full bg-black text-white hover:bg-neutral-800">×</button>
         </div>
 
-        <div *ngIf="formFotos.lateral.preview" class="mt-2">
-          <img
-            [src]="formFotos.lateral.preview"
-            alt="Vista previa lateral"
-            style="width:302px; height:151px; object-fit:cover; border:1px solid #ccc; border-radius:6px;"
-          />
-        </div>
+        <img *ngIf="formFotos.lateral.preview" [src]="formFotos.lateral.preview"
+             style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
-        <input
-          type="text"
-          [(ngModel)]="formFotos.lateral.descripcion"
-          placeholder="Descripción"
-          class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-        />
+        <input type="text" [(ngModel)]="formFotos.lateral.descripcion"
+               placeholder="Descripción"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-        <input
-          type="text"
-          [(ngModel)]="formFotos.lateral.etiqueta"
-          placeholder="Etiqueta"
-          class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm"
-        />
+        <input type="text" [(ngModel)]="formFotos.lateral.etiqueta"
+               placeholder="Etiqueta"
+               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
       </div>
     </div>
+
   </section>
 
-  <!-- Botones: Crear / Editar -->
-  <div *ngIf="clienteCargado" class="flex justify-end gap-3 mt-6">
+  <!-- BOTONES -->
+ <div class="flex justify-end items-center gap-3 mt-6">
 
-
-    <!-- Botón subir fotos -->
-<div class="flex justify-between mt-6">
-
-  <!-- BOTÓN CANCELAR (IZQUIERDA) -->
+  <!-- CANCELAR -->
   <button
     type="button"
     (click)="cancelarAccion()"
-    class="bg-black text-white font-semibold 
-           px-4 py-2 rounded-full 
+    class="bg-black text-white font-semibold px-4 py-2 rounded-full
            hover:bg-gray-800 transition active:scale-95">
     CANCELAR
   </button>
 
-  <!-- BOTÓN SUBIR / ACTUALIZAR (DERECHA) -->
+  <!-- SUBIR / ACTUALIZAR -->
   <button
     type="button"
-    (click)="subirFotos()"
-    class="bg-[#7CE54F] cursor-pointer text-black font-semibold 
-           px-4 py-2 rounded-full 
+    (click)="idEdicion ? editarFotos() : subirFotos()"
+    class="bg-[#7CE54F] text-black font-semibold px-4 py-2 rounded-full 
            hover:bg-[#004D00] hover:text-white transition active:scale-95">
     {{ idEdicion ? "ACTUALIZAR FOTOS" : "SUBIR FOTOS" }}
   </button>
 
 </div>
 
-  </div>
+
 </div>

@@ -11,6 +11,7 @@ interface FotoData {
   descripcion: string;
   etiqueta: string;
   preview: string | null;
+  archivoNombre?: string; // ← NUEVO
 }
 
 @Component({
@@ -57,7 +58,7 @@ export class SubirFotografia {
     const doc = (this.terminoBusqueda || '').trim();
 
     if (!doc) {
-      this.resetFormulario(); // limpia todo si borra la barra
+      this.resetFormulario();
       return;
     }
 
@@ -84,16 +85,16 @@ export class SubirFotografia {
         this.clienteCargado = true;
         this.terminoBusqueda = '';
 
-        // 🔎 Buscar si ya tiene fotos registradas HOY
+        // Ver si tiene fotos HOY
         this.cargarFotosDeHoy();
       },
 
-      error: () => alert('⚠️ Hubo un problema al realizar la búsqueda.')
+      error: () => alert('⚠️ Error buscando cliente.')
     });
   }
 
   // ============================
-  // CARGAR FOTOS DE HOY (SI EXISTEN)
+  // CARGAR FOTOS DE HOY
   // ============================
   cargarFotosDeHoy() {
     const hoy = new Date().toISOString().slice(0, 10);
@@ -102,26 +103,24 @@ export class SubirFotografia {
       (fotos: any[]) => {
 
         if (!fotos || fotos.length === 0) {
-          // No tiene fotos → formulario limpio pero cliente queda cargado
           this.resetSoloFotos();
           return;
         }
 
-        // Buscar si tiene registro HOY
         const fotoHoy = fotos.find(f => f.FECHA__REGISTRO === hoy);
 
         if (!fotoHoy) {
-          // Tiene fotos, pero no de hoy → formulario limpio (para subir nuevas)
           this.resetSoloFotos();
           return;
         }
 
-        // ==========================
-        // Tiene fotos HOY → modo edición
-        // ==========================
+        // ---------------------------
+        // MODO EDICIÓN
+        // ---------------------------
         this.idEdicion = fotoHoy.ID_FOTOGRAFIA;
         this.fechaRegistro = fotoHoy.FECHA__REGISTRO;
 
+        // TEXTOS
         this.formFotos.frontal.descripcion = fotoHoy.DESC_FRONTAL || '';
         this.formFotos.frontal.etiqueta    = fotoHoy.ETIQUETA_FRONTAL || '';
 
@@ -131,18 +130,18 @@ export class SubirFotografia {
         this.formFotos.posterior.descripcion = fotoHoy.DESC_POSTERIOR || '';
         this.formFotos.posterior.etiqueta    = fotoHoy.ETIQUETA_POSTERIOR || '';
 
-        // Vista previa de las fotos almacenadas en el servidor
-        this.formFotos.frontal.preview =
-          this.baseFotosUrl + fotoHoy.URL_FOTO_FRONTAL;
+        // PREVIEW
+        this.formFotos.frontal.preview   = this.baseFotosUrl + fotoHoy.URL_FOTO_FRONTAL;
+        this.formFotos.lateral.preview   = this.baseFotosUrl + fotoHoy.URL_FOTO_LATERAL;
+        this.formFotos.posterior.preview = this.baseFotosUrl + fotoHoy.URL_FOTO_POSTERIOR;
 
-        this.formFotos.lateral.preview =
-          this.baseFotosUrl + fotoHoy.URL_FOTO_LATERAL;
-
-        this.formFotos.posterior.preview =
-          this.baseFotosUrl + fotoHoy.URL_FOTO_POSTERIOR;
+        // NOMBRES
+        this.formFotos.frontal.archivoNombre   = fotoHoy.URL_FOTO_FRONTAL.split('/').pop();
+        this.formFotos.lateral.archivoNombre   = fotoHoy.URL_FOTO_LATERAL.split('/').pop();
+        this.formFotos.posterior.archivoNombre = fotoHoy.URL_FOTO_POSTERIOR.split('/').pop();
       },
 
-      (error) => console.error('Error al cargar fotos del cliente:', error)
+      (error) => console.error('Error cargando fotos:', error)
     );
   }
 
@@ -153,6 +152,7 @@ export class SubirFotografia {
     const archivo = event.target.files[0];
     if (archivo) {
       this.formFotos[tipo].archivo = archivo;
+      this.formFotos[tipo].archivoNombre = archivo.name;
 
       const reader = new FileReader();
       reader.onload = () => (this.formFotos[tipo].preview = reader.result as string);
@@ -161,7 +161,7 @@ export class SubirFotografia {
   }
 
   // ============================
-  // ELIMINAR FOTO
+  // ELIMINAR UNA FOTO
   // ============================
   eliminarFoto(tipo: TipoFoto) {
     this.formFotos[tipo] = {
@@ -169,67 +169,37 @@ export class SubirFotografia {
       descripcion: '',
       etiqueta: '',
       preview: null,
+      archivoNombre: undefined
     };
   }
 
   // ============================
-  // EDITAR FOTO EXISTENTE
-  // (este lo puedes usar si lanzas edición desde una tabla)
-  // ============================
-  cargarFotografiaParaEditar(foto: any) {
-    this.idEdicion = foto.ID_FOTOGRAFIA;
-    this.fechaRegistro = foto.FECHA__REGISTRO;
-
-    this.formFotos.frontal.descripcion = foto.DESC_FRONTAL || '';
-    this.formFotos.frontal.etiqueta    = foto.ETIQUETA_FRONTAL || '';
-
-    this.formFotos.lateral.descripcion = foto.DESC_LATERAL || '';
-    this.formFotos.lateral.etiqueta    = foto.ETIQUETA_LATERAL || '';
-
-    this.formFotos.posterior.descripcion = foto.DESC_POSTERIOR || '';
-    this.formFotos.posterior.etiqueta    = foto.ETIQUETA_POSTERIOR || '';
-
-    this.formFotos.frontal.preview   = this.baseFotosUrl + foto.URL_FOTO_FRONTAL;
-    this.formFotos.lateral.preview   = this.baseFotosUrl + foto.URL_FOTO_LATERAL;
-    this.formFotos.posterior.preview = this.baseFotosUrl + foto.URL_FOTO_POSTERIOR;
-
-    alert("🔧 Modo edición activado");
-  }
-
-  // ============================
-  // EDITAR (solo si es HOY)
+  // EDITAR FOTOS
   // ============================
   editarFotos() {
-    if (!this.idEdicion) {
-      alert("⚠️ No hay registro para editar.");
-      return;
-    }
+    if (!this.idEdicion) return alert("⚠️ No hay registro para editar.");
 
     const hoy = new Date().toISOString().slice(0, 10);
-
     if (this.fechaRegistro !== hoy) {
-      alert("⚠️ Solo puedes editar fotos registradas HOY.");
-      return;
+      return alert("⚠️ Solo puedes editar fotos del día actual.");
     }
 
     const formData = new FormData();
     formData.append("cliente", this.idCliente.toString());
 
-    if (this.formFotos.frontal.archivo) {
+    // Solo enviar archivos si fueron reemplazados
+    if (this.formFotos.frontal.archivo)
       formData.append("foto_frontal", this.formFotos.frontal.archivo);
-    }
     formData.append("desc_frontal", this.formFotos.frontal.descripcion);
     formData.append("etiqueta_frontal", this.formFotos.frontal.etiqueta);
 
-    if (this.formFotos.lateral.archivo) {
+    if (this.formFotos.lateral.archivo)
       formData.append("foto_lateral", this.formFotos.lateral.archivo);
-    }
     formData.append("desc_lateral", this.formFotos.lateral.descripcion);
     formData.append("etiqueta_lateral", this.formFotos.lateral.etiqueta);
 
-    if (this.formFotos.posterior.archivo) {
+    if (this.formFotos.posterior.archivo)
       formData.append("foto_posterior", this.formFotos.posterior.archivo);
-    }
     formData.append("desc_posterior", this.formFotos.posterior.descripcion);
     formData.append("etiqueta_posterior", this.formFotos.posterior.etiqueta);
 
@@ -242,58 +212,55 @@ export class SubirFotografia {
           alert("⚠️ " + res.mensaje);
         }
       },
-      error: () => alert("❌ Error al editar fotografías")
+      error: () => alert("❌ Error al editar fotografías.")
     });
   }
 
   // ============================
-  // SUBIR FOTOS (NUEVO REGISTRO)
+  // SUBIR FOTOS NUEVAS
   // ============================
   subirFotos() {
-    if (!this.clienteSeleccionado) {
-      alert("⚠️ Debes seleccionar primero un cliente.");
-      return;
-    }
+    if (!this.clienteSeleccionado)
+      return alert("⚠️ Selecciona un cliente primero.");
 
     const formData = new FormData();
     formData.append('cliente', this.idCliente.toString());
-    formData.append('usuario', '1'); // puedes cambiar por el usuario logueado
+    formData.append('usuario', '1');
     formData.append('identificacion', this.identificacionCliente);
 
-    if (this.formFotos.frontal.archivo) {
+    if (this.formFotos.frontal.archivo)
       formData.append('foto_frontal', this.formFotos.frontal.archivo);
-    }
+
     formData.append('desc_frontal', this.formFotos.frontal.descripcion);
     formData.append('etiqueta_frontal', this.formFotos.frontal.etiqueta);
 
-    if (this.formFotos.lateral.archivo) {
+    if (this.formFotos.lateral.archivo)
       formData.append('foto_lateral', this.formFotos.lateral.archivo);
-    }
+
     formData.append('desc_lateral', this.formFotos.lateral.descripcion);
     formData.append('etiqueta_lateral', this.formFotos.lateral.etiqueta);
 
-    if (this.formFotos.posterior.archivo) {
+    if (this.formFotos.posterior.archivo)
       formData.append('foto_posterior', this.formFotos.posterior.archivo);
-    }
+
     formData.append('desc_posterior', this.formFotos.posterior.descripcion);
     formData.append('etiqueta_posterior', this.formFotos.posterior.etiqueta);
 
     this.fotografiaService.insertar(formData).subscribe({
       next: (res) => {
         if (res.resultado === 'OK') {
-          alert('📸 Fotografías guardadas correctamente.');
-          // Full reset: limpia cliente y formulario
+          alert("📸 Fotografías guardadas correctamente.");
           this.resetFormulario();
         } else {
-          alert('⚠️ Error: ' + res.mensaje);
+          alert("⚠️ Error: " + res.mensaje);
         }
       },
-      error: () => alert('❌ Error al subir las fotografías.')
+      error: () => alert("❌ Error al subir fotografías.")
     });
   }
 
   // ============================
-  // RESET SOLO FOTOS (mantiene cliente)
+  // RESETEAR SOLO FOTOS
   // ============================
   private resetSoloFotos() {
     this.formFotos = {
@@ -307,7 +274,7 @@ export class SubirFotografia {
   }
 
   // ============================
-  // RESET COMPLETO DEL FORMULARIO
+  // RESET TOTAL
   // ============================
   resetFormulario() {
     this.resetSoloFotos();
@@ -320,8 +287,12 @@ export class SubirFotografia {
     this.terminoBusqueda = '';
   }
 
+  // ===========================
+  // CANCELAR
+  // ===========================
   cancelarAccion() {
-  this.resetFormulario();
-  alert("🔄 Acción cancelada.");
-}
+    this.resetFormulario();
+    alert("🔄 Acción cancelada.");
+  }
+
 }

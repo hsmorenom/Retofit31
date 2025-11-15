@@ -3,60 +3,8 @@
         Bienvenido(a) {{ tipoUsuario | titlecase }}(a) {{ nombreCompleto }}
     </h2>
 
-    <!-- Tarjetas resumen -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-[#E1E1E1] p-4 shadow rounded-lg text-center">
-            <div class="font-semibold">Usuarios Activos Hoy</div>
-            <div class="text-2xl font-bold text-green-600">125</div>
-        </div>
-        <div class="bg-[#E1E1E1] p-4 shadow rounded-lg text-center">
-            <div class="font-semibold">Nuevos Registros</div>
-            <div class="text-2xl font-bold text-green-600">18</div>
-        </div>
-        <div class="bg-[#E1E1E1] p-4 shadow rounded-lg text-center">
-            <div class="font-semibold">Suscripciones vigentes</div>
-            <div class="text-2xl font-bold text-green-600">210</div>
-        </div>
-        <div class="bg-[#E1E1E1] p-4 shadow rounded-lg text-center">
-            <div class="font-semibold">Eventos próximos</div>
-            <div class="text-2xl font-bold text-green-600">3</div>
-        </div>
-    </div>
-
-    <!-- Gráficas y notificaciones -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
-        <!-- Gráfica de asistencia -->
-        <div class="bg-white p-4 shadow-lg rounded-lg h-fit">
-            <h3 class="font-semibold text-2xl mb-2">Tendencias de asistencia</h3>
-            <!-- Aquí va la gráfica -->
-            <canvas id="asistenciaChart"></canvas>
-        </div>
-
-        <!-- Gráfica antropométrica -->
-        <div class="bg-white p-4 shadow-lg rounded-lg h-fit">
-            <h3 class="font-semibold text-2xl mb-2">Tendencias antropométricas</h3>
-            <canvas id="antropometricaChart" class="h-fit"></canvas>
-        </div>
-    </div>
-
-    <!-- Segunda fila -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Resumen financiero -->
-        <div class="bg-white p-4 shadow-lg rounded-lg h-fit">
-            <h3 class="font-semibold text-2xl mb-2">Resumen financiero</h3>
-            <canvas id="financieroChart"></canvas>
-            <h2 class="mt-4 text-right text-xl font-semibold text-black">Recaudo</h2>
-            <div class="mt-4 text-right text-2xl font-bond text-black">$4.560.432,34</div>
-        </div>
-
-        <!-- Notificaciones -->
-        <div class="bg-white p-4 shadow-lg rounded-lg">
-            <h3 class="font-semibold  text-2xl mb-2">Notificaciones</h3>
-            <ul class="list-disc pl-6 space-y-1">
-                <li>4 suscripciones expiradas</li>
-                <li>5 fotos están invalidadas</li>
-                <li>3 eventos empiezan el 5 de junio de 2026</li>
-            </ul>
-        </div>
-    </div>
+    <app-administrador *ngIf="tipoUsuario === 'Administrador'"></app-administrador>
+    <app-asistente-admon *ngIf="tipoUsuario === 'Asistente Administrativo'"></app-asistente-admon>
+    <app-asistente-salud-deportiva *ngIf="tipoUsuario === 'Asistente de Salud Deportiva'"></app-asistente-salud-deportiva>
+    <app-usuario *ngIf="tipoUsuario === 'Usuario'"></app-usuario>
 </div>

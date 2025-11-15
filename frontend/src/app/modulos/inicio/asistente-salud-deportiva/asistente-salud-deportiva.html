@@ -1,0 +1,86 @@
+<div class="w-full px-4 md:px-10 py-6 space-y-10">
+
+  <!-- =====================================================
+       TARJETAS SUPERIORES (3)
+  ====================================================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- CARD 1 -->
+    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
+      <div class="text-4xl">📋</div>
+      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
+        Evaluaciones físicas pendientes
+      </p>
+      <p class="text-3xl font-bold mt-2">125</p>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
+      <div class="text-4xl">➕</div>
+      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
+        Mediciones Antropométricas por verificar
+      </p>
+      <p class="text-3xl font-bold mt-2">18</p>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
+      <div class="text-4xl">📸</div>
+      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
+        Fotografías nuevas por revisar
+      </p>
+      <p class="text-3xl font-bold mt-2">210</p>
+    </div>
+
+  </div>
+
+  <!-- =====================================================
+       FILA: EVENTOS & GRÁFICA ANTROPOMÉTRICA
+  ====================================================== -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+    <!-- PROXIMOS EVENTOS -->
+    <div class="bg-white rounded-xl shadow-md border p-6">
+      <h2 class="text-xl font-semibold mb-4">Próximos eventos</h2>
+
+      <div class="space-y-6 text-gray-800">
+
+        <!-- Evento 1 -->
+        <div>
+          <p class="font-semibold">Evaluación física</p>
+          <p class="text-lg font-bold mt-1">10 Jun - 7:00 PM</p>
+        </div>
+
+        <!-- Evento 2 -->
+        <div>
+          <p class="font-semibold">Control nutricional</p>
+          <p class="text-lg font-bold mt-1">11 Jun - 7:00 PM</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GRÁFICA ANTROPOMÉTRICA -->
+    <div class="bg-white shadow-md rounded-xl border p-6">
+      <h2 class="text-xl font-semibold mb-4">Tendencias antropométricas</h2>
+      <canvas id="graficaAntropometrica"></canvas>
+    </div>
+
+  </div>
+
+  <!-- =====================================================
+       NOTIFICACIONES
+  ====================================================== -->
+  <div class="bg-white rounded-xl shadow-md border p-6">
+
+    <h2 class="text-xl font-semibold mb-4">Notificaciones</h2>
+
+    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+      <li>4 planes nutricionales por diseñar</li>
+      <li>5 fotos están invalidadas</li>
+      <li>3 usuarios en estado de sobrepeso</li>
+    </ul>
+
+  </div>
+
+</div>

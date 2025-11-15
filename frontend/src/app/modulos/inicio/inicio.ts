@@ -5,12 +5,24 @@ import { UsuarioService } from '../../services/usuario';
 import { ClienteService } from '../../services/cliente';
 import { CommonModule } from '@angular/common';
 
+import { Administrador } from './administrador/administrador';
+import { AsistenteAdmon } from './asistente-admon/asistente-admon';
+import { AsistenteSaludDeportiva } from './asistente-salud-deportiva/asistente-salud-deportiva';
+import { Usuario } from './usuario/usuario';
+
+
+
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    Administrador,
+    AsistenteAdmon,
+    AsistenteSaludDeportiva,
+    Usuario
+  ],
   templateUrl: './inicio.html'
 })
 export class Inicio implements AfterViewInit, OnInit {

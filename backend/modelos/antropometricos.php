@@ -26,12 +26,12 @@ class AntropometricosModelo
             a.CIRCUNFERENCIA_CINTURA,
             a.CIRCUNFERENCIA_CADERA,
             a.FECHA_REGISTRO,
-            a.USUARIO,
+            a.USUARIO
         FROM antropometricos a
         INNER JOIN cliente c ON a.CLIENTE = c.ID_CLIENTE
         INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
         WHERE u.TIPO_USUARIO = :tipo
-        ORDER BY e.FECHA_ACTIVIDAD DESC";
+        ORDER BY a.FECHA_REGISTRO DESC";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':tipo', $tipoUsuario);

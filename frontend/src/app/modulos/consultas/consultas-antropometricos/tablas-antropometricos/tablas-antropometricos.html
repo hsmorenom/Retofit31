@@ -1,0 +1,41 @@
+<div class="mt-6 overflow-x-auto rounded-2xl shadow-md">
+
+  <table class="min-w-full border-collapse bg-white">
+
+    <thead class="bg-[#404040] text-white font-oswald text-sm">
+      <tr>
+        <th class="px-4 py-2">Identificación</th>
+        <th class="px-4 py-2">Cliente</th>
+        <th class="px-4 py-2">Sexo</th>
+        <th class="px-4 py-2">Edad</th>
+        <th class="px-4 py-2">Fecha</th>
+        <th class="px-4 py-2">Valor</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (item of resultados; track $index) {
+        <tr class="border-b hover:bg-gray-100 transition">
+
+          <td class="px-4 py-2">{{ item.IDENTIFICACION }}</td>
+
+          <td class="px-4 py-2 font-roboto">
+            {{ item.NOMBRES }} {{ item.APELLIDOS }}
+          </td>
+
+          <td class="px-4 py-2">{{ item.SEXO }}</td>
+
+          <td class="px-4 py-2">{{ item.EDAD }}</td>
+
+          <td class="px-4 py-2">{{ item.FECHA }}</td>
+
+          <td class="px-4 py-2 font-semibold">{{ item.VALOR }}</td>
+
+        </tr>
+      }
+    </tbody>
+
+  </table>
+
+</div>
+

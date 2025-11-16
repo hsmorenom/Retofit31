@@ -20,7 +20,7 @@ export class ConsultasAntropometricos {
   }
 
   recibirGrafica(base64: string) {
-    console.log("Gráfica recibida desde graficos-asistencia");
+    console.log("Gráfica recibida desde graficos-antropometricos");
     this.graficaBase64 = base64;
   }
 

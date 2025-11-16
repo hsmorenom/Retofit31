@@ -77,7 +77,7 @@ export class CapturaAsistencia {
       return;
     }
 
-    const idCliente = localStorage.getItem('idCliente');
+    const idCliente = localStorage.getItem('id_cliente');
     if (!idCliente) {
       alert('⚠️ No se encontró un cliente logueado.');
       return;

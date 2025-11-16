@@ -43,7 +43,7 @@ export class Perfil implements OnInit {
 
 
   cargarDatosUsuario(): void {
-    const idClienteStr = localStorage.getItem('idCliente');
+    const idClienteStr = localStorage.getItem('id_cliente');
 
     if (!idClienteStr || isNaN(Number(idClienteStr))) {
       console.error('⚠️ No hay usuario logueado o el ID es inválido');

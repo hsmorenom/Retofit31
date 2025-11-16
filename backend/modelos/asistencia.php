@@ -142,11 +142,14 @@ class AsistenciaModelo
             $fechaEvento = new DateTime($evento['FECHA_ACTIVIDAD'] . ' ' . $evento['HORA_INICIO'], $zona);
             $fechaFinEvento = new DateTime($evento['FECHA_ACTIVIDAD'] . ' ' . $evento['HORA_FIN'], $zona);
 
-            // 🕒 Comparaciones con hora local
-            if ($fechaActual < $fechaEvento) {
+            // ⏳ Permitir registro hasta 15 minutos ANTES del inicio
+            $fechaPermitida = clone $fechaEvento;
+            $fechaPermitida->modify('-15 minutes');
+
+            if ($fechaActual < $fechaPermitida) {
                 return [
                     'resultado' => 'PENDIENTE',
-                    'mensaje' => 'El evento aún no ha comenzado. Intenta más tarde.'
+                    'mensaje' => 'Aún no puedes registrar asistencia. Solo se permite desde 15 minutos antes del inicio.'
                 ];
             }
 
@@ -170,7 +173,9 @@ class AsistenciaModelo
             if (!$tipoUsuario || (int) $tipoUsuario !== 4) {
                 return [
                     'resultado' => 'NO_CLIENTE',
-                    'mensaje' => 'Solo los usuarios tipo cliente pueden registrar asistencia.'
+                    'resultado1' => 'DEBUG',
+                    'mensaje' => 'Cliente recibido: ' . $id_cliente
+                    // 'mensaje' => 'Solo los usuarios tipo cliente pueden registrar asistencia.'
                 ];
             }
 

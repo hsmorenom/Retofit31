@@ -156,9 +156,6 @@ function generarInformePDF($datos)
         if (!empty($datos->metrica)) {
             $html .= "<p><b>Métrica evaluada:</b> {$datos->metrica}</p>";
         }
-
-
-        $html .= "<p><b>Métrica evaluada:</b> {$datos->metrica}</p>";
     }
 
     // ===============================
@@ -269,7 +266,12 @@ function generarInformePDF($datos)
     if (!empty($datos->grafica)) {
         $html .= "
             <div class='section-title'>Gráfica</div>
-            <img src='{$datos->grafica}' style='width:100%; margin-top:10px;'>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <img src='{$datos->grafica}' style='width:70%; margin-top:10px;margin-left:100px'>
         ";
     }
 
@@ -278,7 +280,6 @@ function generarInformePDF($datos)
     // ===============================
     $html .= "
         <div class='footer'>
-            Página {PAGE_NUM} de {PAGE_COUNT}
         </div>
     </body>
     </html>";
@@ -287,6 +288,17 @@ function generarInformePDF($datos)
     $pdf->loadHtml($html);
     $pdf->setPaper('A4', 'vertical');
     $pdf->render();
+    $canvas = $pdf->get_canvas();
+    $font = $pdf->getFontMetrics()->getFont("Helvetica", "normal");
+    $canvas->page_text(
+        500,  // posición X
+        820,  // posición Y (abajo de la hoja)
+        "Página {PAGE_NUM} de {PAGE_COUNT}",
+        $font,
+        10,
+        array(0, 0, 0)
+    );
+
 
     // Guardar archivo
     $nombrePDF = 'informe_' . time() . '.pdf';

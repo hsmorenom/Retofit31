@@ -140,7 +140,7 @@ class UsuarioModelo
     public function login($email, $clave)
     {
         try {
-            $sql = "SELECT u.ID_USUARIO, u.EMAIL, u.CLAVE, c.ID_CLIENTE, u.ESTADO 
+            $sql = "SELECT u.ID_USUARIO, u.EMAIL, u.CLAVE, c.ID_CLIENTE, u.ESTADO, u.TIPO_USUARIO,c.IDENTIFICACION
                 FROM usuario u 
                 LEFT JOIN cliente c ON c.USUARIO = u.ID_USUARIO 
                 WHERE u.EMAIL = :email";

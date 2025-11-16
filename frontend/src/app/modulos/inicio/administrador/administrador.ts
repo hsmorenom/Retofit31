@@ -1,10 +1,13 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { UsuarioService } from '../../../services/usuario';
 import { ClienteService } from '../../../services/cliente';
 import { EventosService } from '../../../services/eventos';
 import { AntropometricosService } from '../../../services/antropometricos';
-import { Chart, registerables } from 'chart.js';Chart.register(...registerables);
+import { AsistenciaService } from '../../../services/asistencia';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-administrador',
@@ -12,256 +15,233 @@ import { Chart, registerables } from 'chart.js';Chart.register(...registerables)
   imports: [CommonModule],
   templateUrl: './administrador.html'
 })
-export class Administrador implements OnInit, AfterViewInit {
+export class Administrador implements OnInit {
 
   usuariosActivos = 0;
   nuevosRegistros = 0;
   eventosProximosCantidad = 0;
 
-promPeso = 0;
-promIMC = 0;
-promPGC = 0;
-promCuello = 0;
+asistenciaUltimos6Meses: number[] = [];
+labelsAsistencia: string[] = [];
+graficoAsistencia: any = null;
 
+  promPeso = 0;
+  promIMC = 0;
+  promPGC = 0;
+  promCuello = 0;
 
+  radarChart: any;
 
   constructor(
-    private usuarioService: UsuarioService
-    , private clienteService: ClienteService
-    , private eventosService: EventosService
-    , private antropometricosService: AntropometricosService
+    private usuarioService: UsuarioService,
+    private clienteService: ClienteService,
+    private eventosService: EventosService,
+    private antropometricosService: AntropometricosService,
+    private asistenciaService: AsistenciaService
   ) {}
 
   ngOnInit(): void {
     this.cargarUsuariosActivos();
     this.cargarNuevosRegistros();
     this.cargarEventosProximos();
-    this.cargarTendenciaAntropometrica();
-    this.cargarPromedios();
+    this.cargarTendenciaAntropometrica();  // SOLO ESTA
+    this.cargarTendenciaAsistencia();
   }
-  ngAfterViewInit(): void {
-    // Esperar a que Angular dibuje el canvas
-    setTimeout(() => {
-      this.generarGraficaRadar();
-    }, 200);
-  }
+cargarTendenciaAsistencia() {
+  this.asistenciaService.consultar().subscribe({
+    next: (data: any[]) => {
+
+      const hoy = new Date();
+      const hace6Meses = new Date();
+      hace6Meses.setMonth(hoy.getMonth() - 6);
+
+      // FILTRAR REGISTROS POR FECHA_ASISTENCIA
+      const filtrados = data.filter(a => {
+        const fecha = new Date(a.FECHA_ASISTENCIA);
+        return fecha >= hace6Meses && fecha <= hoy;
+      });
+
+      // FILTRAR SOLO ASISTENCIAS VÁLIDAS
+      const validos = filtrados.filter(a =>
+        a.NOTIFICACION.includes('Asistió') ||
+        a.NOTIFICACION.includes('automáticamente')
+      );
+
+      // AGRUPAR POR MES
+      const conteoPorMes: { [key: string]: number } = {};
+
+      validos.forEach(as => {
+        const f = new Date(as.FECHA_ASISTENCIA);
+        const key = `${f.getFullYear()}-${('0' + (f.getMonth()+1)).slice(-2)}`;
+        if (!conteoPorMes[key]) conteoPorMes[key] = 0;
+        conteoPorMes[key]++;
+      });
+
+      const mesesOrdenados = Object.keys(conteoPorMes).sort();
+
+      this.labelsAsistencia = mesesOrdenados.map(m => this.nombreMes(Number(m.split('-')[1])));
+      this.asistenciaUltimos6Meses = mesesOrdenados.map(m => conteoPorMes[m]);
+
+      this.generarGraficoAsistencia();
+    }
+  });
+}
+
+
+nombreMes(m: number) {
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return meses[m - 1];
+}
 
   cargarUsuariosActivos() {
     this.usuarioService.consultar().subscribe({
       next: (data: any[]) => {
-
-        if (!data || data.length === 0) {
-          this.usuariosActivos = 0;
-          return;
-        }
-
-        // Filtrar usuarios activos (ESTADO = 1)
         this.usuariosActivos = data.filter(u => Number(u.ESTADO) === 1).length;
-
-        console.log("Usuarios activos hoy:", this.usuariosActivos);
-      },
-      error: err => console.error("Error cargando usuarios:", err)
+      }
     });
   }
 
   cargarNuevosRegistros() {
-  this.clienteService.consultar().subscribe({
-    next: (clientes: any[]) => {
+    this.clienteService.consultar().subscribe({
+      next: (clientes: any[]) => {
+        const hoy = new Date();
+        const hace30dias = new Date();
+        hace30dias.setDate(hoy.getDate() - 30);
 
-      if (!clientes || clientes.length === 0) {
-        this.nuevosRegistros = 0;
-        return;
+        this.nuevosRegistros = clientes.filter(c => {
+          const f = new Date(c.FECHA_REGISTRO);
+          return f >= hace30dias && f <= hoy;
+        }).length;
       }
+    });
+  }
 
-      const hoy = new Date();
-      const hace30dias = new Date();
-      hace30dias.setDate(hoy.getDate() - 30);  // ⬅️ Últimos 30 días
+  cargarEventosProximos() {
+    this.eventosService.consultar().subscribe({
+      next: (data: any[]) => {
+        const hoy = new Date();
+        hoy.setHours(0,0,0,0);
 
-      // Filtrar por FECHA_REGISTRO dentro del rango
-      const nuevos = clientes.filter(cliente => {
-
-        const fechaRegistro = new Date(cliente.FECHA_REGISTRO);
-
-        return fechaRegistro >= hace30dias && fechaRegistro <= hoy;
-
-      });
-
-      this.nuevosRegistros = nuevos.length;
-
-      console.log("📌 Nuevos registros (últimos 30 días):", this.nuevosRegistros);
-    },
-    error: err => console.error("❌ Error cargando clientes:", err)
-  });
-}
-
-cargarEventosProximos() {
-  this.eventosService.consultar().subscribe({
-    next: (data: any[]) => {
-
-      if (!data || data.length === 0) {
-        this.eventosProximosCantidad = 0;
-        return;
+        this.eventosProximosCantidad = data.filter(e => {
+          const f = new Date(e.FECHA_ACTIVIDAD);
+          f.setHours(0,0,0,0);
+          return f >= hoy;
+        }).length;
       }
+    });
+  }
 
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0); // limpiar hora
-
-      // Filtrar solo eventos desde hoy en adelante
-      const futuros = data.filter(evento => {
-        const fechaEvento = new Date(evento.FECHA_ACTIVIDAD);
-        fechaEvento.setHours(0, 0, 0, 0);
-        return fechaEvento >= hoy;
-      });
-
-      this.eventosProximosCantidad = futuros.length;
-
-      console.log("📌 Eventos próximos:", this.eventosProximosCantidad);
-    },
-    error: err => console.error("❌ Error consultando eventos:", err)
-  });
-}
-
-cargarTendenciaAntropometrica() {
-  this.antropometricosService.consultar().subscribe({
-    next: (data: any[]) => {
-
-      if (!data || data.length === 0) {
-        return;
-      }
-
-      // Sumar valores reales
-      let sumaPeso = 0;
-      let sumaIMC = 0;
-      let sumaPGC = 0;
-      let sumaCuello = 0;
-
-      data.forEach(reg => {
-        sumaPeso += Number(reg.PESO);
-        sumaIMC += Number(reg.IMC);
-        sumaPGC += Number(reg.PGC);
-        sumaCuello += Number(reg.CUELLO);
-      });
-
-      const total = data.length;
-
-      // Calcular promedios
-      this.promPeso = +(sumaPeso / total).toFixed(1);
-      this.promIMC = +(sumaIMC / total).toFixed(1);
-      this.promPGC = +(sumaPGC / total).toFixed(1);
-      this.promCuello = +(sumaCuello / total).toFixed(1);
-
-      // Crear gráfico
-      this.graficaAntropometrica();
-    },
-
-    error: err => console.error("Error cargando antropometría:", err)
-  });
-}
-
-graficaAntropometrica() {
-  const ctx = document.getElementById('graficaAntropometrica') as HTMLCanvasElement;
-
-  new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: ['peso', 'IMC', 'PGC', 'Circunferencia cuello'],
-      datasets: [
-        {
-          label: 'Promedios',
-          data: [this.promPeso, this.promIMC, this.promPGC, this.promCuello],
-
-          backgroundColor: 'rgba(34,197,94,0.3)',       // verde suave
-          borderColor: '#16a34a',                       // verde fuerte
-          pointBackgroundColor: '#16a34a',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          borderWidth: 3,
-          borderDash: [5, 5],                           // línea punteada
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        r: {
-          angleLines: {
-            display: true,
-            color: '#ddd'
-          },
-          grid: {
-            color: '#eee'
-          },
-          suggestedMin: 0
-        }
-      }
-    }
-  });
-}
-cargarPromedios() {
+  cargarTendenciaAntropometrica() {
     this.antropometricosService.consultar().subscribe({
       next: (data: any[]) => {
 
-        if (!data || data.length === 0) return;
+        const hoy = new Date();
+        const hace6Meses = new Date();
+        hace6Meses.setMonth(hoy.getMonth() - 6);
+
+        const ultimos = data.filter(r => {
+          const fecha = new Date(r.FECHA_REGISTRO);
+          return fecha >= hace6Meses && fecha <= hoy;
+        });
+
+        if (ultimos.length === 0) return;
 
         let sPeso = 0, sIMC = 0, sPGC = 0, sCuello = 0;
 
-        data.forEach(r => {
-          sPeso += Number(r.PESO);
-          sIMC += Number(r.IMC);
-          sPGC += Number(r.PGC);
-          sCuello += Number(r.CUELLO);
+        ultimos.forEach(reg => {
+          sPeso += Number(reg.PESO);
+          sIMC += Number(reg.IMC);
+          sPGC += Number(reg.PGC);
+          sCuello += Number(reg.CUELLO);
         });
 
-        const total = data.length;
+        const total = ultimos.length;
 
         this.promPeso = +(sPeso / total).toFixed(1);
         this.promIMC = +(sIMC / total).toFixed(1);
         this.promPGC = +(sPGC / total).toFixed(1);
         this.promCuello = +(sCuello / total).toFixed(1);
 
-        console.log("Promedios:", this.promPeso, this.promIMC, this.promPGC, this.promCuello);
+        this.generarGraficaRadar();
       }
     });
   }
 
   generarGraficaRadar() {
     const canvas: any = document.getElementById('graficaAntropometrica');
+    if (!canvas) return;
 
-    if (!canvas) {
-      console.error("⚠️ No se encontró el canvas graficaAntropometrica");
-      return;
-    }
+    // Si ya existe un gráfico previo, destruirlo
+    if (this.radarChart) this.radarChart.destroy();
 
-    new Chart(canvas, {
+    this.radarChart = new Chart(canvas, {
       type: 'radar',
       data: {
-        labels: ['peso', 'IMC', 'PGC', 'Circunferencia cuello'],
+        labels: ['Peso', 'IMC', 'PGC', 'Circunferencia cuello'],
         datasets: [
           {
-            label: 'Tendencias',
+            label: 'Tendencia últimos 6 meses',
             data: [this.promPeso, this.promIMC, this.promPGC, this.promCuello],
-            backgroundColor: 'rgba(34,197,94,0.3)',
+            backgroundColor: 'rgba(34,197,94,0.25)',
             borderColor: '#16a34a',
             borderWidth: 3,
             borderDash: [5,5],
-            pointBackgroundColor: '#16a34a'
+            pointBackgroundColor: '#16a34a',
+            pointRadius: 6
           }
         ]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           r: {
             suggestedMin: 0,
-            grid: { color: '#e5e7eb' },
-            angleLines: { color: '#d1d5db' }
+            grid: { color: '#ccc' },
+            angleLines: { color: '#ccc' }
           }
         }
       }
     });
   }
 
+  generarGraficoAsistencia() {
+  const canvas: any = document.getElementById('graficaAsistencia');
+
+  if (!canvas) return;
+
+  if (this.graficoAsistencia)
+    this.graficoAsistencia.destroy();
+
+  this.graficoAsistencia = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: this.labelsAsistencia,
+      datasets: [{
+        label: "Asistencias por mes (últimos 6 meses)",
+        data: this.asistenciaUltimos6Meses,
+        borderColor: "#16a34a",
+        backgroundColor: "rgba(34,197,94,0.3)",
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "#16a34a",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1 }
+        }
+      }
+    }
+  });
 }
 
-
-
+}

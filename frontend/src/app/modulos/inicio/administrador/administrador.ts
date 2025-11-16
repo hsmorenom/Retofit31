@@ -55,43 +55,53 @@ cargarTendenciaAsistencia() {
       const hace6Meses = new Date();
       hace6Meses.setMonth(hoy.getMonth() - 6);
 
-      // FILTRAR REGISTROS POR FECHA_ASISTENCIA
+      // 🔹 FILTRAR REGISTROS POR FECHA_ASISTENCIA
       const filtrados = data.filter(a => {
         const fecha = new Date(a.FECHA_ASISTENCIA);
         return fecha >= hace6Meses && fecha <= hoy;
       });
 
-      // FILTRAR SOLO ASISTENCIAS VÁLIDAS
+      // 🔹 FILTRAR SOLO LOS QUE ASISTIERON
       const validos = filtrados.filter(a =>
         a.NOTIFICACION.includes('Asistió') ||
         a.NOTIFICACION.includes('automáticamente')
       );
 
-      // AGRUPAR POR MES
+      // 🔹 AGRUPAR ASISTENCIAS POR MES
       const conteoPorMes: { [key: string]: number } = {};
 
       validos.forEach(as => {
         const f = new Date(as.FECHA_ASISTENCIA);
-        const key = `${f.getFullYear()}-${('0' + (f.getMonth()+1)).slice(-2)}`;
-        if (!conteoPorMes[key]) conteoPorMes[key] = 0;
-        conteoPorMes[key]++;
+
+        // formato YYYY-MM para ordenar
+        const key = `${f.getFullYear()}-${('0' + (f.getMonth() + 1)).slice(-2)}`;
+
+        conteoPorMes[key] = (conteoPorMes[key] || 0) + 1;
       });
 
+      // 🔹 ORDENAR LOS MESES
       const mesesOrdenados = Object.keys(conteoPorMes).sort();
 
+      // 🔹 GENERAR LABELS Y DATOS PARA LA GRÁFICA
       this.labelsAsistencia = mesesOrdenados.map(m => this.nombreMes(Number(m.split('-')[1])));
       this.asistenciaUltimos6Meses = mesesOrdenados.map(m => conteoPorMes[m]);
 
+      // 🔹 Generar gráfica
       this.generarGraficoAsistencia();
     }
   });
 }
 
 
-nombreMes(m: number) {
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return meses[m - 1];
+
+nombreMes(mes: number): string {
+  const nombres = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+  return nombres[mes - 1];
 }
+
 
   cargarUsuariosActivos() {
     this.usuarioService.consultar().subscribe({

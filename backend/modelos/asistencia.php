@@ -20,7 +20,8 @@ class AsistenciaModelo
             TRIM(CONCAT(u.PRIMER_APELLIDO, ' ', IFNULL(u.SEGUNDO_APELLIDO, ''))) AS APELLIDOS,
             e.NOMBRE_EVENTO,
             e.FECHA_ACTIVIDAD,
-            a.NOTIFICACION
+            a.NOTIFICACION,
+            a.FECHA_ASISTENCIA
         FROM asistencia a
         INNER JOIN cliente c ON a.CLIENTE = c.ID_CLIENTE
         INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO

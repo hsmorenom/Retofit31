@@ -6,85 +6,86 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
     <!-- TARJETA 1 -->
-<div class="bg-white shadow-md rounded-xl p-5 flex flex-col items-center border">
+    <div class="bg-white shadow-md rounded-xl p-5 flex flex-col items-center border">
+      <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="h-8 w-8 text-black" 
+            fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 5c-1.657 0-3-1.343-3-3H7C5.343 2 4 3.343 4 5H3C1.343 5 0 6.343 0 8v11c0 1.657 1.343 3 3 3h18c1.657 0 3-1.343 3-3V8c0-1.657-1.343-3-3-3h-1c0-1.657-1.343-3-3-3h-2c0 1.657-1.343 3-3 3zm0 2c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm0 2a3 3 0 100 6 3 3 0 000-6z"/>
+        </svg>
+      </div>
 
-<div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-  <svg xmlns="http://www.w3.org/2000/svg" 
-       class="h-8 w-8 text-black" 
-       fill="currentColor" 
-       viewBox="0 0 24 24">
-    <path d="M12 5c-1.657 0-3-1.343-3-3H7C5.343 2 4 3.343 4 5H3C1.343 5 0 6.343 0 8v11c0 1.657 1.343 3 3 3h18c1.657 0 3-1.343 3-3V8c0-1.657-1.343-3-3-3h-1c0-1.657-1.343-3-3-3h-2c0 1.657-1.343 3-3 3zm0 2c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm0 2a3 3 0 100 6 3 3 0 000-6z"/>
-  </svg>
-</div>
+      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
+        Nuevos Registros Fotográficos
+      </p>
 
-  <p class="font-semibold text-lg text-gray-800 text-center mt-2">
-    Nuevos Registros Fotográficos
-  </p>
-
-  <p class="text-3xl font-bold mt-2">{{ nuevasFotos }}</p>
-
-</div>
-
+      <p class="text-3xl font-bold mt-2">{{ nuevasFotos }}</p>
+    </div>
 
     <!-- TARJETA 2 -->
-<div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center border border-gray-200">
+    <div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center border border-gray-200">
+      <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg"
+            class="w-9 h-9 text-black"
+            fill="currentColor"
+            viewBox="0 0 24 24">
+          <path d="M19 4H18V2H16V4H8V2H6V4H5C3.9 4 3 4.9 3 6V20C3 21.1 
+                    3.9 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 
+                    4ZM19 20H5V10H19V20ZM19 8H5V6H19V8Z" />
+        </svg>
+      </div>
 
-  <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-    <svg xmlns="http://www.w3.org/2000/svg"
-         class="w-9 h-9 text-black"
-         fill="currentColor"
-         viewBox="0 0 24 24">
+      <h3 class="text-black font-semibold text-lg mt-2 text-center">
+        Eventos próximos
+      </h3>
 
-      <path d="M19 4H18V2H16V4H8V2H6V4H5C3.9 4 3 4.9 3 6V20C3 21.1 
-               3.9 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4ZM19 
-               20H5V10H19V20ZM19 8H5V6H19V8Z" />
-    </svg>
+      <p class="text-4xl font-semibold mt-2">{{ eventosProximosCantidad }}</p>
+    </div>
+
   </div>
 
-  <h3 class="text-black font-semibold text-lg mt-2 text-center">
-    Eventos próximos
-  </h3>
-
-  <p class="text-4xl font-semibold mt-2">{{ eventosProximosCantidad }}</p>
-</div>
-
- <!-- ===========================
+  <!-- ===========================
        GRAFICAS PRINCIPALES
-  =========================== -->
+  ============================ -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
     <!-- TENDENCIA DE ASISTENCIA -->
     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Tendencias de asistencia</h2>
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+        Tendencias de asistencia
+      </h2>
       <div class="h-64">
         <canvas id="graficaAsistencia"></canvas>
       </div>
     </div>
 
     <!-- TENDENCIA ANTROPOMETRICA -->
-<div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-  <h2 class="text-2xl font-semibold mb-4 text-gray-800">Tendencias antropométricas</h2>
-  <div class="h-64">
-    <canvas id="graficaAntropometrica"></canvas>
-  </div>
-</div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+        Tendencias antropométricas
+      </h2>
+      <div class="h-64">
+        <canvas id="graficaAntropometrica"></canvas>
+      </div>
+    </div>
+
   </div>
 
   <!-- =============================
-       NOTIFICACIONES
+       NOTIFICACIONES (AHORA ABAJO)
   ============================== -->
-<div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-  <h2 class="text-2xl font-semibold mb-4 text-gray-800">Notificaciones</h2>
+  <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Notificaciones</h2>
 
-  <ul class="list-disc pl-6 space-y-3 text-gray-700 text-lg">
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 text-lg">
 
-    <li>{{ clientesSinFoto }} clientes sin fotografía registrada</li>
+      <li>{{ clientesSinFoto }} clientes sin fotografía registrada</li>
 
-    <li>{{ eventosDelMes }} eventos programados para este mes</li>
+      <li>{{ eventosDelMes }} eventos programados para este mes</li>
 
-    <li>{{ eventosProximosCantidad }} eventos próximos</li>
+      <li>{{ eventosProximosCantidad }} eventos próximos</li>
 
-  </ul>
-</div>
+    </ul>
+  </div>
 
 </div>

@@ -14,7 +14,7 @@ import { TablasAntropometricos } from "../tablas-antropometricos/tablas-antropom
 })
 export class FiltrosTablaAntropometricos implements OnInit {
 
-  @Output() datosGraficos = new EventEmitter<any[]>();
+  @Output() datosGraficos = new EventEmitter<any>();
   @Output() datosParaInforme = new EventEmitter<any>();
   @Input() graficaBase64: string = '';
 
@@ -36,14 +36,14 @@ export class FiltrosTablaAntropometricos implements OnInit {
     private antropoService: AntropometricosService,
     private clienteService: ClienteService,
     private informeService: InformeService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cargarDatos();
   }
 
   cargarDatos() {
-    this.antropoService.consultar().subscribe(res => {
+    this.antropoService.consultarInforme().subscribe(res => {
       this.antropo = Array.isArray(res) ? res : [];
     });
 
@@ -98,7 +98,17 @@ export class FiltrosTablaAntropometricos implements OnInit {
 
     // Emitir datos para gráficas
     const dataGrafico = this.armarDatosGrafico(this.resultados);
-    this.datosGraficos.emit(dataGrafico);
+    this.datosGraficos.emit({
+      tipoInforme: this.tipoInformeSeleccionado,
+      metrica: this.metricaSeleccionada,
+      datos: this.resultados,
+
+      // 🔥 NUEVO: datos para radar si aplica
+      radar: this.tipoInformeSeleccionado === 'listado_detallado'
+        ? this.prepararRadar(this.resultados)
+        : null
+    });
+
 
     // Emitir datos al padre (PDF)
     this.datosParaInforme.emit({
@@ -139,7 +149,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
     if (this.tipoInformeSeleccionado === 'promedio_general') {
 
       const valores = lista.map(a => Number(a[campo])).filter(v => !isNaN(v));
-      const promedio = valores.length > 0 ? (valores.reduce((a,b)=>a+b,0) / valores.length) : 0;
+      const promedio = valores.length > 0 ? (valores.reduce((a, b) => a + b, 0) / valores.length) : 0;
 
       return [
         { ETIQUETA: 'Promedio general', VALOR: promedio.toFixed(2) }
@@ -154,7 +164,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
       return grupos.map(sexo => {
         const subset = lista.filter(a => a.SEXO === sexo);
         const valores = subset.map(a => Number(a[campo])).filter(v => !isNaN(v));
-        const promedio = valores.length > 0 ? (valores.reduce((a,b)=>a+b,0) / valores.length) : 0;
+        const promedio = valores.length > 0 ? (valores.reduce((a, b) => a + b, 0) / valores.length) : 0;
 
         return {
           ETIQUETA: sexo,
@@ -196,6 +206,14 @@ export class FiltrosTablaAntropometricos implements OnInit {
     }
   }
 
+  prepararRadar(data: any[]) {
+    return {
+      labels: data.map(d => `${d.NOMBRES}`),
+      values: data.map(d => Number(d.VALOR))
+    };
+  }
+
+
   // ====================================
   // ▶ ARMAR DATOS PARA GRÁFICOS
   // ====================================
@@ -219,8 +237,10 @@ export class FiltrosTablaAntropometricos implements OnInit {
     this.edadMax = null;
     this.metricaSeleccionada = '';
     this.tipoInformeSeleccionado = '';
-    this.resultados = [];
-    this.datosGraficos.emit([]);
+    this.resultados = null as any;
+    this.datosGraficos.emit(null);
+    this.datosParaInforme.emit(null);
+
   }
 
   // ====================================
@@ -254,9 +274,26 @@ export class FiltrosTablaAntropometricos implements OnInit {
 
     const idUsuario = Number(localStorage.getItem('idUsuario'));
 
+    // 🔄 Mapeo para no mezclar informes administrativos con antropométricos
+    let tipoPDF = "";
+
+    switch (this.tipoInformeSeleccionado) {
+      case "promedio_general":
+        tipoPDF = "antropometrico_promedio_general";
+        break;
+      case "promedio_por_sexo":
+        tipoPDF = "antropometrico_promedio_sexo";
+        break;
+      case "listado_detallado":
+        tipoPDF = "antropometrico_listado";
+        break;
+      default:
+        tipoPDF = this.tipoInformeSeleccionado;
+    }
+
     const data = {
       generarPDF: true,
-      tipoInforme: this.tipoInformeSeleccionado,
+      tipoInforme: tipoPDF,
       metrica: this.metricaSeleccionada,
       usuario: idUsuario,
       fechaInicio: this.fechaInicio,
@@ -266,6 +303,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
       entidad: "antropometricos",
       id_referencia: null
     };
+
 
     this.informeService.insertar(data).subscribe(res => {
       if (res.resultado === 'OK') {

@@ -14,26 +14,36 @@ function generarInformePDF($datos)
 
     $pdf = new Dompdf($options);
 
-    // COLORES RETROFIT 31
+    // PALETA RETROFIT31
     $verdeOscuro = "#004D00";
     $verdeClaro = "#7CE54F";
 
-    // ---- TÍTULO AUTOMÁTICO SEGÚN INFORME ----
+    // ===============================
+    // 🎯 TÍTULOS SEGÚN TIPO INFORME
+    // ===============================
     $titulos = [
+        // ADMINISTRATIVOS
         "cantidad_estados" => "Informe de Usuarios por Estado",
         "cantidad_sexos" => "Informe de Usuarios por Sexo",
         "cantidad_por_tipo_usuario" => "Informe de Usuarios por Tipo",
         "listado_detallado" => "Listado Detallado de Usuarios",
+
+        // ASISTENCIA
         "asistencias" => "Informe de Asistencias",
         "inasistencias" => "Informe de Inasistencias",
-        "porcentaje" => "Informe de Porcentaje de Asistencia"
+        "porcentaje" => "Informe de Porcentaje de Asistencia",
+
+        // ⭐ ANTROPOMÉTRICOS
+        "antropometrico_promedio_general" => "Promedio Antropométrico General",
+        "antropometrico_promedio_sexo" => "Promedios Antropométricos por Sexo",
+        "antropometrico_listado" => "Listado Detallado Antropométrico"
     ];
 
-    $titulo = isset($titulos[$datos->tipoInforme])
-        ? $titulos[$datos->tipoInforme]
-        : "Informe del Sistema";
+    $titulo = $titulos[$datos->tipoInforme] ?? "Informe del Sistema";
 
-    // ---- INICIO HTML ----
+    // ===============================
+    // 📄 INICIO HTML DEL PDF
+    // ===============================
     $html = "
     <!DOCTYPE html>
     <html lang='es'>
@@ -50,8 +60,7 @@ function generarInformePDF($datos)
             header { 
                 text-align: center;
                 margin-bottom: 10px;
-                color:{$verdeOscuro};
-                text-size:30px;
+                color: {$verdeOscuro};
             }
 
             .titlebox {
@@ -63,17 +72,20 @@ function generarInformePDF($datos)
                 border-radius: 6px;
                 margin-bottom: 20px;
             }
+
             .section-title {
                 font-size: 14px;
                 font-weight: bold;
                 color: {$verdeOscuro};
                 margin: 15px 0 8px;
             }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 8px;
             }
+
             table th {
                 background: {$verdeOscuro};
                 color: white;
@@ -81,11 +93,13 @@ function generarInformePDF($datos)
                 border: 1px solid {$verdeOscuro};
                 font-size: 12px;
             }
+
             table td {
                 padding: 6px;
                 border: 1px solid #CCC;
                 font-size: 12px;
             }
+
             .footer {
                 position: fixed;
                 bottom: 10px;
@@ -97,76 +111,79 @@ function generarInformePDF($datos)
             }
         </style>
     </head>
+
     <body>
-        <header> <h2> Retofit31- Football Players Training</h2> </header>
+        <header><h2>Retofit31 - Football Players Training</h2></header>
 
         <div class='titlebox'>{$titulo}</div>
 
-                <p><b>Fecha de generación:</b> " . date('Y-m-d H:i') . "</p>
-
-        <!-- INFORMACIÓN ESPECIAL PARA ASISTENCIA -->
+        <p><b>Fecha de generación:</b> " . date('Y-m-d H:i') . "</p>
     ";
 
+    // =====================================
+    // 🔎 INFORMACIÓN EXTRA SEGÚN EL TIPO
+    // =====================================
     $informesAsistencia = ["asistencias", "inasistencias", "porcentaje"];
+    $informesAntropo = [
+        "antropometrico_promedio_general",
+        "antropometrico_promedio_sexo",
+        "antropometrico_listado"
+    ];
 
+    // ---------- Asistencias ----------
     if (in_array($datos->tipoInforme, $informesAsistencia)) {
 
-        // Mostrar evento si viene desde Angular
         $html .= "
-        <p><b>Tipo de informe:</b> {$datos->tipoInforme}</p>
-        <p><b>ID del evento:</b> {$datos->evento}</p>
-    ";
+            <p><b>ID del evento:</b> {$datos->evento}</p>
+        ";
 
-        // Mostrar rangos de fechas solo si fueron enviados
         if (!empty($datos->fechaInicio) && !empty($datos->fechaFin)) {
             $html .= "
-            <p><b>Rango de fechas:</b> {$datos->fechaInicio} a {$datos->fechaFin}</p>
-        ";
+                <p><b>Rango de fechas:</b> {$datos->fechaInicio} a {$datos->fechaFin}</p>
+            ";
         }
-
-        // Título de resultados
-        $html .= "
-        <div class='section-title'>Resultados:</div>
-    ";
-
-    } else {
-
-        // Caso administrativo
-        $html .= "
-        <div class='section-title'>Resultados:</div>
-    ";
     }
 
-    // -------------------------
-    // TABLAS SEGÚN INFORME
-    // -------------------------
+    // ---------- Antropométricos ----------
+    if (in_array($datos->tipoInforme, $informesAntropo)) {
 
-    // ▶ INFORMES ESTADÍSTICOS
-    if (
-        $datos->tipoInforme === "cantidad_estados" ||
-        $datos->tipoInforme === "cantidad_sexos" ||
-        $datos->tipoInforme === "cantidad_por_tipo_usuario"
-    ) {
+        if (!empty($datos->fechaInicio) && !empty($datos->fechaFin)) {
+            $html .= "
+                <p><b>Rango de fechas:</b> {$datos->fechaInicio} a {$datos->fechaFin}</p>
+            ";
+        }
+
+        if (!empty($datos->metrica)) {
+            $html .= "<p><b>Métrica evaluada:</b> {$datos->metrica}</p>";
+        }
+
+
+        $html .= "<p><b>Métrica evaluada:</b> {$datos->metrica}</p>";
+    }
+
+    // ===============================
+    // 🧾 TABLA: RESULTADOS
+    // ===============================
+    $html .= "<div class='section-title'>Resultados:</div>";
+
+    // 👉 ADMINISTRATIVOS ESTADÍSTICOS
+    if (in_array($datos->tipoInforme, ["cantidad_estados", "cantidad_sexos", "cantidad_por_tipo_usuario"])) {
 
         $html .= "
         <table>
-            <tr>
-                <th>Descripción</th>
-                <th>Valor</th>
-            </tr>";
+            <tr><th>Descripción</th><th>Valor</th></tr>";
 
         foreach ($datos->datos as $item) {
-            $html .= "
-            <tr>
-                <td>{$item->ETIQUETA}</td>
-                <td>{$item->VALOR}</td>
-            </tr>";
+            $html .= "<tr>
+                        <td>{$item->ETIQUETA}</td>
+                        <td>{$item->VALOR}</td>
+                      </tr>";
         }
 
         $html .= "</table>";
     }
 
-    // ▶ INFORME DETALLADO DE USUARIOS
+    // 👉 ADMINISTRATIVO: LISTADO DETALLADO
     if ($datos->tipoInforme === "listado_detallado") {
 
         $html .= "
@@ -177,7 +194,7 @@ function generarInformePDF($datos)
                 <th>Apellidos</th>
                 <th>Sexo</th>
                 <th>Estado</th>
-                <th>Tipo</th>
+                <th>Tipo Usuario</th>
             </tr>";
 
         foreach ($datos->datos as $item) {
@@ -195,23 +212,78 @@ function generarInformePDF($datos)
         $html .= "</table>";
     }
 
-    // ▶ GRÁFICA (solo si viene)
+    // ▶ LISTADO DETALLADO ANTROPOMÉTRICO
+    if ($datos->tipoInforme === "antropometrico_listado") {
+
+        $html .= "
+    <table>
+        <tr>
+            <th>Identificación</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Fecha</th>
+            <th>Valor</th>
+        </tr>";
+
+        foreach ($datos->datos as $item) {
+            $html .= "
+        <tr>
+            <td>{$item->IDENTIFICACION}</td>
+            <td>{$item->NOMBRES} {$item->APELLIDOS}</td>
+            <td>{$item->SEXO}</td>
+            <td>{$item->EDAD}</td>
+            <td>{$item->FECHA}</td>
+            <td>{$item->VALOR}</td>
+        </tr>";
+        }
+
+        $html .= "</table>";
+    }
+
+
+    // ⭐ 👉 ANTROPOMÉTRICOS: PROMEDIOS
+    if (
+        $datos->tipoInforme === "antropometrico_promedio_general" ||
+        $datos->tipoInforme === "antropometrico_promedio_sexo"
+    ) {
+
+        $html .= "
+        <table>
+            <tr><th>Descripción</th><th>Promedio</th></tr>
+        ";
+
+        foreach ($datos->datos as $item) {
+            $html .= "<tr>
+                        <td>{$item->ETIQUETA}</td>
+                        <td>{$item->VALOR}</td>
+                      </tr>";
+        }
+
+        $html .= "</table>";
+    }
+
+    // ===============================
+    // 📊 GRÁFICA
+    // ===============================
     if (!empty($datos->grafica)) {
         $html .= "
             <div class='section-title'>Gráfica</div>
-            <br><br>
             <img src='{$datos->grafica}' style='width:100%; margin-top:10px;'>
         ";
     }
 
+    // ===============================
+    // 📄 PIE DE PÁGINA
+    // ===============================
     $html .= "
         <div class='footer'>
             Página {PAGE_NUM} de {PAGE_COUNT}
         </div>
+    </body>
+    </html>";
 
-    </body></html>";
-
-    // Renderizar PDF
+    // Render PDF
     $pdf->loadHtml($html);
     $pdf->setPaper('A4', 'vertical');
     $pdf->render();

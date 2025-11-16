@@ -5,10 +5,23 @@ import { GraficosAntropometricos } from "./graficos-antropometricos/graficos-ant
 
 @Component({
   selector: 'app-consultas-antropometricos',
-  standalone:true,
+  standalone: true,
   imports: [FiltrosTablaAntropometricos, GraficosAntropometricos],
   templateUrl: './consultas-antropometricos.html'
 })
 export class ConsultasAntropometricos {
+
+  dataGraficos: any = null;
+  graficaBase64: string = '';
+  filtrosParaInforme: any = null;
+
+  recibirDatosParaInforme(event: any) {
+    this.filtrosParaInforme = event;
+  }
+
+  recibirGrafica(base64: string) {
+    console.log("Gráfica recibida desde graficos-asistencia");
+    this.graficaBase64 = base64;
+  }
 
 }

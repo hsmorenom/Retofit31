@@ -165,6 +165,43 @@ class AntropometricosModelo
         }
     }
 
+    public function consultarInforme()
+{
+    try {
+        $sql = "SELECT 
+            a.ID_ANTROPOMETRICOS,
+            a.CLIENTE,
+            c.ID_CLIENTE,
+            c.IDENTIFICACION,
+            TRIM(CONCAT(u.PRIMER_NOMBRE, ' ', IFNULL(u.SEGUNDO_NOMBRE, ''))) AS NOMBRES,
+            TRIM(CONCAT(u.PRIMER_APELLIDO, ' ', IFNULL(u.SEGUNDO_APELLIDO, ''))) AS APELLIDOS,
+            c.SEXO,
+            c.FECHA_NACIMIENTO,
+            a.PESO,
+            a.ALTURA,
+            a.PORCENTAJE_GRASA_CORPORAL,
+            a.INDICE_DE_MASA_CORPORAL,
+            a.CIRCUNFERENCIA_CUELLO,
+            a.CIRCUNFERENCIA_CINTURA,
+            a.CIRCUNFERENCIA_CADERA,
+            a.FECHA_REGISTRO,
+            a.USUARIO
+        FROM antropometricos a
+        INNER JOIN cliente c ON a.CLIENTE = c.ID_CLIENTE
+        INNER JOIN usuario u ON c.USUARIO = u.ID_USUARIO
+        ORDER BY a.FECHA_REGISTRO DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        return ['resultado' => 'ERROR', 'mensaje' => $e->getMessage()];
+    }
+}
+
+
 
 
 }

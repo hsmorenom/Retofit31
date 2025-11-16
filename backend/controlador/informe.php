@@ -30,9 +30,12 @@ switch ($metodo) {
         break;
 
     case 'POST':
+
         $datos = json_decode(file_get_contents("php://input"));
 
-        // --- Si es generación de PDF ---
+        // ==========================================
+        //  ▶ GENERACIÓN DE PDF
+        // ==========================================
         if (isset($datos->generarPDF) && $datos->generarPDF === true) {
 
             // 1. Generar PDF
@@ -54,14 +57,15 @@ switch ($metodo) {
                 break;
             }
 
+            // ID para entidad_informe
             $idInforme = $respuestaInforme['idInforme'];
 
             require_once '../modelos/entidad-informe.php';
             $entidad = new Entidad_informeModelo();
 
-            // ==============================
-            // ▶ CASO 1: INFORMES DE ASISTENCIA
-            // ==============================
+            // =====================================================
+            //  ▶ CASO 1: INFORMES DE ASISTENCIAS
+            // =====================================================
             $informesAsistencia = ["asistencias", "inasistencias", "porcentaje"];
 
             if (in_array($datos->tipoInforme, $informesAsistencia)) {
@@ -72,12 +76,12 @@ switch ($metodo) {
                     'ID_REFERENCIA' => $datos->evento
                 ];
 
-                $respuestaEntidad = $entidad->insertar($paramEntidad);
+                $entidad->insertar($paramEntidad);
             }
 
-            // ==============================
-            // ▶ CASO 2: INFORMES ADMINISTRATIVOS
-            // ==============================
+            // =====================================================
+            //  ▶ CASO 2: INFORMES ADMINISTRATIVOS (MODULO USUARIOS)
+            // =====================================================
             $informesAdministrativos = [
                 "cantidad_estados",
                 "cantidad_sexos",
@@ -87,25 +91,43 @@ switch ($metodo) {
 
             if (in_array($datos->tipoInforme, $informesAdministrativos)) {
 
-                // Fila 1: marca que es un informe administrativo
-                $paramAdm = (object) [
+                // Relación principal
+                $entidad->insertar((object) [
                     'INFORME' => $idInforme,
                     'ENTIDAD' => 'administrativo',
                     'ID_REFERENCIA' => null
-                ];
-                $entidad->insertar($paramAdm);
+                ]);
 
-                // Fila 2 (opcional): si hay cliente específico, lo relaciona
-                if (isset($datos->cliente) && !empty($datos->cliente)) {
-                    $paramCli = (object) [
+                // Si hay cliente opcional
+                if (!empty($datos->cliente)) {
+                    $entidad->insertar((object) [
                         'INFORME' => $idInforme,
                         'ENTIDAD' => 'cliente',
                         'ID_REFERENCIA' => $datos->cliente
-                    ];
-                    $entidad->insertar($paramCli);
+                    ]);
                 }
             }
 
+            // =====================================================
+            //  ▶ CASO 3: INFORMES ANTROPOMÉTRICOS
+            // =====================================================
+            $informesAntropometricos = [
+                "antropometrico_promedio_general",
+                "antropometrico_promedio_sexo",
+                "antropometrico_listado"
+            ];
+
+            if (in_array($datos->tipoInforme, $informesAntropometricos)) {
+
+                // Relación principal: siempre pertenece al módulo "antropometricos"
+                $entidad->insertar((object) [
+                    'INFORME' => $idInforme,
+                    'ENTIDAD' => 'antropometricos',
+                    'ID_REFERENCIA' => null
+                ]);
+            }
+
+            // RESPUESTA FINAL
             echo json_encode([
                 'resultado' => 'OK',
                 'urlPDF' => $pdf['urlPDF'],
@@ -114,9 +136,12 @@ switch ($metodo) {
             break;
         }
 
-        // Inserción normal
+        // ==========================================
+        // ▶ INSERCIÓN NORMAL (sin PDF)
+        // ==========================================
         echo json_encode($informe->insertar($datos));
         break;
+
 
 
 

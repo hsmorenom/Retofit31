@@ -19,24 +19,22 @@
       <!-- 🟦 Fecha inicial -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Fecha inicial:</label>
-        <input type="date"
-               [(ngModel)]="fechaInicio"
-               class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]"/>
+        <input type="date" [(ngModel)]="fechaInicio"
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
       </div>
 
       <!-- 🟦 Fecha final -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Fecha final:</label>
-        <input type="date"
-               [(ngModel)]="fechaFin"
-               class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]"/>
+        <input type="date" [(ngModel)]="fechaFin"
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
       </div>
 
       <!-- 🟦 Sexo -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Sexo:</label>
         <select [(ngModel)]="sexoSeleccionado"
-                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
           <option value="">Todos</option>
           <option value="Masculino">Masculino</option>
           <option value="Femenino">Femenino</option>
@@ -47,26 +45,22 @@
       <!-- 🟦 Edad mínima -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Edad mínima:</label>
-        <input type="number"
-               [(ngModel)]="edadMin"
-               min="1"
-               class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]"/>
+        <input type="number" [(ngModel)]="edadMin" min="1"
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
       </div>
 
       <!-- 🟦 Edad máxima -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Edad máxima:</label>
-        <input type="number"
-               [(ngModel)]="edadMax"
-               min="1"
-               class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]"/>
+        <input type="number" [(ngModel)]="edadMax" min="1"
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]" />
       </div>
 
       <!-- 🟦 Métrica -->
       <div class="flex flex-col items-start">
         <label class="font-oswald text-lg text-gray-800 mb-1">Métrica:</label>
         <select [(ngModel)]="metricaSeleccionada"
-                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
           <option value="">Seleccione</option>
           <option value="PESO">Peso (kg)</option>
           <option value="ALTURA">Altura (m)</option>
@@ -82,7 +76,7 @@
       <div class="flex flex-col items-start lg:col-span-3">
         <label class="font-oswald text-lg text-gray-800 mb-1">Tipo de informe:</label>
         <select [(ngModel)]="tipoInformeSeleccionado"
-                class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
+          class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F]">
           <option value="">Seleccione el tipo de informe</option>
           <option value="promedio_general">Promedio general</option>
           <option value="promedio_por_sexo">Promedio por sexo</option>
@@ -95,33 +89,63 @@
     <!-- 🔘 Botones -->
     <div class="flex flex-wrap justify-center sm:justify-end gap-3 mt-4">
       <button (click)="consultarAntropometricos()"
-              class="bg-[#004D00] text-white font-oswald px-4 py-2 rounded-full hover:bg-[#007000] transition">
+        class="bg-[#004D00] text-white font-oswald px-4 py-2 rounded-full hover:bg-[#007000] transition">
         CONSULTAR
       </button>
 
       <button (click)="limpiarFiltros()"
-              class="bg-gray-600 text-white font-oswald px-4 py-2 rounded-full hover:bg-gray-700 transition">
+        class="bg-gray-600 text-white font-oswald px-4 py-2 rounded-full hover:bg-gray-700 transition">
         LIMPIAR
       </button>
     </div>
   </div>
 
   <!-- 🔸 Resultados -->
-  @if (resultados.length > 0) {
-    <app-tablas-antropometricos [resultados]="resultados"></app-tablas-antropometricos>
+  @if (resultados && resultados.length > 0) {
+  <!-- TABLA PARA LISTADO DETALLADO -->
+  @if (tipoInformeSeleccionado === 'listado_detallado') {
+  <app-tablas-antropometricos [resultados]="resultados"></app-tablas-antropometricos>
+  }
 
-    <div class="flex justify-end mt-4">
-      <button (click)="generarInformeAntropometricos()"
-              class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition font-oswald">
-        GENERAR INFORME
-      </button>
+  <!-- TABLA PARA PROMEDIOS -->
+  @if (tipoInformeSeleccionado !== 'listado_detallado') {
+  <div class="overflow-x-auto border-4 border-zinc-400 rounded-2xl shadow-md mt-6">
+    <table class="min-w-full border-collapse text-sm font-roboto">
+      <thead class="bg-zinc-400 text-zinc-900 font-oswald">
+        <tr class="text-center text-lg font-semibold">
+          <th class="px-4 py-2">Descripción</th>
+          <th class="px-4 py-2">Valor</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-zinc-300">
+        @for (item of resultados; track $index) {
+        <tr class="text-center text-base hover:bg-[#E1E1E1] transition">
+          <td class="px-4 py-2">{{ item.ETIQUETA }}</td>
+          <td class="px-4 py-2 font-semibold">{{ item.VALOR }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  <div class="mt-2 text-[#404040]">
+        <p> <b>Nota:</b> La circunferencia de cadera es un parámetro que se incluye <b>SOLO</b> en las fórmulas de estimación de Porcentaje de Grasa Corporal (PGC) para las personas con sexo biológico <b>FEMENINO</b> </p>
     </div>
+
+
+  <div class="flex justify-end mt-4">
+    <button (click)="generarInformeAntropometricos()"
+      class="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition font-oswald">
+      GENERAR INFORME
+    </button>
+  </div>
   }
   @else {
-    <p class="text-center text-gray-500 italic font-roboto mt-4">
-      No se encontraron registros para los filtros aplicados.
-    </p>
+  <p class="text-center text-gray-500 italic font-roboto mt-4">
+    No se encontraron registros para los filtros aplicados.
+  </p>
   }
 
 </div>
-

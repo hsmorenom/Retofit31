@@ -27,13 +27,24 @@ switch ($metodo) {
     // $_get sirve para recibir datos enviados en la url
     // json_encode convierte cualquier objeto,array y cualquier cosa en lenguaje universal de json
     case 'GET':
+
+        // 👉 1. CONSULTA PARA INFORMES
+        if (isset($_GET['informe'])) {
+            echo json_encode($antropometricos->consultarInforme());
+            break;
+        }
+
+        // 👉 2. CONSULTA POR CLIENTE ESPECÍFICO
         if (isset($_GET['cliente'])) {
             $id = $_GET['cliente'];
             echo json_encode($antropometricos->filtrarIdCliente($id));
-        } else {
-            echo json_encode($antropometricos->consultar());
+            break;
         }
+
+        // 👉 3. CONSULTA GENERAL (todos los registros)
+        echo json_encode($antropometricos->consultar());
         break;
+
 
     // Crea un nuevo registro leyendo que mediante el json se recibio, json_decode decodifica esta estructura, y lo pasa al metodo de insertar relacionado por antropometricos
     // json_decode hace lo contrario, de un lenguaje json lo traduce a un lenguaje de programacion que en este caso es php

@@ -1,9 +1,9 @@
-<div class="mt-6 overflow-x-auto rounded-2xl shadow-md">
+<div class="overflow-x-auto border-4 border-zinc-400 rounded-2xl shadow-md mt-6">
 
-  <table class="min-w-full border-collapse bg-white">
+  <table class="min-w-full border-collapse text-sm font-roboto">
 
-    <thead class="bg-[#404040] text-white font-oswald text-sm">
-      <tr>
+    <thead class="bg-zinc-400 text-zinc-900 font-oswald">
+      <tr class="text-center text-lg font-semibold">
         <th class="px-4 py-2">Identificación</th>
         <th class="px-4 py-2">Cliente</th>
         <th class="px-4 py-2">Sexo</th>
@@ -13,9 +13,9 @@
       </tr>
     </thead>
 
-    <tbody>
+    <tbody class="divide-y divide-zinc-300">
       @for (item of resultados; track $index) {
-        <tr class="border-b hover:bg-gray-100 transition">
+        <tr class="text-center text-base hover:bg-[#E1E1E1] transition">
 
           <td class="px-4 py-2">{{ item.IDENTIFICACION }}</td>
 

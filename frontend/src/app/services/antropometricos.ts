@@ -34,6 +34,11 @@ export class AntropometricosService {
     return this.http.delete(`${this.apiUrl}?id=${id}`);
   }
 
+  consultarInforme(): Observable<any> {
+    return this.http.get(`${this.apiUrl}?informe=1`);
+  }
+
+
 
 }
 

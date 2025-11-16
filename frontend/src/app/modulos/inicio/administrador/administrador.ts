@@ -5,6 +5,7 @@ import { ClienteService } from '../../../services/cliente';
 import { EventosService } from '../../../services/eventos';
 import { AntropometricosService } from '../../../services/antropometricos';
 import { AsistenciaService } from '../../../services/asistencia';
+import { FotografiaService } from '../../../services/fotografia';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -32,20 +33,28 @@ graficoAsistencia: any = null;
 
   radarChart: any;
 
+  eventosDelMes = 0;
+  clientesSinFoto = 0;
+
+
   constructor(
     private usuarioService: UsuarioService,
     private clienteService: ClienteService,
     private eventosService: EventosService,
     private antropometricosService: AntropometricosService,
-    private asistenciaService: AsistenciaService
+    private asistenciaService: AsistenciaService,
+    private fotografiaService: FotografiaService
+    
   ) {}
 
   ngOnInit(): void {
     this.cargarUsuariosActivos();
     this.cargarNuevosRegistros();
     this.cargarEventosProximos();
-    this.cargarTendenciaAntropometrica();  // SOLO ESTA
+    this.cargarTendenciaAntropometrica(); 
     this.cargarTendenciaAsistencia();
+    this.cargarEventosMesActual();   
+    this.cargarClientesSinFoto(); 
   }
 cargarTendenciaAsistencia() {
   this.asistenciaService.consultar().subscribe({
@@ -141,41 +150,92 @@ nombreMes(mes: number): string {
     });
   }
 
-  cargarTendenciaAntropometrica() {
-    this.antropometricosService.consultar().subscribe({
-      next: (data: any[]) => {
+cargarTendenciaAntropometrica() {
+  this.antropometricosService.consultar().subscribe({
+    next: (data: any[]) => {
 
-        const hoy = new Date();
-        const hace6Meses = new Date();
-        hace6Meses.setMonth(hoy.getMonth() - 6);
+      const hoy = new Date();
+      const hace6Meses = new Date();
+      hace6Meses.setMonth(hoy.getMonth() - 6);
 
-        const ultimos = data.filter(r => {
-          const fecha = new Date(r.FECHA_REGISTRO);
-          return fecha >= hace6Meses && fecha <= hoy;
-        });
+      // 🍃 Filtrar últimos 6 meses
+      const ultimos = data.filter(r => {
+        const fecha = new Date(r.FECHA_REGISTRO);
+        return fecha >= hace6Meses && fecha <= hoy;
+      });
 
-        if (ultimos.length === 0) return;
+      if (ultimos.length === 0) return;
 
-        let sPeso = 0, sIMC = 0, sPGC = 0, sCuello = 0;
+      // 🍃 Filtrar solo valores válidos (>0)
+      const pesoValidos   = ultimos.filter(r => Number(r.PESO) > 0);
+      const imcValidos    = ultimos.filter(r => Number(r.INDICE_DE_MASA_CORPORAL) > 0);
+      const pgcValidos    = ultimos.filter(r => Number(r.PORCENTAJE_GRASA_CORPORAL) > 0);
+      const cuelloValidos = ultimos.filter(r => Number(r.CIRCUNFERENCIA_CUELLO) > 0);
 
-        ultimos.forEach(reg => {
-          sPeso += Number(reg.PESO);
-          sIMC += Number(reg.IMC);
-          sPGC += Number(reg.PGC);
-          sCuello += Number(reg.CUELLO);
-        });
+      // 🍃 Sumar cada categoría
+      const sPeso   = pesoValidos.reduce((a, r) => a + Number(r.PESO), 0);
+      const sIMC    = imcValidos.reduce((a, r) => a + Number(r.INDICE_DE_MASA_CORPORAL), 0);
+      const sPGC    = pgcValidos.reduce((a, r) => a + Number(r.PORCENTAJE_GRASA_CORPORAL), 0);
+      const sCuello = cuelloValidos.reduce((a, r) => a + Number(r.CIRCUNFERENCIA_CUELLO), 0);
 
-        const total = ultimos.length;
+      // 🍃 Calcular promedios REALES (sin ceros)
+      this.promPeso   = pesoValidos.length   ? +(sPeso / pesoValidos.length).toFixed(1) : 0;
+      this.promIMC    = imcValidos.length    ? +(sIMC / imcValidos.length).toFixed(1) : 0;
+      this.promPGC    = pgcValidos.length    ? +(sPGC / pgcValidos.length).toFixed(1) : 0;
+      this.promCuello = cuelloValidos.length ? +(sCuello / cuelloValidos.length).toFixed(1) : 0;
 
-        this.promPeso = +(sPeso / total).toFixed(1);
-        this.promIMC = +(sIMC / total).toFixed(1);
-        this.promPGC = +(sPGC / total).toFixed(1);
-        this.promCuello = +(sCuello / total).toFixed(1);
+      console.log("📌 Promedios (solo valores válidos):",
+        this.promPeso, this.promIMC, this.promPGC, this.promCuello
+      );
 
-        this.generarGraficaRadar();
-      }
-    });
-  }
+      this.generarGraficaRadar();
+    }
+  });
+}
+
+cargarEventosMesActual() {
+  this.eventosService.consultar().subscribe({
+    next: (eventos: any[]) => {
+
+      const hoy = new Date();
+      const mesActual = hoy.getMonth();
+      const anioActual = hoy.getFullYear();
+
+      this.eventosDelMes = eventos.filter(e => {
+        const fecha = new Date(e.FECHA_ACTIVIDAD);
+        return (
+          fecha.getMonth() === mesActual &&
+          fecha.getFullYear() === anioActual
+        );
+      }).length;
+
+      console.log("📅 Eventos del mes actual:", this.eventosDelMes);
+    }
+  });
+}
+cargarClientesSinFoto() {
+  this.clienteService.consultar().subscribe({
+    next: (clientes: any[]) => {
+
+      this.fotografiaService.consultar().subscribe({
+        next: (fotos: any[]) => {
+
+          const idsConFoto = fotos.map(f => Number(f.CLIENTE));
+
+          // clientes que NO están en la tabla de fotos
+          const sinFoto = clientes.filter(c => !idsConFoto.includes(Number(c.ID_CLIENTE)));
+
+          this.clientesSinFoto = sinFoto.length;
+
+          console.log("📸 Clientes sin foto:", this.clientesSinFoto);
+        }
+      });
+    }
+  });
+}
+
+
+
 
   generarGraficaRadar() {
     const canvas: any = document.getElementById('graficaAntropometrica');

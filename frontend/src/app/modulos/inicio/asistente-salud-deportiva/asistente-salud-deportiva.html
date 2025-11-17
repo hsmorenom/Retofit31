@@ -7,15 +7,6 @@
 
     <!-- CARD 1 -->
     <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
-      <div class="text-4xl">📋</div>
-      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
-        Evaluaciones físicas pendientes
-      </p>
-      <p class="text-3xl font-bold mt-2">125</p>
-    </div>
-
-    <!-- CARD 2 -->
-    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
       <div class="text-4xl">➕</div>
       <p class="font-semibold text-lg text-gray-800 text-center mt-2">
         Mediciones Antropométricas por verificar
@@ -23,7 +14,7 @@
       <p class="text-3xl font-bold mt-2">18</p>
     </div>
 
-    <!-- CARD 3 -->
+    <!-- CARD 2 -->
     <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
       <div class="text-4xl">📸</div>
       <p class="font-semibold text-lg text-gray-800 text-center mt-2">
@@ -35,52 +26,68 @@
   </div>
 
   <!-- =====================================================
-       FILA: EVENTOS & GRÁFICA ANTROPOMÉTRICA
+       EVENTOS + GRAFICA
   ====================================================== -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
     <!-- PROXIMOS EVENTOS -->
-    <div class="bg-white rounded-xl shadow-md border p-6">
+    <div class="bg-white shadow-lg rounded-xl p-6 border">
       <h2 class="text-xl font-semibold mb-4">Próximos eventos</h2>
 
-      <div class="space-y-6 text-gray-800">
+      <!-- Si no hay eventos -->
+      <p *ngIf="eventosProximos.length === 0" class="text-gray-500">
+        No hay eventos programados.
+      </p>
 
-        <!-- Evento 1 -->
-        <div>
-          <p class="font-semibold">Evaluación física</p>
-          <p class="text-lg font-bold mt-1">10 Jun - 7:00 PM</p>
-        </div>
+      <!-- Lista de eventos -->
+      <div *ngFor="let evento of eventosProximos" class="border-b last:border-b-0 py-3">
+        
+        <p class="text-xl font-bold">
+          {{ evento.NOMBRE_EVENTO }}
+        </p>
 
-        <!-- Evento 2 -->
-        <div>
-          <p class="font-semibold">Control nutricional</p>
-          <p class="text-lg font-bold mt-1">11 Jun - 7:00 PM</p>
-        </div>
+        <p class="text-gray-700 font-medium">
+          📅 {{ evento.FECHA_ACTIVIDAD | date:'longDate' }}
+        </p>
+
+        <p class="text-gray-600">
+          🕒 {{ evento.HORA_INICIO }} - {{ evento.HORA_FIN }}
+        </p>
+
+        <p class="text-gray-600">
+          📍 {{ evento.LUGAR_DE_ACTIVIDAD }}
+        </p>
 
       </div>
     </div>
 
     <!-- GRÁFICA ANTROPOMÉTRICA -->
-    <div class="bg-white shadow-md rounded-xl border p-6">
-      <h2 class="text-xl font-semibold mb-4">Tendencias antropométricas</h2>
-      <canvas id="graficaAntropometrica"></canvas>
+    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+        Tendencias antropométricas
+      </h2>
+      <div class="h-64">
+        <canvas id="graficaAntropometrica"></canvas>
+      </div>
     </div>
 
   </div>
 
   <!-- =====================================================
-       NOTIFICACIONES
+       NOTIFICACIONES (DEBAJO DE AMBOS BLOQUES)
   ====================================================== -->
-  <div class="bg-white rounded-xl shadow-md border p-6">
+  <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Notificaciones</h2>
 
-    <h2 class="text-xl font-semibold mb-4">Notificaciones</h2>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 text-lg">
 
-    <ul class="list-disc pl-5 space-y-2 text-gray-700">
-      <li>4 planes nutricionales por diseñar</li>
-      <li>5 fotos están invalidadas</li>
-      <li>3 usuarios en estado de sobrepeso</li>
+      <li>{{ clientesSinFoto }} clientes sin fotografía registrada</li>
+
+      <li>{{ eventosDelMes }} eventos programados para este mes</li>
+
+      <li>{{ eventosProximosCantidad }} eventos próximos</li>
+
     </ul>
-
   </div>
 
 </div>

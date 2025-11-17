@@ -48,6 +48,30 @@ export class UsuarioService {
   }
   //------------------SAUL-----------------Administrativo //
 
+
+  enviarCorreoRecuperacion(email: string) {
+    const url = `http://localhost:8000/backend/api/correo/enviar-recuperacion.php`;
+
+    return this.http.post<any>(url, { correo: email });
+  }
+
+
+  verificarToken(token: string) {
+    const url = `http://localhost:8000/backend/api/correo/verificar-token.php`;
+    return this.http.get<any>(`${url}/verificar-token.php?token=${token}`);
+  }
+
+
+  actualizarClaveDesdeToken(token: string, nuevaClave: string) {
+  const url = `${this.apiUrl}?accion=actualizarDesdeToken`;
+
+  return this.http.post<any>(url, {
+    token: token,
+    claveNueva: nuevaClave
+  });
+}
+
+
 }
 
 

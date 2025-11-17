@@ -1,0 +1,92 @@
+<section class="relative w-full h-[300px] bg-[#314A37] ">
+    <!-- Aca se pone la imagen de fondo del banner, el hidden oculta el elemento hasta que se activa con el sm:block cuando la pantalla es mas grande, el inset hace que la imagen rellene todo el contenderor, el object.cover se usa para que se escale la imagen en caso de que la imagen no tenga la misma proporcion a donde se quiere poner -->
+    <img src="assets/images/login/fondo inicio de sesion.png" alt="Fondo"
+        class=" hidden sm:block absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 flex items-center justify-center">
+        <!-- md es cuando la pantalla esta en tamaño mediano entonces allí cambia el tamaño de la fuente a 3xl, el bg-black es background en negro, el /60 es la transparencia, el rounded es la redondez de las esquinas  -->
+        <div class="bg-black/60 px-6 py-4 rounded-lg">
+            <h1 class="text-white text-2xl md:text-3xl font-bold text-center">
+                ¡CONECTATE Y EMPIEZA AHORA!
+            </h1>
+        </div>
+    </div>
+</section>
+
+<main class="flex flex-col items-center justify-center px-4 py-15 bg-[#314A37]">
+    <section class="relative bg-[#2A3C2F] p-8 pt-16 rounded-lg shadow-lg text-center w-full max-w-md">
+        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+            <img src="assets/images/login/icono inicio de sesion.png" alt="Ícono"
+                class="w-20 h-20 rounded-full border-4 border-[#2A3C2F] bg-white" />
+        </div>
+        <!-- Titulo de inicio de sesion -->
+        <h2 class="text-white text-2xl font-bold mb-6">NUEVA CONTRASEÑA</h2>
+        <div class="flex flex-col gap-2 text-left ">
+            <label class="block text-sm text-white">Escribe tu nueva contraseña. Te recomendamos incluir al menos una
+                letra mayúscula, números y caracteres especiales.</label>
+            <div class="flex flex-col gap-1">
+                <!-- Ingresar nueva clave -->
+                <div flex flex-col gap-3>
+                    <div class="bg-white rounded-full flex items-center mb-1 pr-3"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !clave}">
+                        <img src="assets/images/login/icono-clave-inicio-sesion.png" class="w-10 h-10 mr-3" />
+
+                        <!-- El tipo cambia dinámicamente entre 'password' y 'text' -->
+                        <input [type]="mostrarClave ? 'text' : 'password'" placeholder="Nueva contraseña"
+                            [(ngModel)]="clave" class="flex-1 outline-none text-sm" />
+
+                        <!-- Botón de ojo -->
+                        <button type="button" (click)="mostrarClave = !mostrarClave" class="focus:outline-none">
+                            @if(!mostrarClave){
+                            <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                            }
+                            @if (mostrarClave) {
+                            <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                            }
+                        </button>
+
+                    </div>
+                    @if (mostrarError && !clave) {
+                    <small class="text-red-500 flex pb-1 ">Campo obligatorio</small>
+                    }
+                </div>
+                <!-- Repetir nueva clave -->
+                <div flex flex-col gap-3>
+                    <div class="bg-white rounded-full flex items-center mb-1 pr-3"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !repetirClave}">
+                        <img src="assets/images/login/icono-clave-inicio-sesion.png" class="w-10 h-10 mr-3" />
+
+                        <!-- El tipo cambia dinámicamente entre 'password' y 'text' -->
+                        <input [type]="mostrarRepetirClave ? 'text' : 'password'" placeholder="Repetir nueva contraseña"
+                            [(ngModel)]="repetirClave" class="flex-1 outline-none text-sm" />
+
+                        <!-- Botón de ojo -->
+                        <button type="button" (click)="mostrarRepetirClave = !mostrarRepetirClave"
+                            class="focus:outline-none">
+                            @if(!mostrarRepetirClave){
+                            <img src="assets/images/login/ojo-cerrado.png" alt="Mostrar" class="w-5 h-5" />
+                            }
+                            @if (mostrarRepetirClave) {
+                            <img src="assets/images/login/ojo-abierto.png" alt="Ocultar" class="w-5 h-5" />
+                            }
+                        </button>
+
+                    </div>
+                    @if (mostrarError && !repetirClave) {
+                    <small class="text-red-500 flex pb-1 ">Campo obligatorio</small>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <button (click)="actualizarClave()"
+            class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-full mt-1 mb-2 hover:bg-[#004D00] hover:text-white">
+            ENVIAR
+        </button>
+        <p class="text-center text-sm  font-semibold mt-2 text-white">
+            ¿Recordaste la contraseña?
+            <a (click)="iniciarSesion()" class="text-[#6ED13C] font-semibold hover:underline">Inicia sesión</a>
+        </p>
+
+
+    </section>
+</main>

@@ -272,6 +272,143 @@ class UsuarioModelo
         }
     }
 
+    public function actualizarClavePorToken($token, $claveNueva)
+    {
+        // 1. Buscar usuario por token válido
+        $sql = "SELECT ID_USUARIO, RESET_EXPIRA 
+            FROM usuario 
+            WHERE RESET_TOKEN = :token";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':token' => $token]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return ['resultado' => 'ERROR', 'mensaje' => 'Token inválido.'];
+        }
+
+        if (strtotime($user['RESET_EXPIRA']) < time()) {
+            return ['resultado' => 'ERROR', 'mensaje' => 'El enlace expiró.'];
+        }
+
+        // 2. Actualizar contraseña
+        $claveHash = password_hash($claveNueva, PASSWORD_DEFAULT);
+
+        $upd = $this->conexion->prepare("
+        UPDATE usuario SET 
+            CLAVE = :clave,
+            RESET_TOKEN = NULL,
+            RESET_EXPIRA = NULL
+        WHERE ID_USUARIO = :id
+    ");
+
+        $upd->execute([
+            ':clave' => $claveHash,
+            ':id' => $user['ID_USUARIO']
+        ]);
+
+        return ['resultado' => 'OK', 'mensaje' => 'Contraseña actualizada'];
+    }
+
+    public function enviarCorreoRecuperacion($email)
+    {
+        try {
+            // 1️⃣ Buscar usuario por correo
+            $sql = "SELECT ID_USUARIO, EMAIL, PRIMER_NOMBRE 
+                FROM usuario 
+                WHERE EMAIL = :email";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([':email' => $email]);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$usuario) {
+                return [
+                    'resultado' => 'ERROR',
+                    'mensaje' => 'El correo no está registrado.'
+                ];
+            }
+
+            // 2️⃣ Crear token y fecha de expiración
+            $token = bin2hex(random_bytes(32)); // 64 chars
+            $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+            // 3️⃣ Guardar token en la BD
+            $sql = "UPDATE usuario SET 
+                    RESET_TOKEN = :token,
+                    RESET_EXPIRA = :expira
+                WHERE ID_USUARIO = :id";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':token' => $token,
+                ':expira' => $expira,
+                ':id' => $usuario['ID_USUARIO']
+            ]);
+
+            // 4️⃣ Crear link de recuperación (Angular)
+            $link = "http://localhost:4200/acceso/nueva-clave?token={$token}";
+
+            // 5️⃣ Enviar el correo usando PHPMailer y config centralizada
+            require_once __DIR__ . '/../library/vendor/autoload.php';
+            require_once __DIR__ . '/../library/config-email.php';
+
+            $cfg = get_mail_config();
+            $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+            $mail->CharSet = 'UTF-8';
+            $mail->isSMTP();
+            $mail->Host = $cfg['host'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $cfg['username'];
+            $mail->Password = $cfg['password'];
+            $mail->SMTPSecure = $cfg['secure'];
+            $mail->Port = $cfg['port'];
+
+            $mail->setFrom($cfg['from'], $cfg['from_name']);
+            $mail->addAddress($usuario['EMAIL'], $usuario['PRIMER_NOMBRE']);
+            $mail->isHTML(true);
+
+            $mail->Subject = "Recuperación de contraseña - Retrofit31";
+            $mail->Body = "
+            <h2>Hola, {$usuario['PRIMER_NOMBRE']} 👋</h2>
+            <p>Solicitaste recuperar tu contraseña en <strong>Retrofit 31</strong>.</p>
+            <p>Haz clic en el siguiente botón para continuar:</p>
+
+            <p>
+                <a href='{$link}' 
+                    style='background:#004D00;color:white;padding:12px 20px;
+                    border-radius:6px;text-decoration:none;font-weight:bold'>
+                    Crear nueva contraseña
+                </a>
+            </p>
+
+            <p>Este enlace expirará en 1 hora.</p>
+        ";
+
+            $mail->send();
+
+            return [
+                'resultado' => 'OK',
+                'mensaje' => $cfg['is_sandbox']
+                    ? 'Correo simulado enviado a Mailtrap.'
+                    : 'Correo enviado correctamente.',
+                'sandbox' => $cfg['is_sandbox']
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'resultado' => 'ERROR',
+                'mensaje' => $e->getMessage()
+            ];
+        }
+    }
+
+
+
+
+
+
+
+
 
 }
 

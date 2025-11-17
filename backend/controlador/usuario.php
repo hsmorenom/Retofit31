@@ -38,34 +38,84 @@ switch ($metodo) {
         $input = file_get_contents("php://input");
         $datos = json_decode($input, true);
 
-        // Validar que $datos no sea null
         if (!$datos) {
             echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'No se recibió JSON válido.']);
             exit();
         }
 
-        // Si tiene email y clave, intentamos login
+        // =========================================
+        // 🔹 1. Enviar correo de recuperación
+        // =========================================
+        if (isset($_GET['accion']) && $_GET['accion'] === 'enviarRecuperacion') {
+
+            if (!isset($datos['email'])) {
+                echo json_encode([
+                    'resultado' => 'ERROR',
+                    'mensaje' => 'Debe proporcionar un correo.'
+                ]);
+                exit();
+            }
+
+            echo json_encode(
+                $usuario->enviarCorreoRecuperacion($datos['email'])
+            );
+            exit();
+        }
+
+        // =========================================
+        // 🔹 2. Actualizar clave usando el TOKEN
+        // =========================================
+        if (isset($_GET['accion']) && $_GET['accion'] === 'actualizarDesdeToken') {
+
+            if (!isset($datos['token']) || !isset($datos['claveNueva'])) {
+                echo json_encode([
+                    'resultado' => 'ERROR',
+                    'mensaje' => 'Faltan datos: token o claveNueva'
+                ]);
+                exit();
+            }
+
+            echo json_encode(
+                $usuario->actualizarClavePorToken(
+                    $datos['token'],
+                    $datos['claveNueva']
+                )
+            );
+            exit();
+        }
+
+        // =========================================
+        // 🔹 3. Login normal
+        // =========================================
         if (isset($datos['email']) && isset($datos['clave'])) {
             echo json_encode($usuario->login($datos['email'], $datos['clave']));
+            exit();
+        }
 
-            //Cambiar el estado del usuario
-        } elseif (isset($_GET['accion']) && $_GET['accion'] === 'cambiarEstado') {
+        // =========================================
+        // 🔹 4. Cambiar estado de usuario
+        // =========================================
+        if (isset($_GET['accion']) && $_GET['accion'] === 'cambiarEstado') {
 
             if (isset($datos['id'])) {
                 echo json_encode($usuario->cambiarEstadoUsuario($datos['id']));
             } else {
                 echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'ID no proporcionado']);
             }
+            exit();
+        }
+
+        // =========================================
+        // 🔹 5. Insertar usuario
+        // =========================================
+        if (is_array($datos) && count($datos) > 0) {
+            echo json_encode($usuario->insertar($datos));
         } else {
-            // Insertar solo si vienen datos válidos
-            if (is_array($datos) && count($datos) > 0) {
-                echo json_encode($usuario->insertar($datos));
-            } else {
-                echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Datos de inserción inválidos.']);
-            }
+            echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Datos de inserción inválidos.']);
         }
 
         break;
+
 
     case 'PUT':
         if (isset($_GET['id'])) {

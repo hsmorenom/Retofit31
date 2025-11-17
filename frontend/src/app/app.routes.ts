@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadComponent: () => import('./acceso/recordar-clave/recordar-clave').then(m => m.RecordarClave)
   },
   {
+    path: 'nueva-clave',
+    loadComponent: () => import('./acceso/nueva-clave/nueva-clave').then(m => m.NuevaClave)
+  },
+  {
     path: 'perfil',
     loadComponent: () => import('./modulos/perfil/perfil').then(m => m.Perfil)
   },

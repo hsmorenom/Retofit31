@@ -23,10 +23,10 @@
         <div class="flex flex-col gap-2 text-left ">
             <label class="block text-sm text-white">Escribe el correo electrónico con el que te registraste para enviarte el enlace de recuperación </label>
             <div class="rounded-full bg-white p-2 mb-3 text-left">
-                <input type="text" placeholder="Correo electrónico" class=" flex-1 outline-none text-sm " />
+                <input type="text"  [(ngModel)]="email" placeholder="Correo electrónico" class=" flex-1 outline-none text-sm w-full " />
             </div>
         </div>
-        <button (click)="iniciarSesion()"
+        <button (click)="enviarEnlace()"
             class="cursor-pointer bg-[#7CE54F] text-black font-bold py-2 px-4 rounded-full w-full mb-2 hover:bg-[#004D00] hover:text-white">
             ENVIAR ENLACE
         </button>

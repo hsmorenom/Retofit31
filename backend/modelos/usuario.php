@@ -1,4 +1,7 @@
 <?php
+
+date_default_timezone_set('America/Bogota');
+
 require_once '../conexion.php';
 
 class UsuarioModelo
@@ -272,42 +275,43 @@ class UsuarioModelo
         }
     }
 
-    public function actualizarClavePorToken($token, $claveNueva)
-    {
-        // 1. Buscar usuario por token válido
-        $sql = "SELECT ID_USUARIO, RESET_EXPIRA 
+    public function actualizarClaveDesdeToken($token, $claveNueva)
+{
+    // 1. Buscar usuario por token válido
+    $sql = "SELECT ID_USUARIO, TOKEN_EXPIRA 
             FROM usuario 
-            WHERE RESET_TOKEN = :token";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute([':token' => $token]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            WHERE TOKEN_RECUPERACION = :token";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute([':token' => $token]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$user) {
-            return ['resultado' => 'ERROR', 'mensaje' => 'Token inválido.'];
-        }
+    if (!$user) {
+        return ['resultado' => 'ERROR', 'mensaje' => 'Token inválido.'];
+    }
 
-        if (strtotime($user['RESET_EXPIRA']) < time()) {
-            return ['resultado' => 'ERROR', 'mensaje' => 'El enlace expiró.'];
-        }
+    if (strtotime($user['TOKEN_EXPIRA']) < time()) {
+        return ['resultado' => 'ERROR', 'mensaje' => 'El enlace expiró.'];
+    }
 
-        // 2. Actualizar contraseña
-        $claveHash = password_hash($claveNueva, PASSWORD_DEFAULT);
+    // 2. Actualizar contraseña
+    $claveHash = password_hash($claveNueva, PASSWORD_DEFAULT);
 
-        $upd = $this->conexion->prepare("
+    $upd = $this->conexion->prepare("
         UPDATE usuario SET 
             CLAVE = :clave,
-            RESET_TOKEN = NULL,
-            RESET_EXPIRA = NULL
+            TOKEN_RECUPERACION = NULL,
+            TOKEN_EXPIRA = NULL
         WHERE ID_USUARIO = :id
     ");
 
-        $upd->execute([
-            ':clave' => $claveHash,
-            ':id' => $user['ID_USUARIO']
-        ]);
+    $upd->execute([
+        ':clave' => $claveHash,
+        ':id' => $user['ID_USUARIO']
+    ]);
 
-        return ['resultado' => 'OK', 'mensaje' => 'Contraseña actualizada'];
-    }
+    return ['resultado' => 'OK', 'mensaje' => 'Contraseña actualizada'];
+}
+
 
     public function enviarCorreoRecuperacion($email)
     {
@@ -333,8 +337,8 @@ class UsuarioModelo
 
             // 3️⃣ Guardar token en la BD
             $sql = "UPDATE usuario SET 
-                    RESET_TOKEN = :token,
-                    RESET_EXPIRA = :expira
+                    TOKEN_RECUPERACION = :token,
+                    TOKEN_EXPIRA = :expira
                 WHERE ID_USUARIO = :id";
 
             $stmt = $this->conexion->prepare($sql);

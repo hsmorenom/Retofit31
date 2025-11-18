@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+date_default_timezone_set('America/Bogota');
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');

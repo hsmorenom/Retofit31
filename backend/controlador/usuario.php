@@ -1,4 +1,6 @@
 <?php
+
+date_default_timezone_set('America/Bogota');
 header('Content-Type:application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, PUT, DELETE, POST, OPTIONS');
@@ -76,7 +78,7 @@ switch ($metodo) {
             }
 
             echo json_encode(
-                $usuario->actualizarClavePorToken(
+                $usuario->actualizarClaveDesdeToken(
                     $datos['token'],
                     $datos['claveNueva']
                 )

@@ -1,4 +1,7 @@
 <?php
+
+date_default_timezone_set('America/Bogota');
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
@@ -15,9 +18,9 @@ $token = $_GET['token'];
 $db = DB::conectar();
 
 $stmt = $db->prepare("
-    SELECT ID_USUARIO, EMAIL, RESET_EXPIRA
+    SELECT ID_USUARIO, EMAIL, TOKEN_EXPIRA
     FROM usuario
-    WHERE RESET_TOKEN = :token
+    WHERE TOKEN_RECUPERACION = :token
 ");
 $stmt->execute([':token' => $token]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,7 +31,7 @@ if (!$user) {
 }
 
 // Validar expiración
-if (strtotime($user['RESET_EXPIRA']) < time()) {
+if (strtotime($user['TOKEN_EXPIRA']) < time()) {
     echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'El enlace ha expirado']);
     exit;
 }

@@ -38,6 +38,9 @@ graficoAsistencia: any = null;
   clientesSinFoto = 0;
 
   eventosProximos: any[] = [];
+  clientesSinAntropometricos = 0;
+  clientesSinFotografia = 0;
+
 
 
 
@@ -59,7 +62,57 @@ graficoAsistencia: any = null;
     this.cargarTendenciaAsistencia();
     this.cargarEventosMesActual();   
     this.cargarClientesSinFoto(); 
+    this.cargarClientesSinAntropometricos();
+    this.cargarClientesSinFotografia();
+
   }
+
+  cargarClientesSinFotografia() {
+  this.clienteService.consultar().subscribe({
+    next: (clientes: any[]) => {
+
+      this.fotografiaService.consultar().subscribe({
+        next: (fotos: any[]) => {
+
+          // IDs de clientes que sí tienen al menos UNA fotografía
+          const idsConFoto = fotos.map(f => Number(f.CLIENTE));
+
+          // Filtrar clientes que NO están en esa lista
+          const sinFoto = clientes.filter(c => 
+            !idsConFoto.includes(Number(c.ID_CLIENTE))
+          );
+
+          this.clientesSinFotografia = sinFoto.length;
+
+          console.log("📸 Clientes sin registro fotográfico:", this.clientesSinFotografia);
+        }
+      });
+
+    }
+  });
+}
+
+cargarClientesSinAntropometricos() {
+  this.clienteService.consultar().subscribe({
+    next: (clientes: any[]) => {
+
+      this.antropometricosService.consultar().subscribe({
+        next: (medidas: any[]) => {
+
+          // Lista de IDs de clientes que SÍ tienen al menos una medida
+          const idsConMedidas = medidas.map(m => Number(m.CLIENTE));
+
+          // Filtrar clientes que NO están en esa lista
+          const sinMedidas = clientes.filter(c => !idsConMedidas.includes(Number(c.ID_CLIENTE)));
+
+          this.clientesSinAntropometricos = sinMedidas.length;
+
+          console.log("📏 Clientes sin medidas antropométricas:", this.clientesSinAntropometricos);
+        }
+      });
+    }
+  });
+}
 
   cargarEventosProximos() {
   this.eventosService.consultar().subscribe({

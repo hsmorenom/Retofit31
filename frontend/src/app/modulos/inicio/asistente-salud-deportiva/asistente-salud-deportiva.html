@@ -1,48 +1,87 @@
 <div class="w-full px-4 md:px-10 py-6 space-y-10">
 
   <!-- =====================================================
-       TARJETAS SUPERIORES (3)
+       INDICADORES PRINCIPALES (TARJETA CONTENEDORA)
   ====================================================== -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
+    <h2 class="text-black font-semibold text-2xl mt-2">
+      Indicadores principales
+    </h2>
 
-    <!-- CARD 1 -->
-    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
-      <div class="text-4xl">➕</div>
-      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
-        Mediciones Antropométricas por verificar
-      </p>
-      <p class="text-3xl font-bold mt-2">18</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- CARD 1 -->
+
+      <div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center border border-gray-200">
+  <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
+  <span class="text-4xl font-bold text-black-700">+</span>
+</div>
+  <h3 class="text-black font-semibold text-lg mt-2 text-center">
+    Clientes sin mediciones antropométricas
+  </h3>
+  <p class="text-4xl font-semibold mt-2">{{ clientesSinAntropometricos }}</p>
+</div>
+
+      <!-- CARD 2 -->
+      <div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center border border-gray-200">
+              <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="h-8 w-8 text-black" 
+            fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 5c-1.657 0-3-1.343-3-3H7C5.343 2 4 3.343 4 5H3C1.343 5 0 6.343 0 8v11c0 1.657 1.343 3 3 3h18c1.657 0 3-1.343 3-3V8c0-1.657-1.343-3-3-3h-1c0-1.657-1.343-3-3-3h-2c0 1.657-1.343 3-3 3zm0 2c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm0 2a3 3 0 100 6 3 3 0 000-6z"/>
+        </svg>
+      </div>
+        <h3 class="text-black font-semibold text-lg mt-2 text-center">
+          Clientes sin registro fotográfico
+        </h3>
+        <p class="text-4xl font-semibold mt-2">
+          {{ clientesSinFotografia }}
+        </p>
+      </div>
+
+      
+
+      <!-- CARD 3 (OPCIONAL) -->
+<div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center border border-gray-200">
+
+  <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="w-9 h-9 text-black"
+         fill="currentColor"
+         viewBox="0 0 24 24">
+
+      <path d="M19 4H18V2H16V4H8V2H6V4H5C3.9 4 3 4.9 3 6V20C3 21.1 
+               3.9 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4ZM19 
+               20H5V10H19V20ZM19 8H5V6H19V8Z" />
+    </svg>
+  </div>
+
+  <h3 class="text-black font-semibold text-lg mt-2 text-center">
+    Eventos próximos
+  </h3>
+
+  <p class="text-4xl font-semibold mt-2">{{ eventosProximosCantidad }}</p>
+</div>
+
     </div>
-
-    <!-- CARD 2 -->
-    <div class="bg-gray-100 shadow-md rounded-xl p-5 flex flex-col items-center border">
-      <div class="text-4xl">📸</div>
-      <p class="font-semibold text-lg text-gray-800 text-center mt-2">
-        Fotografías nuevas por revisar
-      </p>
-      <p class="text-3xl font-bold mt-2">210</p>
-    </div>
-
   </div>
 
   <!-- =====================================================
-       EVENTOS + GRAFICA
+       EVENTOS + GRÁFICA RADAR (DOS COLUMNAS)
   ====================================================== -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
     <!-- PROXIMOS EVENTOS -->
-    <div class="bg-white shadow-lg rounded-xl p-6 border">
-      <h2 class="text-xl font-semibold mb-4">Próximos eventos</h2>
+    <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Próximos eventos</h2>
 
-      <!-- Si no hay eventos -->
-      <p *ngIf="eventosProximos.length === 0" class="text-gray-500">
-        No hay eventos programados.
-      </p>
+      <!-- Sin eventos -->
+      <p *ngIf="eventosProximos.length === 0" class="text-gray-500">No hay eventos programados.</p>
 
-      <!-- Lista de eventos -->
+      <!-- Lista -->
       <div *ngFor="let evento of eventosProximos" class="border-b last:border-b-0 py-3">
-        
-        <p class="text-xl font-bold">
+
+        <p class="text-xl font-bold text-gray-800">
           {{ evento.NOMBRE_EVENTO }}
         </p>
 
@@ -61,8 +100,8 @@
       </div>
     </div>
 
-    <!-- GRÁFICA ANTROPOMÉTRICA -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+    <!-- GRÁFICA RADAR -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
       <h2 class="text-2xl font-semibold mb-4 text-gray-800">
         Tendencias antropométricas
       </h2>
@@ -74,10 +113,12 @@
   </div>
 
   <!-- =====================================================
-       NOTIFICACIONES (DEBAJO DE AMBOS BLOQUES)
+       NOTIFICACIONES
   ====================================================== -->
   <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Notificaciones</h2>
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+      Notificaciones
+    </h2>
 
     <ul class="list-disc pl-6 space-y-3 text-gray-700 text-lg">
 

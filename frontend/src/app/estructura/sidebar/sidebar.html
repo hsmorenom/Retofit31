@@ -19,27 +19,27 @@
             [ngClass]="{'text-[#7CE54F]': router.url === '/administrativo'}">
             <i class=" fas fa-user-cog"></i> ADMINISTRATIVO
         </a>}
-    @if (tipoUsuario === 1) {    
+    @if (tipoUsuario === 1 || tipoUsuario === 2 || tipoUsuario === 3) {    
         <a routerLink="/eventos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/eventos'}">
             <i class=" fas fa-calendar-day"></i> EVENTOS
         </a>}
-    @if (tipoUsuario === 1) {
+    @if (tipoUsuario === 1 || tipoUsuario === 2 || tipoUsuario === 3 || tipoUsuario === 4) {
         <a routerLink="/asistencia" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/asistencia'}">
             <i class=" fas fa-clipboard"></i> GESTIÓN DE ASISTENCIA
         </a>}
-    @if (tipoUsuario === 1) {
+    @if (tipoUsuario === 1 || tipoUsuario === 2 || tipoUsuario === 3) {
         <a routerLink="/fotografias" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/fotografias'}">
             <i class=" fas fa-camera"></i> FOTOGRAFÍAS
         </a>}
-    @if (tipoUsuario === 1) {
+    @if (tipoUsuario === 1 || tipoUsuario === 2 || tipoUsuario === 3) {
         <a routerLink="/antropometricos" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/antropometricos'}">
             <i class=" fas fa-ruler-horizontal"></i> MEDIDAS ANTROPOMÉTRICAS
         </a>}
-    @if (tipoUsuario === 1) {
+    @if (tipoUsuario === 1 || tipoUsuario === 2 || tipoUsuario === 3) {
         <a routerLink="/consultas" class="flex items-center gap-2 p-2 rounded hover:bg-green-700"
             [ngClass]="{'text-[#7CE54F]': router.url === '/consultas'}">
             <i class=" fas fa-file-medical-alt"></i> CONSULTAS
@@ -61,6 +61,6 @@
         </button>
     </nav>
 </div>
-<p class="text-xs text-yellow-400">
+<!-- <p class="text-xs text-yellow-400">
   Tipo Usuario: {{ tipoUsuario }}
-</p>
+</p> -->

@@ -23,6 +23,8 @@ export class EditarEvento {
   lugar_de_actividad: string = '';
   observaciones: string = '';
 
+  mostrarError = false;
+
   constructor(private eventosService: EventosService) { }
 
   ngOnInit(): void {
@@ -46,6 +48,42 @@ export class EditarEvento {
 
     if (!this.evento || !this.evento.ID_EVENTOS) {
       alert('No se encontró el ID del evento.');
+      return;
+    }
+
+    if (!this.nombre_evento) {
+      alert('Por favor nombra el evento.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.fecha_actividad) {
+      alert('Por favor selecciona una fecha.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.hora_inicio) {
+      alert('Por favor ajusta la hora de inicio.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.hora_fin) {
+      alert('Por favor ajusta la hora final.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.instructor) {
+      alert('Por favor nombra un instructor.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.lugar_de_actividad) {
+      alert('Por favor nombra el lugar del evento.');
+      this.mostrarError = true;
       return;
     }
 
@@ -80,6 +118,10 @@ export class EditarEvento {
   // 🔹 Cierra el formulario
   cerrarVentana(): void {
     this.cerrar.emit();
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 

@@ -25,6 +25,7 @@ export class AgregarEvento {
   eventoGuardado = false;
   qrGenerado = false;
   idEventoCreado: number | null = null;
+  mostrarError = false;
 
   constructor(private eventosService: EventosService) { }
 
@@ -36,8 +37,39 @@ export class AgregarEvento {
       return;
     }
 
+    if (!this.nombre_evento) {
+      alert('Por favor nombra el evento.');
+      this.mostrarError = true;
+      return;
+    }
+
     if (!this.fecha_actividad) {
       alert('Por favor selecciona una fecha.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.hora_inicio) {
+      alert('Por favor ajusta la hora de inicio.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.hora_fin) {
+      alert('Por favor ajusta la hora final.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.instructor) {
+      alert('Por favor nombra un instructor.');
+      this.mostrarError = true;
+      return;
+    }
+
+    if (!this.lugar_de_actividad) {
+      alert('Por favor nombra el lugar del evento.');
+      this.mostrarError = true;
       return;
     }
 
@@ -122,6 +154,10 @@ export class AgregarEvento {
   }
   cancelarRegistro(): void {
     this.cerrar.emit();
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
   

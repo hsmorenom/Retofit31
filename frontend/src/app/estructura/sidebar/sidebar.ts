@@ -1,32 +1,65 @@
-import { Component, EventEmitter,Output } from '@angular/core';
-import { Router } from '@angular/router';
-//Habilita la navegacion entre rutas o path 
-import { RouterModule } from '@angular/router';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { UsuarioService } from '../../services/usuario';
 
 @Component({
-  // Aca se define como se nombrara el template de app.ts
   selector: 'app-sidebar',
-  // Declara independencia de otros componentes
   standalone: true,
-  // Importa las clases a usar dentro del componente
   imports: [CommonModule, RouterModule],
-  // aca se indica donde esta guardado el html del sidebar que esta en la misma carpeta de este typescript
   templateUrl: './sidebar.html'
 })
-export class Sidebar {
+export class Sidebar implements OnInit {
 
-   @Output() sidebarToggled = new EventEmitter<void>();
+  tipoUsuario: number = 0;
+  nombreUsuario: string = '';
 
-  constructor(public router: Router){}
-  
-  // Aca se crea la funcion de dirigir la ruta al inicio
+  @Output() sidebarToggled = new EventEmitter<void>();
+
+  constructor(
+    public router: Router,
+    private usuarioService: UsuarioService
+  ) {}
+
+  ngOnInit(): void {
+    const idUsuario = localStorage.getItem('idUsuario');
+
+    if (idUsuario) {
+      this.usuarioService.filtrarPorId(+idUsuario).subscribe((data: any) => {
+
+        console.log("🔎 DATA SIDEBAR:", data);
+
+        const tipo =
+          data?.TIPO_USUARIO ||
+          data?.usuario?.TIPO_USUARIO ||
+          data?.[0]?.TIPO_USUARIO ||
+          data?.data?.TIPO_USUARIO ||
+          data?.data?.[0]?.TIPO_USUARIO ||
+          null;
+
+        console.log("🔎 TIPO USUARIO RAW:", tipo);
+
+        // MAPA correcto con TUS ROLES REALES
+        const mapaRoles: any = {
+          "Administrador": 1,
+          "Asistente-admon": 2,
+          "Asistente-salud-deportiva": 3,
+          "Usuario": 4
+        };
+
+        this.tipoUsuario = mapaRoles[tipo] ?? 0;
+
+        console.log("🔎 TIPO USUARIO NUM:", this.tipoUsuario);
+      });
+    }
+  }
+
   cerrarSesion() {
+    localStorage.removeItem('idUsuario');
     this.router.navigate(['/']);
   }
 
-   toggleSidebar() {
+  toggleSidebar() {
     this.sidebarToggled.emit();
   }
 }

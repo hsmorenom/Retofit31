@@ -21,6 +21,7 @@ export class ProgramarRecordatorios implements OnInit {
   frecuencia: string = '';
   tipoNotificacion: string = '';
   eventos: any[] = [];
+  mostrarError2 = false;
 
 
   constructor(
@@ -41,6 +42,13 @@ export class ProgramarRecordatorios implements OnInit {
 
   buscarCliente() {
     if (!this.documentoBusqueda.trim()) return;
+
+    if (!this.documentoBusqueda) {
+      alert('Por favor digite el numero de identificación.');
+      this.mostrarError2 = true;
+      return;
+    }
+
 
     this.clienteService.buscarPorDocumento(this.documentoBusqueda).subscribe({
       next: (res) => {
@@ -89,6 +97,7 @@ export class ProgramarRecordatorios implements OnInit {
       !this.tipoNotificacion
     ) {
       alert('⚠️ Por favor, completa todos los campos antes de programar.');
+      this.mostrarError2 = true;
       return;
     }
 
@@ -124,5 +133,9 @@ export class ProgramarRecordatorios implements OnInit {
     this.eventoSeleccionado = '';
     this.frecuencia = '';
     this.tipoNotificacion = '';
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 }

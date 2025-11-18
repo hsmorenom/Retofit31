@@ -10,14 +10,20 @@
             <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Identificación del usuario:
             </h3>
-
-            <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
-                <input type="text" placeholder="Ingrese aquí el ID del usuario" class="flex-1 outline-none text-sm pl-5"
-                    [(ngModel)]="documentoBusqueda" />
-                <label class="cursor-pointer">
-                    <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
-                </label>
+            <div>
+                <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65"
+                    [ngClass]="{'border-red-500 border-2': mostrarError2 && !documentoBusqueda}">
+                    <input type="text" placeholder="Ingrese aquí el ID del usuario"
+                        class="flex-1 outline-none text-sm pl-5" [(ngModel)]="documentoBusqueda" />
+                    <label class="cursor-pointer">
+                        <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
+                    </label>
+                </div>
+                @if (mostrarError2 && !documentoBusqueda) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
+
+
         </div>
 
         <!-- Chips de clientes seleccionados -->
@@ -42,27 +48,34 @@
                 <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                     Evento:
                 </h3>
-                <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
-                    <select [(ngModel)]="eventoSeleccionado"
-                        class="w-62 p-2 pl-5 rounded-full bg-[#E1E1E1] text-black outline-none"
-                        [ngClass]="{'border-red-500 border-2': mostrarError && !eventoSeleccionado}">
-                        <option [ngValue]="null" disabled selected>Seleccione un evento</option>
+                <div>
+                    <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65"
+                        [ngClass]="{'border-red-500 border-2': mostrarError2 && !eventoSeleccionado}">
+                        <select [(ngModel)]="eventoSeleccionado"
+                            class="w-62 p-2 pl-5 rounded-full bg-[#E1E1E1] text-black outline-none">
+                            <option [ngValue]="null" disabled selected>Seleccione un evento</option>
 
-                        @if (eventos.length > 0) {
-                        @for (e of eventos; track e.ID_EVENTOS) {
-                        <option [ngValue]="e.ID_EVENTOS">
-                            {{ e.NOMBRE_EVENTO }}
-                        </option>
-                        }
-                        }
+                            @if (eventos.length > 0) {
+                            @for (e of eventos; track e.ID_EVENTOS) {
+                            <option [ngValue]="e.ID_EVENTOS">
+                                {{ e.NOMBRE_EVENTO }}
+                            </option>
+                            }
+                            }
 
-                        <!-- Si NO hay eventos -->
-                        @else {
-                        <option disabled>No hay eventos próximos disponibles</option>
-                        }
-                    </select>
+                            <!-- Si NO hay eventos -->
+                            @else {
+                            <option disabled>No hay eventos próximos disponibles</option>
+                            }
+                        </select>
+
+                    </div>
+                    @if (mostrarError2 && !eventoSeleccionado) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
 
                 </div>
+
             </div>
 
             <!-- Frecuencia -->
@@ -70,13 +83,19 @@
                 <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                     Frecuencia:
                 </h3>
-                <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
-                    <select class="p-2 rounded-full pl-5 w-62 outline-none " [(ngModel)]="frecuencia">
-                        <option disabled selected>Tipo de frecuencia</option>
-                        <option value="1_dia">1 vez al día</option>
-                        <option value="2_dia">2 veces al día</option>
-                    </select>
+                <div>
+                    <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65"
+                        [ngClass]="{'border-red-500 border-2': mostrarError2 && !frecuencia}">
+                        <select class="p-2 rounded-full pl-5 w-62 outline-none " [(ngModel)]="frecuencia">
+                            <option disabled selected>Tipo de frecuencia</option>
+                            <option value="1_dia">1 vez al día</option>
+                            <option value="2_dia">2 veces al día</option>
+                        </select>
+                    </div>
+                    @if (mostrarError2 && !eventoSeleccionado) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
                 </div>
+
             </div>
         </div>
 
@@ -85,13 +104,19 @@
             <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Tipo de notificación:
             </h3>
-            <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65">
-                <select class="p-2 rounded-full pl-5 w-62 outline-none" [(ngModel)]="tipoNotificacion">
-                    <option disabled selected>Tipo de notificación</option>
-                    <option value="correo">Correo</option>
-                    <option value="mensaje">Mensaje</option>
-                </select>
+            <div>
+                <div class="flex gap-2 bg-[#E1E1E1] rounded-full w-65"
+                    [ngClass]="{'border-red-500 border-2': mostrarError2 && !tipoNotificacion}">
+                    <select class="p-2 rounded-full pl-5 w-62 outline-none" [(ngModel)]="tipoNotificacion">
+                        <option disabled selected>Tipo de notificación</option>
+                        <option value="correo">Correo</option>
+                        <option value="mensaje">Mensaje</option>
+                    </select>
+                </div>
+                @if (mostrarError2 && !tipoNotificacion) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
+
         </div>
 
         <!-- Botón programar -->

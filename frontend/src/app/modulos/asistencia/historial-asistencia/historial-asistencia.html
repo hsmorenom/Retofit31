@@ -10,11 +10,16 @@
             <h3 class="text-black text-2xl font-semibold mb-1 w-64 md:mb-0">
                 Identificación del usuario:
             </h3>
-            <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65">
-                <input type="text" placeholder="Ingrese aquí el ID del usuario" [(ngModel)]="filtroTexto"
-                    class="flex-1 outline-none text-sm pl-5 w-10 h-10" />
-
+            <div>
+                <div class="bg-[#E1E1E1] rounded-full flex items-center justify-start w-65"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !filtroTexto}">
+                    <input type="text" placeholder="Ingrese aquí el ID del usuario" [(ngModel)]="filtroTexto"
+                        class="flex-1 outline-none text-sm pl-5 w-10 h-10" />
+                </div>
+                @if (mostrarError && !filtroTexto) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
+
         </div>
 
         <!--Filtrar fecha inicial  -->

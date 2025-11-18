@@ -16,6 +16,7 @@ export class HistorialAsistencia {
   mostrarHistorialUsuario = false
   filtroTexto: string = '';
   asistenciasFiltradas: any[] = [];
+  mostrarError = false;
 
   constructor(private asistenciaService: AsistenciaService) { }
 
@@ -28,6 +29,7 @@ export class HistorialAsistencia {
     // 🧩 Validación básica
     if (!identificacion) {
       alert('Por favor ingresa una identificación antes de consultar.');
+      this.mostrarError = true
       return;
     }
 
@@ -75,6 +77,7 @@ export class HistorialAsistencia {
     this.filtroTexto = '';
     this.mostrarHistorialUsuario = false; // Oculta la tabla
     this.asistenciasFiltradas = [];
+    this.mostrarError=false;
 
     // Limpia también los campos de fecha si existen
     const fechaInicial = document.querySelector('#fechaInicial') as HTMLInputElement;
@@ -102,41 +105,45 @@ export class HistorialAsistencia {
   }
 
   exportarPDF(): void {
-  if (!this.asistenciasFiltradas || this.asistenciasFiltradas.length === 0) {
-    alert('No hay datos para exportar.');
-    return;
+    if (!this.asistenciasFiltradas || this.asistenciasFiltradas.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // 🧩 Encabezado del documento
+    doc.setFontSize(16);
+    doc.text('Historial de Asistencia', 105, 15, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text(`Fecha de generación: ${new Date().toLocaleDateString()}`, 14, 25);
+
+    // 🧾 Tabla de datos
+    const body = this.asistenciasFiltradas.map((a: any) => [
+      a.ID_ASISTENCIA,
+      a.IDENTIFICACION,
+      `${a.NOMBRES}`,
+      `${a.APELLIDOS}`,
+      a.NOMBRE_EVENTO,
+      a.FECHA_ACTIVIDAD,
+      a.NOTIFICACION || '—'
+    ]);
+
+    autoTable(doc, {
+      head: [['ID', 'Identificación', 'Nombres', 'Apellidos', 'Evento', 'Fecha', 'Notificación']],
+      body: body,
+      startY: 30,
+      styles: { fontSize: 9, halign: 'center' },
+      headStyles: { fillColor: [0, 77, 0] }, // Verde institucional
+    });
+
+    // 💾 Guardar archivo
+    doc.save(`Historial_Asistencia_${new Date().getTime()}.pdf`);
   }
 
-  const doc = new jsPDF();
-
-  // 🧩 Encabezado del documento
-  doc.setFontSize(16);
-  doc.text('Historial de Asistencia', 105, 15, { align: 'center' });
-  doc.setFontSize(10);
-  doc.text(`Fecha de generación: ${new Date().toLocaleDateString()}`, 14, 25);
-
-  // 🧾 Tabla de datos
-  const body = this.asistenciasFiltradas.map((a: any) => [
-    a.ID_ASISTENCIA,
-    a.IDENTIFICACION,
-    `${a.NOMBRES}`,
-    `${a.APELLIDOS}`,
-    a.NOMBRE_EVENTO,
-    a.FECHA_ACTIVIDAD,
-    a.NOTIFICACION || '—'
-  ]);
-
-  autoTable(doc, {
-    head: [['ID', 'Identificación', 'Nombres', 'Apellidos', 'Evento', 'Fecha', 'Notificación']],
-    body: body,
-    startY: 30,
-    styles: { fontSize: 9, halign: 'center' },
-    headStyles: { fillColor: [0, 77, 0] }, // Verde institucional
-  });
-
-  // 💾 Guardar archivo
-  doc.save(`Historial_Asistencia_${new Date().getTime()}.pdf`);
-}
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
+  }
 
 
 

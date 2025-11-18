@@ -35,6 +35,8 @@ export class ComparacionDatos {
 
   nombreColumnaDato = '';
 
+  mostrarError=false;
+
   constructor(
     private clienteService: ClienteService,
     private antropometricosService: AntropometricosService,
@@ -82,10 +84,12 @@ export class ComparacionDatos {
   consultarHistorial() {
     const idCliente = this.clientesSeleccionados[0]?.ID_CLIENTE;
 
-    if (!idCliente) {
-      alert("Debe seleccionar un usuario primero");
+    if (!idCliente ||!this.tipoDatoSeleccionado) {
+      alert("Debe completar los campos obligatorios");
+      this.mostrarError=true;
       return;
     }
+
 
     this.antropometricosService.filtrarIdCliente(idCliente).subscribe({
       next: (res) => {
@@ -243,5 +247,10 @@ export class ComparacionDatos {
     this.datosFiltrados = [];
     this.registrosSeleccionados = [];
     this.nombreColumnaDato = '';
+    this.mostrarError=false;
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 }

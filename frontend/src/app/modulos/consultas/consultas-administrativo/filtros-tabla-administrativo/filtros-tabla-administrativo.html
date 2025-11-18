@@ -45,14 +45,20 @@
                 <label class="font-oswald text-lg text-gray-800 mb-1">
                     Tipo de informe:
                 </label>
-                <select [(ngModel)]="tipoInformeSeleccionado"
-                    class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F] outline-none">
-                    <option value="">Seleccione el tipo de informe</option>
-                    <option value="cantidad_estados">Cantidad por estados</option>
-                    <option value="cantidad_sexos">Cantidad por sexo</option>
-                    <option value="cantidad_por_tipo_usuario">Cantidad de usuarios según su tipo</option>
-                    <option value="listado_detallado">Listado detallado de usuarios</option>
-                </select>
+                <div>
+                    <select [(ngModel)]="tipoInformeSeleccionado"
+                        class="rounded-full bg-white px-4 py-2 w-full focus:ring-2 focus:ring-[#7CE54F] outline-none"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !tipoInformeSeleccionado}">
+                        <option value="">Seleccione el tipo de informe</option>
+                        <option value="cantidad_estados">Cantidad por estados</option>
+                        <option value="cantidad_sexos">Cantidad por sexo</option>
+                        <option value="cantidad_por_tipo_usuario">Cantidad de usuarios según su tipo</option>
+                        <option value="listado_detallado">Listado detallado de usuarios</option>
+                    </select>
+                    @if (mostrarError && !tipoInformeSeleccionado) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
+                </div>
+
             </div>
 
         </div>

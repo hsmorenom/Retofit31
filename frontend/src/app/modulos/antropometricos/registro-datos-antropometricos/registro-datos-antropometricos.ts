@@ -28,8 +28,7 @@ export class RegistroDatosAntropometricos {
   PGC: number | null = null;
   clasificacionPGC: string | null = null;
 
-
-
+  mostrarError = false;
 
 
   constructor(
@@ -120,6 +119,7 @@ export class RegistroDatosAntropometricos {
     this.documentoBusqueda = '';
     this.clientesSeleccionados = [];
     this.limpiarBusqueda();
+    this.mostrarError=false;
   }
 
 
@@ -252,11 +252,20 @@ export class RegistroDatosAntropometricos {
 
     if (!this.clientesSeleccionados.length) {
       alert('⚠️ Debes seleccionar un cliente');
+      this.mostrarError = true;
       return;
     }
 
+    if (!this.peso || !this.altura ||!this.cuello ||!this.cintura) {
+      alert('⚠️ Debes completar todos los campos');
+      this.mostrarError = true;
+      return;
+    }
+
+
     if (!this.IMC || !this.PGC) {
       alert('⚠️ Calcula IMC y PGC antes de guardar');
+      this.mostrarError = true;
       return;
     }
 
@@ -289,6 +298,9 @@ export class RegistroDatosAntropometricos {
 
   }
 
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
+  }
 
 
 

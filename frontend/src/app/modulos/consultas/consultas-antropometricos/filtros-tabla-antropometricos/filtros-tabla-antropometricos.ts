@@ -26,6 +26,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
   edadMax: number | null = null;
   metricaSeleccionada = '';
   tipoInformeSeleccionado = '';
+  mostrarError = false;
 
   // Datos
   antropo: any[] = [];
@@ -59,6 +60,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
 
     if (!this.tipoInformeSeleccionado || !this.metricaSeleccionada) {
       alert("Seleccione tipo de informe y métrica");
+      this.mostrarError = true;
       return;
     }
 
@@ -240,6 +242,7 @@ export class FiltrosTablaAntropometricos implements OnInit {
     this.resultados = null as any;
     this.datosGraficos.emit(null);
     this.datosParaInforme.emit(null);
+    this.mostrarError = false;
 
   }
 
@@ -310,6 +313,10 @@ export class FiltrosTablaAntropometricos implements OnInit {
         window.open(res.urlPDF, '_blank');
       }
     });
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 }

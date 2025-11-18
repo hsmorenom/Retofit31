@@ -22,13 +22,20 @@
             <div class="flex flex-col md:flex-row md:items-center md:gap-4 w-full">
 
                 <!-- Input de búsqueda -->
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
-                    <input type="text" placeholder="Ingrese aquí el ID del usuario"
-                        class="flex-1 outline-none text-sm pl-5 bg-transparent" [(ngModel)]="documentoBusqueda" />
-                    <label class="cursor-pointer">
-                        <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
-                    </label>
+                <div>
+                    <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !documentoBusqueda}">
+                        <input type="text" placeholder="Ingrese aquí el ID del usuario"
+                            class="flex-1 outline-none text-sm pl-5 bg-transparent" [(ngModel)]="documentoBusqueda" />
+                        <label class="cursor-pointer">
+                            <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" (click)="buscarCliente()" />
+                        </label>
+                    </div>
+                    @if (mostrarError && !documentoBusqueda) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
+
                 </div>
+
 
                 <!-- Chips -->
                 <div class="flex flex-wrap gap-2 mt-3 md:mt-0">
@@ -75,11 +82,14 @@
 
                 @if (sexoSeleccionado === 'Otro') {
                 <select [(ngModel)]="tipoCalculoGrasa" (change)="cambiarTipoCalculo(tipoCalculoGrasa)"
-                    class="bg-[#E1E1E1] p-2 rounded-full w-full md:w-64">
+                    class="bg-[#E1E1E1] p-2 rounded-full w-full md:w-64"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !tipoCalculoGrasa}">
                     <option disabled selected value="">Seleccione una opción</option>
                     <option value="Masculino">Cálculo cuerpo masculino</option>
                     <option value="Femenino">Cálculo cuerpo femenino</option>
                 </select>
+                @if (mostrarError && !tipoCalculoGrasa) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
                 }
 
                 <p class="font-light text-sm text-[#404040]">
@@ -99,9 +109,14 @@
             </h3>
 
             <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="number" placeholder="Ingrese la masa corporal en Kg" [(ngModel)]="peso"
-                        (input)="actualizarIMC()" class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
+                <div>
+                    <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !peso}">
+                        <input type="number" placeholder="Ingrese la masa corporal en Kg" [(ngModel)]="peso"
+                            (input)="actualizarIMC()" class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" />
+                    </div>
+                    @if (mostrarError && !peso) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
                 </div>
 
                 <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">
@@ -119,10 +134,15 @@
             </h3>
 
             <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                    <input type="number" placeholder="Ingrese la altura en cm"
-                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="altura"
-                        (input)="actualizarIMC()" />
+                <div>
+                    <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64"
+                        [ngClass]="{'border-red-500 border-2': mostrarError && !altura}">
+                        <input type="number" placeholder="Ingrese la altura en cm"
+                            class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="altura"
+                            (input)="actualizarIMC()" />
+                    </div>
+                    @if (mostrarError && !altura) {
+                    <small class="text-red-500 flex  ">Campo obligatorio</small>}
                 </div>
 
                 <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">
@@ -176,10 +196,15 @@
         </h3>
 
         <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                <input type="number" placeholder="Ingrese circunferencia en cm"
-                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cuello"
-                    (input)="calcularPGC()" />
+            <div>
+                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !cuello}">
+                    <input type="number" placeholder="Ingrese circunferencia en cm"
+                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cuello"
+                        (input)="calcularPGC()" />
+                </div>
+                @if (mostrarError && !cuello) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
 
             <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">
@@ -197,10 +222,15 @@
         </h3>
 
         <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                <input type="number" placeholder="Ingrese circunferencia en cm"
-                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cintura"
-                    (input)="calcularPGC()" />
+            <div>
+                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !cintura}">
+                    <input type="number" placeholder="Ingrese circunferencia en cm"
+                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cintura"
+                        (input)="calcularPGC()" />
+                </div>
+                @if (mostrarError && !cintura) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
 
             <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">
@@ -219,10 +249,15 @@
         </h3>
 
         <div class="flex flex-row items-center justify-between w-full md:w-[585px]">
-            <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64">
-                <input type="number" placeholder="Ingrese circunferencia en cm"
-                    class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cadera"
-                    (input)="calcularPGC()" />
+            <div>
+                <div class="bg-[#E1E1E1] rounded-full flex items-center w-full sm:w-64"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !cadera}">
+                    <input type="number" placeholder="Ingrese circunferencia en cm"
+                        class="flex-1 outline-none text-sm pl-5 h-10 bg-transparent" [(ngModel)]="cadera"
+                        (input)="calcularPGC()" />
+                </div>
+                @if (mostrarError && !cadera) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
 
             <p class="font-light text-sm hidden md:block whitespace-nowrap text-[#404040]">

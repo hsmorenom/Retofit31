@@ -22,6 +22,7 @@ export class FiltrosTablaAdministrativo implements OnInit {
 
   usuarios: any[] = [];
   usuariosFiltrados: any[] = [];
+  mostrarError=false;
 
   constructor(
     private clienteService: ClienteService,
@@ -45,6 +46,7 @@ export class FiltrosTablaAdministrativo implements OnInit {
 
     if (!this.tipoInformeSeleccionado) {
       alert("Seleccione un tipo de informe");
+      this.mostrarError=true;
       return;
     }
 
@@ -174,6 +176,7 @@ export class FiltrosTablaAdministrativo implements OnInit {
     this.tipoInformeSeleccionado = '';
     this.usuariosFiltrados = [];
     this.datosGraficos.emit([]);
+    this.mostrarError=false;
   }
 
   // ==================================
@@ -221,6 +224,10 @@ export class FiltrosTablaAdministrativo implements OnInit {
         window.open(res.urlPDF, '_blank');
       }
     });
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 }

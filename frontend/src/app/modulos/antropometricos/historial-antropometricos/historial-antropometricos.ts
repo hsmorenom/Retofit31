@@ -17,6 +17,7 @@ export class HistorialAntropometricos {
   mostrarHistorialUsuario = false
   filtroTexto: string = '';
   antropometricosFiltrados: any[] = [];
+  mostrarError = false;
 
   constructor(
     private antropometricosService: AntropometricosService,
@@ -32,6 +33,7 @@ export class HistorialAntropometricos {
     // 🧩 Validación básica
     if (!identificacion) {
       alert('Por favor ingresa una identificación antes de consultar.');
+      this.mostrarError=true;
       return;
     }
 
@@ -70,6 +72,7 @@ export class HistorialAntropometricos {
     this.filtroTexto = '';
     this.mostrarHistorialUsuario = false; // Oculta la tabla
     this.antropometricosFiltrados = [];
+    this.mostrarError=false;
 
     // Limpia también los campos de fecha si existen
     const fechaInicial = document.querySelector('#fechaInicial') as HTMLInputElement;
@@ -168,6 +171,10 @@ export class HistorialAntropometricos {
 
     // 💾 Guardar archivo
     doc.save(`Historial_Antropometricos_${new Date().getTime()}.pdf`);
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 }

@@ -16,22 +16,21 @@
     <!-- ID Usuario -->
     <div class="flex gap-4 md:col-span-2">
       <h3 class="text-black font-semibold text-2xl">Identificación del usuario:</h3>
-
-      <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
-        <input
-          [(ngModel)]="terminoBusqueda"
-          type="text"
-          placeholder="Buscar cliente por documento..."
-          class="flex-1 outline-none text-sm pl-5 py-2 bg-transparent"
-        />
-        <button (click)="buscarCliente()" class="cursor-pointer ">
-          <img src="assets/images/asistencia/lupa.png" class="w-9 h-9">
-        </button>
+      <div>
+        <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
+          <input [(ngModel)]="terminoBusqueda" type="text" placeholder="Buscar cliente por documento..."
+            class="flex-1 outline-none text-sm pl-5 py-2 bg-transparent" />
+          <button (click)="buscarCliente()" class="cursor-pointer ">
+            <img src="assets/images/asistencia/lupa.png" class="w-9 h-9">
+          </button>
+        </div>
       </div>
+
+
     </div>
 
     <!-- Tipo de perfil -->
-    <div >
+    <div>
       <h3 class="text-black font-semibold text-2xl w-full ">Tipo de perfil:</h3>
       <select [(ngModel)]="tipoPerfil" class="w-full bg-[#E1E1E1] rounded-full px-4 py-2 mt-1 text-sm">
         <option value="" disabled selected>Seleccione perfil...</option>
@@ -64,42 +63,34 @@
   </div>
 
   <!-- RESULTADO -->
-  <div *ngIf="fotoUno && fotoDos" class="border rounded-xl p-4 bg-gray-100">
+  @if (fotoUno && fotoDos) {
+  <div class="border rounded-xl p-4 bg-gray-100">
 
     <div class="flex justify-center items-center relative h-96">
 
       <!-- Foto inferior -->
-      <img [src]="fotoUno"
-        class="absolute top-0 left-0 right-0 bottom-0 w-auto h-full mx-auto rounded-lg shadow">
+      <img [src]="fotoUno" class="absolute top-0 left-0 right-0 bottom-0 w-auto h-full mx-auto rounded-lg shadow">
 
       <!-- Foto superior con opacidad -->
-      <img [src]="fotoDos"
-        [style.opacity]="sliderValue / 100"
+      <img [src]="fotoDos" [style.opacity]="sliderValue / 100"
         class="absolute top-0 left-0 right-0 bottom-0 w-auto h-full mx-auto rounded-lg shadow">
     </div>
 
-    <button
-  type="button"
-  (click)="cancelarAccion()"
-  class="bg-black text-white font-semibold 
+    <button type="button" (click)="cancelarAccion()" class="bg-black text-white font-semibold 
          px-4 py-2 rounded-full 
          hover:bg-gray-800 transition active:scale-95">
-  CANCELAR
-</button>
+      CANCELAR
+    </button>
 
 
 
     <!-- Slider -->
     <div class="mt-4">
-      <input
-        type="range"
-        min="0"
-        max="100"
-        [(ngModel)]="sliderValue"
-        class="w-full accent-green-600"
-      />
+      <input type="range" min="0" max="100" [(ngModel)]="sliderValue" class="w-full accent-green-600" />
     </div>
 
   </div>
+  }
+
 
 </div>

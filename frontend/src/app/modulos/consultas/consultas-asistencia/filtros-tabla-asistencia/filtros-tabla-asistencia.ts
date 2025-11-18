@@ -30,7 +30,7 @@ export class FiltrosTablaAsistencia implements OnInit {
   tipoInformeSeleccionado = '';
   fechaInicio = '';
   fechaFin = '';
-
+  mostrarError = false;
 
 
 
@@ -66,6 +66,7 @@ export class FiltrosTablaAsistencia implements OnInit {
 
     if (!this.eventoSeleccionado || !this.tipoInformeSeleccionado) {
       alert("Seleccione un evento y un tipo de informe");
+      this.mostrarError=true;
       return;
     }
 
@@ -228,6 +229,7 @@ export class FiltrosTablaAsistencia implements OnInit {
     this.fechaFin = '';
     this.asistenciasFiltradas = [];
     this.datosGraficos.emit([]);
+    this.mostrarError=false;
   }
 
 
@@ -273,6 +275,10 @@ export class FiltrosTablaAsistencia implements OnInit {
       },
       error: err => console.error(err)
     });
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 

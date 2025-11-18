@@ -7,14 +7,19 @@
     <div class="flex flex-col gap-4">
         <!-- //Buscar ID del usuario -->
         <div class="flex flex-col gap-3 md:flex-row items-start md:items-center md:gap-7">
-            <h3 class="text-black text-2xl font-semibold w-full md:w-68">
+            <h3 class="text-black text-2xl font-semibold w-full md:w-68 round">
                 Identificación del usuario:
             </h3>
-            <div class="bg-[#E1E1E1] w-full md:w-64 p-2 pr-2 rounded-full outline-none">
-                <input type="text" placeholder="Ingrese ID del usuario" [(ngModel)]="filtroTexto"
-                    class="" />
-
+            <div>
+                <div class="bg-[#E1E1E1] w-full md:w-64 p-2 pr-2 rounded-full outline-none"
+                    [ngClass]="{'border-red-500 border-2': mostrarError && !filtroTexto}">
+                    <input type="text" placeholder="Ingrese ID del usuario" [(ngModel)]="filtroTexto"
+                        class="outline-none w-full" />
+                </div>
+                @if (mostrarError && !filtroTexto) {
+                <small class="text-red-500 flex  ">Campo obligatorio</small>}
             </div>
+
         </div>
 
         <!--Filtrar fecha inicial  -->
@@ -22,8 +27,7 @@
             <h3 class="text-black text-2xl font-semibold w-full md:w-68">
                 Fecha inicial:
             </h3>
-            <input type="date" id="fechaInicial"
-                class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
+            <input type="date" id="fechaInicial" class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
         </div>
 
         <!--Filtrar fecha final  -->
@@ -31,8 +35,7 @@
             <h3 class="text-black text-2xl font-semibold w-full md:w-68">
                 Fecha final:
             </h3>
-            <input type="date" id="fechaFinal"
-                class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
+            <input type="date" id="fechaFinal" class=" bg-[#E1E1E1] w-full md:w-64 p-2 rounded-full outline-none" />
         </div>
     </div>
 
@@ -100,8 +103,7 @@
 
                     <td class="px-4 py-2">
                         @if (a.editando) {
-                        <input type="number" [(ngModel)]="a.PGC"
-                            class="border rounded w-20 text-center" />
+                        <input type="number" [(ngModel)]="a.PGC" class="border rounded w-20 text-center" />
                         } @else {
                         {{ a.PGC }}
                         }
@@ -109,8 +111,7 @@
 
                     <td class="px-4 py-2">
                         @if (a.editando) {
-                        <input type="number" [(ngModel)]="a.IMC"
-                            class="border rounded w-20 text-center" />
+                        <input type="number" [(ngModel)]="a.IMC" class="border rounded w-20 text-center" />
                         } @else {
                         {{ a.IMC }}
                         }
@@ -118,8 +119,7 @@
 
                     <td class="px-4 py-2">
                         @if (a.editando) {
-                        <input type="number" [(ngModel)]="a.CUELLO"
-                            class="border rounded w-20 text-center" />
+                        <input type="number" [(ngModel)]="a.CUELLO" class="border rounded w-20 text-center" />
                         } @else {
                         {{ a.CUELLO }}
                         }
@@ -127,8 +127,7 @@
 
                     <td class="px-4 py-2">
                         @if (a.editando) {
-                        <input type="number" [(ngModel)]="a.CINTURA"
-                            class="border rounded w-20 text-center" />
+                        <input type="number" [(ngModel)]="a.CINTURA" class="border rounded w-20 text-center" />
                         } @else {
                         {{ a.CINTURA }}
                         }
@@ -136,8 +135,7 @@
 
                     <td class="px-4 py-2">
                         @if (a.editando) {
-                        <input type="number" [(ngModel)]="a.CADERA"
-                            class="border rounded w-20 text-center" />
+                        <input type="number" [(ngModel)]="a.CADERA" class="border rounded w-20 text-center" />
                         } @else {
                         {{ a.CADERA }}
                         }

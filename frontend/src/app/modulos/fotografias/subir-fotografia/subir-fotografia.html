@@ -8,7 +8,7 @@
 
     <p *ngIf="!idEdicion" class="font-light text-sm text-[#404040]">
       (Sube 3 fotos: <span class="font-medium">frontal</span>,
-      <span class="font-medium">lateral</span> y 
+      <span class="font-medium">lateral</span> y
       <span class="font-medium">posterior</span>)
     </p>
 
@@ -22,37 +22,29 @@
     <h3 class="text-black font-semibold text-2xl whitespace-nowrap">
       Identificación del usuario:
     </h3>
+    <div>
+      <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !terminoBusqueda}">
+        <input type="text" [(ngModel)]="terminoBusqueda" placeholder="Buscar cliente por documento..."
+          class="flex-1 outline-none text-sm pl-5 bg-transparent" />
 
-    <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
-      <input
-        type="text"
-        [(ngModel)]="terminoBusqueda"
-        placeholder="Buscar cliente por documento..."
-        class="flex-1 outline-none text-sm pl-5 bg-transparent"
-      />
-
-      <img
-        src="assets/images/asistencia/lupa.png"
-        class="w-10 h-10 cursor-pointer"
-        (click)="buscarCliente(true)"
-      />
+        <img src="assets/images/asistencia/lupa.png" class="w-10 h-10 cursor-pointer" (click)="buscarCliente(true)" />
+      </div>
+      @if (mostrarError && !terminoBusqueda) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
     </div>
 
+
     <!-- CHIP -->
-    <div
-      *ngIf="clienteSeleccionado"
-      class="bg-[#7ce54f] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm whitespace-nowrap"
-    >
+    <div *ngIf="clienteSeleccionado"
+      class="bg-[#7ce54f] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm whitespace-nowrap">
       <span class="font-semibold text-sm">
         {{ clienteSeleccionado.PRIMER_NOMBRE }}
         {{ clienteSeleccionado.PRIMER_APELLIDO }} -
         {{ clienteSeleccionado.IDENTIFICACION }}
       </span>
 
-      <button
-        (click)="cancelarAccion()"
-        class="text-red-700 hover:text-red-900 font-bold"
-      >
+      <button (click)="cancelarAccion()" class="text-red-700 hover:text-red-900 font-bold">
         ×
       </button>
     </div>
@@ -73,10 +65,8 @@
           <!-- Selector -->
           <div class="flex items-center gap-3">
             <label
-              class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
-            >
-              <input type="file" accept="image/*" class="sr-only"
-                     (change)="onFileSelected($event, 'frontal')" />
+              class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90">
+              <input type="file" accept="image/*" class="sr-only" (change)="onFileSelected($event, 'frontal')" />
               Seleccionar foto
             </label>
 
@@ -86,27 +76,22 @@
             </span>
 
             <!-- ELIMINAR -->
-            <button
-              type="button"
-              (click)="eliminarFoto('frontal')"
-              class="ml-auto inline-flex items-center justify-center rounded-full bg-black text-white hover:bg-neutral-800 w-6 h-6"
-            >
+            <button type="button" (click)="eliminarFoto('frontal')"
+              class="ml-auto inline-flex items-center justify-center rounded-full bg-black text-white hover:bg-neutral-800 w-6 h-6">
               ×
             </button>
           </div>
 
           <!-- PREVIEW -->
           <img *ngIf="formFotos.frontal.preview" [src]="formFotos.frontal.preview"
-               style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
+            style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
           <!-- Campos -->
-          <input type="text" [(ngModel)]="formFotos.frontal.descripcion"
-                 placeholder="Descripción"
-                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+          <input type="text" [(ngModel)]="formFotos.frontal.descripcion" placeholder="Descripción"
+            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-          <input type="text" [(ngModel)]="formFotos.frontal.etiqueta"
-                 placeholder="Etiqueta"
-                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+          <input type="text" [(ngModel)]="formFotos.frontal.etiqueta" placeholder="Etiqueta"
+            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
         </div>
       </div>
@@ -119,8 +104,7 @@
 
           <div class="flex items-center gap-3">
             <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm text-white">
-              <input type="file" accept="image/*" class="sr-only"
-                     (change)="onFileSelected($event, 'posterior')" />
+              <input type="file" accept="image/*" class="sr-only" (change)="onFileSelected($event, 'posterior')" />
               Seleccionar foto
             </label>
 
@@ -133,15 +117,13 @@
           </div>
 
           <img *ngIf="formFotos.posterior.preview" [src]="formFotos.posterior.preview"
-               style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
+            style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
-          <input type="text" [(ngModel)]="formFotos.posterior.descripcion"
-                 placeholder="Descripción"
-                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+          <input type="text" [(ngModel)]="formFotos.posterior.descripcion" placeholder="Descripción"
+            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-          <input type="text" [(ngModel)]="formFotos.posterior.etiqueta"
-                 placeholder="Etiqueta"
-                 class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+          <input type="text" [(ngModel)]="formFotos.posterior.etiqueta" placeholder="Etiqueta"
+            class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
         </div>
       </div>
 
@@ -155,8 +137,7 @@
 
         <div class="flex items-center gap-3">
           <label class="inline-flex cursor-pointer items-center rounded-full bg-black px-4 py-2 text-sm text-white">
-            <input type="file" accept="image/*" class="sr-only"
-                   (change)="onFileSelected($event, 'lateral')" />
+            <input type="file" accept="image/*" class="sr-only" (change)="onFileSelected($event, 'lateral')" />
             Seleccionar foto
           </label>
 
@@ -169,42 +150,34 @@
         </div>
 
         <img *ngIf="formFotos.lateral.preview" [src]="formFotos.lateral.preview"
-             style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
+          style="width:302px; height:151px; object-fit:cover; border-radius:6px; border:1px solid #ccc;" />
 
-        <input type="text" [(ngModel)]="formFotos.lateral.descripcion"
-               placeholder="Descripción"
-               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+        <input type="text" [(ngModel)]="formFotos.lateral.descripcion" placeholder="Descripción"
+          class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
 
-        <input type="text" [(ngModel)]="formFotos.lateral.etiqueta"
-               placeholder="Etiqueta"
-               class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
+        <input type="text" [(ngModel)]="formFotos.lateral.etiqueta" placeholder="Etiqueta"
+          class="w-full rounded-full bg-neutral-100 px-4 py-2 text-sm" />
       </div>
     </div>
 
   </section>
 
   <!-- BOTONES -->
- <div class="flex justify-end items-center gap-3 mt-6">
+  <div class="flex justify-end items-center gap-3 mt-6">
 
-  <!-- CANCELAR -->
-  <button
-    type="button"
-    (click)="cancelarAccion()"
-    class="bg-black text-white font-semibold px-4 py-2 rounded-full
+    <!-- CANCELAR -->
+    <button type="button" (click)="cancelarAccion()" class="bg-black text-white font-semibold px-4 py-2 rounded-full
            hover:bg-gray-800 transition active:scale-95">
-    CANCELAR
-  </button>
+      CANCELAR
+    </button>
 
-  <!-- SUBIR / ACTUALIZAR -->
-  <button
-    type="button"
-    (click)="idEdicion ? editarFotos() : subirFotos()"
-    class="bg-[#7CE54F] text-black font-semibold px-4 py-2 rounded-full 
+    <!-- SUBIR / ACTUALIZAR -->
+    <button type="button" (click)="idEdicion ? editarFotos() : subirFotos()" class="bg-[#7CE54F] text-black font-semibold px-4 py-2 rounded-full 
            hover:bg-[#004D00] hover:text-white transition active:scale-95">
-    {{ idEdicion ? "ACTUALIZAR FOTOS" : "SUBIR FOTOS" }}
-  </button>
+      {{ idEdicion ? "ACTUALIZAR FOTOS" : "SUBIR FOTOS" }}
+    </button>
 
-</div>
+  </div>
 
 
 </div>

@@ -29,6 +29,7 @@ export class SubirFotografia {
   clienteSeleccionado: any = null;
   idCliente: number = 0;
   identificacionCliente!: string;
+  mostrarError=false;
 
   clienteCargado: boolean = false;
 
@@ -220,8 +221,11 @@ export class SubirFotografia {
   // SUBIR FOTOS NUEVAS
   // ============================
   subirFotos() {
-    if (!this.clienteSeleccionado)
-      return alert("⚠️ Selecciona un cliente primero.");
+    if (!this.clienteSeleccionado){
+      alert("⚠️ Selecciona un cliente primero.")
+      this.mostrarError=true;
+      return;
+    }
 
     const formData = new FormData();
     formData.append('cliente', this.idCliente.toString());
@@ -293,6 +297,10 @@ export class SubirFotografia {
   cancelarAccion() {
     this.resetFormulario();
     alert("🔄 Acción cancelada.");
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 
 }

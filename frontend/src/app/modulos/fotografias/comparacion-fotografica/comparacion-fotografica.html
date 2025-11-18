@@ -14,8 +14,8 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
     <!-- ID Usuario -->
-    <div class="md:col-span-2">
-      <h3 class="text-black font-semibold text-2xl">ID del usuario:</h3>
+    <div class="flex gap-4 md:col-span-2">
+      <h3 class="text-black font-semibold text-2xl">Identificación del usuario:</h3>
 
       <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
         <input
@@ -24,15 +24,15 @@
           placeholder="Buscar cliente por documento..."
           class="flex-1 outline-none text-sm pl-5 py-2 bg-transparent"
         />
-        <button (click)="buscarCliente()" class="cursor-pointer pr-3">
+        <button (click)="buscarCliente()" class="cursor-pointer ">
           <img src="assets/images/asistencia/lupa.png" class="w-9 h-9">
         </button>
       </div>
     </div>
 
     <!-- Tipo de perfil -->
-    <div>
-      <h3 class="text-black font-semibold text-2xl">Tipo de perfil:</h3>
+    <div >
+      <h3 class="text-black font-semibold text-2xl w-full ">Tipo de perfil:</h3>
       <select [(ngModel)]="tipoPerfil" class="w-full bg-[#E1E1E1] rounded-full px-4 py-2 mt-1 text-sm">
         <option value="" disabled selected>Seleccione perfil...</option>
         <option>Frontal</option>

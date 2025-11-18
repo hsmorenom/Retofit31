@@ -20,6 +20,7 @@ export class HistorialProgreso {
   terminoBusqueda: string = '';
   clienteSeleccionado: any = null;
   idCliente: number = 0;
+  mostrarError = false;
 
   fechasDisponibles: string[] = [];
   fechaSeleccionada: string = '';
@@ -32,7 +33,7 @@ export class HistorialProgreso {
   constructor(
     private clienteService: ClienteService,
     private fotografiaService: FotografiaService
-  ) {}
+  ) { }
 
   // ====================================================
   // 1. Buscar cliente
@@ -40,6 +41,12 @@ export class HistorialProgreso {
   buscarCliente() {
     const doc = this.terminoBusqueda.trim();
     if (!doc) return;
+
+    if (!this.terminoBusqueda){
+      alert("⚠️ Digite el numero de identificación primero.")
+      this.mostrarError=true;
+      return;
+    }
 
     this.clienteService.buscarPorDocumento(doc).subscribe({
       next: (res) => {
@@ -133,5 +140,9 @@ export class HistorialProgreso {
     this.fotosDeFecha = null;
     this.idFotografiaSeleccionada = 0;
     this.observacion = '';
+  }
+
+  toggleError() {
+    this.mostrarError = !this.mostrarError;
   }
 }

@@ -16,20 +16,22 @@
   <!-- ============================= -->
   <div class="flex items-center gap-4 mb-4">
     <h3 class="text-black font-semibold text-2xl whitespace-nowrap">
-      ID del usuario:
+      Identificación del usuario:
     </h3>
+    <div>
+      <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64"
+        [ngClass]="{'border-red-500 border-2': mostrarError && !terminoBusqueda}">
+        <input [(ngModel)]="terminoBusqueda" type="text" placeholder="Buscar cliente por documento..."
+          class="flex-1 outline-none text-sm pl-5 py-2 bg-transparent" />
 
-    <div class="bg-[#E1E1E1] rounded-full flex items-center w-full md:w-64">
-      <input
-        [(ngModel)]="terminoBusqueda"
-        type="text"
-        placeholder="Buscar cliente por documento..."
-        class="flex-1 outline-none text-sm pl-5 py-2 bg-transparent" />
-
-      <button (click)="buscarCliente()" class="cursor-pointer">
-        <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" />
-      </button>
+        <button (click)="buscarCliente()" class="cursor-pointer">
+          <img src="assets/images/asistencia/lupa.png" class="w-10 h-10" />
+        </button>
+      </div>
+      @if (mostrarError && !terminoBusqueda) {
+      <small class="text-red-500 flex  ">Campo obligatorio</small>}
     </div>
+
   </div>
 
   <!-- ============================= -->
@@ -40,9 +42,7 @@
       Fecha de registro:
     </h3>
 
-    <select
-      [(ngModel)]="fechaSeleccionada"
-      (change)="seleccionarFecha()"
+    <select [(ngModel)]="fechaSeleccionada" (change)="seleccionarFecha()"
       class="bg-[#E1E1E1] rounded-full w-full md:w-64 p-2 outline-none">
       <option value="">Seleccione una fecha</option>
       <option *ngFor="let fecha of fechasDisponibles" [value]="fecha">
@@ -54,37 +54,34 @@
   <!-- ============================= -->
   <!-- MOSTRAR FOTOS -->
   <!-- ============================= -->
-<div *ngIf="fotosDeFecha" class="mt-6">
-  <h2 class="text-lg font-bold text-gray-800 mb-4">Resultado:</h2>
+  <div *ngIf="fotosDeFecha" class="mt-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">Resultado:</h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    <!-- Frontal -->
-    <div class="text-center">
-      <img 
-        [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_FRONTAL" 
-        class="mx-auto rounded-lg shadow h-[220px] object-cover" />
-      <p class="mt-2 text-sm font-semibold">Frontal</p>
+      <!-- Frontal -->
+      <div class="text-center">
+        <img [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_FRONTAL"
+          class="mx-auto rounded-lg shadow h-[220px] object-cover" />
+        <p class="mt-2 text-sm font-semibold">Frontal</p>
+      </div>
+
+      <!-- Lateral -->
+      <div class="text-center">
+        <img [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_LATERAL"
+          class="mx-auto rounded-lg shadow h-[220px] object-cover" />
+        <p class="mt-2 text-sm font-semibold">Lateral</p>
+      </div>
+
+      <!-- Posterior -->
+      <div class="text-center">
+        <img [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_POSTERIOR"
+          class="mx-auto rounded-lg shadow h-[220px] object-cover" />
+        <p class="mt-2 text-sm font-semibold">Posterior</p>
+      </div>
+
     </div>
-
-    <!-- Lateral -->
-    <div class="text-center">
-      <img 
-        [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_LATERAL" 
-        class="mx-auto rounded-lg shadow h-[220px] object-cover" />
-      <p class="mt-2 text-sm font-semibold">Lateral</p>
-    </div>
-
-    <!-- Posterior -->
-    <div class="text-center">
-      <img 
-        [src]="baseFotosUrl + fotosDeFecha.URL_FOTO_POSTERIOR" 
-        class="mx-auto rounded-lg shadow h-[220px] object-cover" />
-      <p class="mt-2 text-sm font-semibold">Posterior</p>
-    </div>
-
   </div>
-</div>
 
 
   <!-- ============================= -->
@@ -95,34 +92,32 @@
       {{ fechaSeleccionada }}
     </label>
 
-    <textarea
-      [(ngModel)]="observacion"
-      placeholder="Agregue la observación respecto al cambio físico del usuario"
+    <textarea [(ngModel)]="observacion" placeholder="Agregue la observación respecto al cambio físico del usuario"
       class="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500"></textarea>
   </div>
 
   <!-- ============================= -->
   <!-- BOTÓN GUARDAR -->
   <!-- ============================= -->
-<!-- BOTONES -->
-<div class="flex justify-center gap-4 mt-6" *ngIf="fotosDeFecha">
+  <!-- BOTONES -->
+  <div class="flex justify-center gap-4 mt-6" *ngIf="fotosDeFecha">
 
-  <!-- CANCELAR (IZQUIERDA) -->
+    <!-- CANCELAR (IZQUIERDA) -->
 
-      <!-- Botón programar -->
+    <!-- Botón programar -->
     <div class="flex justify-end gap-2">
-        <button (click)="cancelarConsulta()"
-            class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
-            CANCELAR
-        </button>
-        <button
-            class="bg-[#7CE54F] cursor-pointer text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition"
-            (click)="guardarObservacion()">
-            GUARDAR
-        </button>
+      <button (click)="cancelarConsulta()"
+        class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition cursor-pointer">
+        CANCELAR
+      </button>
+      <button
+        class="bg-[#7CE54F] cursor-pointer text-black font-semibold px-4 py-2 rounded-full hover:bg-[#004D00] hover:text-white hover:font-semibold transition"
+        (click)="guardarObservacion()">
+        GUARDAR
+      </button>
     </div>
-  
-</div>
+
+  </div>
 
 
 </div>

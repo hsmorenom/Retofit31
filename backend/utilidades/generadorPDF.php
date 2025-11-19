@@ -163,6 +163,27 @@ function generarInformePDF($datos)
     // ===============================
     $html .= "<div class='section-title'>Resultados:</div>";
 
+    // 👉 ASISTENCIA ESTADÍSTICOS
+    if (in_array($datos->tipoInforme, ["asistencias", "inasistencias", "porcentaje"])) {
+
+        $html .= "
+        <table>
+            <tr><th>Nombres</th><th>Apellidos</th><th>Edad</th><th>Sexo</th><th>Resultado</th></tr>";
+
+        foreach ($datos->datos as $item) {
+            $html .= "<tr>
+                        <td>{$item->NOMBRES}</td>
+                        <td>{$item->APELLIDOS}</td>
+                        <td>{$item->EDAD}</td>
+                        <td>{$item->SEXO}</td>
+                        <td>{$item->RESULTADO}</td>
+                      </tr>";
+        }
+
+        $html .= "</table>";
+    }
+
+
     // 👉 ADMINISTRATIVOS ESTADÍSTICOS
     if (in_array($datos->tipoInforme, ["cantidad_estados", "cantidad_sexos", "cantidad_por_tipo_usuario"])) {
 

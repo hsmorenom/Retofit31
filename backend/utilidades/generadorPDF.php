@@ -292,7 +292,7 @@ function generarInformePDF($datos)
             <br>
             <br>
             <br>
-            <img src='{$datos->grafica}' style='width:70%; margin-top:10px;margin-left:100px'>
+            <img src='{$datos->grafica}' style='width:60%; margin-top:10px;margin-left:130px'>
         ";
     }
 

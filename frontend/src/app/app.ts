@@ -23,11 +23,14 @@ import { Sidebar } from './estructura/sidebar/sidebar';
   <!-- Aca se llama el header y que con un @input llamado mostrar boton y que se activa cuando la ruta no sea al del inicio que esta definido en app..routes.ts como'/' -->
    <!-- toggle es un evento escuchado por el header y le dice si se hizo clic o no en el boton de hamburguesa y de acuerdo a ello se llama la funcion de tooglesidebar -->
     <div class="flex flex-col min-h-screen">
-      <app-header [mostrarBoton]="router.url !== '/' && router.url !=='/registro' && router.url !=='/recordar-clave'" (toggle)="toggleSidebar()"></app-header>
+      <app-header [mostrarBoton]="router.url !== '/' && router.url !=='/registro' && router.url !=='/recordar-clave' && router.url !=='/nueva-clave'" (toggle)="toggleSidebar()"></app-header>
       <!-- Aca se llama el style de flexbox con flex lo cual hace que el contenidop sea en fila, el sidebar y el router-oultet  -->
       <div class="flex flex-1">
         <!-- *ngIf es un es una funcion de CommonModule cuyo proposito es ocultar o mostrar segun la condicion, en este caso mostrarSidebar se declaro en false( ver clase APP aqui abajo) y cambia segun la funcion de tooglesidebar, y se debe cumplir la condicion si o si que el router.url que se llame sea diferente a '/' que es inicio, si se cumple esto, el sidebar se mostrara, de lo contrario se ocultará, el mostrar Sidebar se modifica si toggleSidebar modifica su condicion de true a false-->
-          <app-sidebar *ngIf="mostrarSidebar && router.url !== '/' && router.url !=='/registro' && router.url !=='/recordar-clave' "></app-sidebar>
+         @if(mostrarSidebar && router.url !== '/' && router.url !=='/registro' && router.url !=='/recordar-clave' && router.url !=='/nueva-clave'){
+          <app-sidebar></app-sidebar>
+         }
+          
           <!-- Aca se crea un div para que el espacio restante del sidebar sea ocupada para el routerOutlet el flex-1 garantiza esto -->
           <main class="flex-1 overflow-auto">
             <router-outlet></router-outlet>

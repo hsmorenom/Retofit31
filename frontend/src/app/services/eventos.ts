@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventosService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/eventos.php';
+  private apiUrl = environment.apiUrl + 'controlador/eventos.php';
 
   constructor(private http: HttpClient) { }
 

@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AntropometricosService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/antropometricos.php';
+  private apiUrl = environment.apiUrl + 'controlador/antropometricos.php';
   constructor(private http: HttpClient) { }
 
   // Aca se obtienen todos los registros de antropometricos

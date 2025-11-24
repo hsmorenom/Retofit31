@@ -31,7 +31,7 @@ export class NuevaClave {
 
   ngOnInit() {
     this.token = this.route.snapshot.queryParamMap.get("token");
-    console.log("Token recibido:", this.token);
+
 
     if (this.token) {
       this.usuarioService.verificarToken(this.token).subscribe(res => {

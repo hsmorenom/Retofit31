@@ -34,7 +34,6 @@ export class Login {
       next: (respuesta) => {
 
         const usuario = respuesta[0]; // tu API devuelve array
-        console.log('json de login', usuario);
 
         if (usuario && usuario.ID_USUARIO) {
 

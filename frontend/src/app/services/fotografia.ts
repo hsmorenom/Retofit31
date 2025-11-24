@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FotografiaService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/fotografia.php';
+  private apiUrl = environment.apiUrl + 'controlador/fotografia.php';
 
   constructor(private http: HttpClient) { }
 

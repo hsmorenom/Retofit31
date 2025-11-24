@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DepartamentoService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/departamento.php';
+  private apiUrl = environment.apiUrl + 'controlador/departamento.php';
   constructor(private http: HttpClient) { }
 
   //se obtienen todos los registro

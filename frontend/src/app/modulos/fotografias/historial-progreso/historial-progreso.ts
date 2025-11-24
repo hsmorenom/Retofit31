@@ -15,7 +15,7 @@ import { FotografiaService } from '../../../services/fotografia';
 })
 export class HistorialProgreso {
 
-  baseFotosUrl = "http://localhost:8000/backend/";
+  baseFotosUrl = "http://localhost:8000/";
 
   terminoBusqueda: string = '';
   clienteSeleccionado: any = null;

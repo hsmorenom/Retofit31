@@ -12,7 +12,7 @@ import { FotografiaService } from '../../../services/fotografia';
 })
 export class ComparacionFotografica {
 
-  baseFotosUrl = "http://localhost:8000/backend/";
+  baseFotosUrl = "http://localhost:8000/";
 
   terminoBusqueda = "";
   cliente: any = null;

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Ciudad {
   ID_CIUDAD: number;
@@ -12,7 +13,7 @@ export interface Ciudad {
   providedIn: 'root'
 })
 export class CiudadService {
-  private apiUrl = 'http://localhost:8000/backend/controlador/ciudad.php';
+  private apiUrl = environment.apiUrl + 'controlador/ciudad.php';
   constructor(private http: HttpClient) { }
 
 

@@ -45,7 +45,7 @@ export class SubirFotografia {
   };
 
   // URL base donde se sirven las fotos desde PHP
-  private baseFotosUrl = 'http://localhost:8000/backend/';
+  private baseFotosUrl = 'http://localhost:8000/';
 
   constructor(
     private clienteService: ClienteService,

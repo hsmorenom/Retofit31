@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class UsuarioService {
   private apiUrl = environment.apiUrl + 'controlador/usuario.php';
+  private apiCorreo= environment.apiApi;
   constructor(private http: HttpClient) { }
 
   //se obtienen todos los registro
@@ -51,7 +52,7 @@ export class UsuarioService {
 
 
   enviarCorreoRecuperacion(email: string) {
-    const url = `http://localhost:8000/backend/api/correo/enviar-recuperacion.php`;
+    const url = `${this.apiCorreo}correo/enviar-recuperacion.php`;
 
     return this.http.post<any>(url, { email: email });
   }
@@ -59,7 +60,7 @@ export class UsuarioService {
 
   verificarToken(token: string) {
   return this.http.get<any>(
-    `http://localhost:8000/backend/api/correo/verificar-token.php?token=${token}`
+    `${this.apiCorreo}correo/verificar-token.php?token=${token}`
   );
 }
 

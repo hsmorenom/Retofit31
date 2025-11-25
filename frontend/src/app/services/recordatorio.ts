@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class RecordatorioService {
   private apiUrl = environment.apiUrl + 'controlador/recordatorio.php';
+  private apiEnviar = environment.apiApi + 'correo/enviar-recordatorio.php';
   constructor(private http: HttpClient) { }
 
   //se obtienen todos los registro
@@ -53,8 +54,7 @@ export class RecordatorioService {
     }
 
     return this.http.post<{ resultado: string; mensaje: string; tipo?: string; sandbox?: boolean }>(
-      'http://localhost:8000/backend/api/correo/enviar-recordatorio.php',
-      data
+      this.apiEnviar, data
     );
   }
 

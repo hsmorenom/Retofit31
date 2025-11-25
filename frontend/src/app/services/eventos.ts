@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class EventosService {
   private apiUrl = environment.apiUrl + 'controlador/eventos.php';
+  private apiQr = environment.apiApi + 'qr/generar-qr-individual.php';
 
   constructor(private http: HttpClient) { }
 
@@ -36,8 +37,7 @@ export class EventosService {
 
   // Generar QR para un evento específico, se conecta con api de generar-qr aparte del modelo y controlador para respetar el funcionamiento del crud, es por ello que se usa una url diferente
   generarQR(idEvento: number): Observable<any> {
-    const url = 'http://localhost:8000/backend/api/qr/generar-qr-individual.php';
-    return this.http.get(`${url}?id_evento=${idEvento}`);
+    return this.http.get(`${this.apiQr}?id_evento=${idEvento}`);
   }
 
 

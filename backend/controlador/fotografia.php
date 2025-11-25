@@ -140,10 +140,6 @@ switch ($method) {
             exit();
         }
 
-        echo json_encode($fotografia->eliminar($_GET['id']));
-        break;
-
-
 
     default:
         echo json_encode(['resultado' => 'ERROR', 'mensaje' => 'Método no permitido']);

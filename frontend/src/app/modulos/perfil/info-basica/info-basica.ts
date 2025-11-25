@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-info-basica',
@@ -25,6 +26,7 @@ export class InfoBasica implements OnChanges {
   sexo = '';
   fechaNacimiento = '';
   fotoPerfil: string = 'assets/images/perfil/imagen-perfil-usuario.png';
+  private apiImagen= environment.apiApi;
 
   get nombreCompleto(): string {
     return `${this.primerNombre} ${this.segundoNombre} ${this.primerApellido} ${this.segundoApellido}`.toUpperCase();
@@ -80,7 +82,7 @@ export class InfoBasica implements OnChanges {
     formData.append('fotoAnterior', this.datosUsuario?.FOTO_PERFIL_URL || '');
 
     this.http.post<{ url: string }>(
-      'http://localhost:8000/backend/api/imagenes/subir-foto-perfil.php',
+      `${this.apiImagen}api/imagenes/subir-foto-perfil.php`,
       formData
     ).subscribe({
       next: (res) => {
@@ -92,7 +94,7 @@ export class InfoBasica implements OnChanges {
         this.onCampoCambiado();
 
         this.http.post<{ mensaje: string }>(
-          'http://localhost:8000/backend/api/imagenes/actualizar-foto.php',
+          `${this.apiImagen}api/imagenes/actualizar-foto.php`,
           { id_cliente: this.datosUsuario.ID_CLIENTE, foto_url: res.url }
         ).subscribe();
 

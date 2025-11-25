@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../../services/cliente';
 import { FotografiaService } from '../../../services/fotografia';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-historial-progreso',
@@ -14,8 +15,9 @@ import { FotografiaService } from '../../../services/fotografia';
   ],
 })
 export class HistorialProgreso {
+  private apiFoto = environment.apiFoto;
 
-  baseFotosUrl = "http://localhost:8000/";
+  baseFotosUrl = this.apiFoto;
 
   terminoBusqueda: string = '';
   clienteSeleccionado: any = null;

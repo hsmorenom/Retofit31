@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from '../../../services/cliente';
 import { FotografiaService } from '../../../services/fotografia';
+import { environment } from '../../../../environments/environment';
 
 type TipoFoto = 'frontal' | 'posterior' | 'lateral';
 
@@ -45,7 +46,8 @@ export class SubirFotografia {
   };
 
   // URL base donde se sirven las fotos desde PHP
-  private baseFotosUrl = 'http://localhost:8000/';
+  private apiFoto = environment.apiFoto;
+  private baseFotosUrl = this.apiFoto;
 
   constructor(
     private clienteService: ClienteService,

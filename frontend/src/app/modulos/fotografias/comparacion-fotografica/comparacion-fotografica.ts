@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../../services/cliente';
 import { FotografiaService } from '../../../services/fotografia';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-comparacion-fotografica',
@@ -11,8 +12,9 @@ import { FotografiaService } from '../../../services/fotografia';
   imports: [CommonModule, FormsModule]
 })
 export class ComparacionFotografica {
+  private apiFoto = environment.apiFoto;
 
-  baseFotosUrl = "http://localhost:8000/";
+  baseFotosUrl = this.apiFoto;
 
   terminoBusqueda = "";
   cliente: any = null;

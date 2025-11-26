@@ -12,7 +12,7 @@ import { environment } from '../../../../environments/environment';
   imports: [CommonModule, FormsModule]
 })
 export class ComparacionFotografica {
-  private apiFoto = environment.apiFoto;
+  private apiFoto = environment.production;
 
   baseFotosUrl = this.apiFoto;
 

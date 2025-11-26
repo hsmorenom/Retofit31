@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once '../modelos/fotografia.php';
+require_once '../';
 
 $fotografia = new FotografiaModelo();
 $method = $_SERVER['REQUEST_METHOD'];

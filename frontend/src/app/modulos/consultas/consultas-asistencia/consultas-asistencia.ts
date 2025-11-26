@@ -36,7 +36,6 @@ export class ConsultasAsistencia {
   }
 
   recibirGrafica(base64: string) {
-    console.log("Gráfica recibida desde graficos-asistencia");
     this.graficaBase64 = base64;
   }
 

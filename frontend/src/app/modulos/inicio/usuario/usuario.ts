@@ -48,9 +48,6 @@ export class Usuario implements OnInit {
     this.cargarTendenciaPeso();
     this.cargarProximosEventos(); 
 
-    console.log("👉 ID cliente:", this.idCliente);
-    console.log("👉 Identificación:", this.identificacion);
-
     if (!this.idCliente) {
       console.error("❌ No existe id_cliente en el localStorage.");
       return;
@@ -73,7 +70,6 @@ export class Usuario implements OnInit {
           return;
         }
 
-        console.log("📌 Registros recibidos:", data);
 
         // Ordenar por fecha
         data.sort((a, b) =>
@@ -89,7 +85,6 @@ export class Usuario implements OnInit {
         this.cintura = Number(ultimo.CINTURA);
         this.altura  = Number(ultimo.ALTURA);
 
-        console.log("✔ Último registro antropométrico:", ultimo);
       },
       error: (err) => console.error("❌ Error consultando antropometría:", err)
     });
@@ -103,7 +98,6 @@ cargarUltimaFotoFrontal() {
   this.fotografia.filtrar(this.idCliente).subscribe({
     next: (data: any[]) => {
 
-      console.log("📌 Fotos recibidas:", data);
 
       if (!data || data.length === 0) {
         console.warn("⚠ Este cliente no tiene fotos registradas.");
@@ -121,7 +115,6 @@ cargarUltimaFotoFrontal() {
       this.fotoFrontal = 
         `http://localhost:8000/backend/${ultima.URL_FOTO_FRONTAL}`;
 
-      console.log("✔ Última foto frontal:", this.fotoFrontal);
     },
 
     error: (err) => {
@@ -212,7 +205,6 @@ cargarProximosEventos() {
       // Tomar solo los próximos 5
       this.eventosProximos = futuros.slice(0, 5);
 
-      console.log("📌 Próximos eventos:", this.eventosProximos);
     },
     error: (err) => console.error(err)
   });

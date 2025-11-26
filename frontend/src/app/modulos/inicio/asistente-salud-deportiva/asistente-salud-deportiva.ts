@@ -83,8 +83,6 @@ graficoAsistencia: any = null;
           );
 
           this.clientesSinFotografia = sinFoto.length;
-
-          console.log("📸 Clientes sin registro fotográfico:", this.clientesSinFotografia);
         }
       });
 
@@ -106,8 +104,6 @@ cargarClientesSinAntropometricos() {
           const sinMedidas = clientes.filter(c => !idsConMedidas.includes(Number(c.ID_CLIENTE)));
 
           this.clientesSinAntropometricos = sinMedidas.length;
-
-          console.log("📏 Clientes sin medidas antropométricas:", this.clientesSinAntropometricos);
         }
       });
     }
@@ -134,8 +130,6 @@ cargarClientesSinAntropometricos() {
         f.setHours(0,0,0,0);
         return f >= hoy;
       });
-
-      console.log("📅 Lista de próximos eventos:", this.eventosProximos);
 
     }
   });
@@ -256,10 +250,6 @@ cargarTendenciaAntropometrica() {
       this.promPGC    = pgcValidos.length    ? +(sPGC / pgcValidos.length).toFixed(1) : 0;
       this.promCuello = cuelloValidos.length ? +(sCuello / cuelloValidos.length).toFixed(1) : 0;
 
-      console.log("📌 Promedios (solo valores válidos):",
-        this.promPeso, this.promIMC, this.promPGC, this.promCuello
-      );
-
       this.generarGraficaRadar();
     }
   });
@@ -280,8 +270,6 @@ cargarEventosMesActual() {
           fecha.getFullYear() === anioActual
         );
       }).length;
-
-      console.log("📅 Eventos del mes actual:", this.eventosDelMes);
     }
   });
 }
@@ -298,8 +286,6 @@ cargarClientesSinFoto() {
           const sinFoto = clientes.filter(c => !idsConFoto.includes(Number(c.ID_CLIENTE)));
 
           this.clientesSinFoto = sinFoto.length;
-
-          console.log("📸 Clientes sin foto:", this.clientesSinFoto);
         }
       });
     }

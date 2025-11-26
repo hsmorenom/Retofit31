@@ -101,7 +101,6 @@ export class EditarEvento {
     // Llamamos al método PUT del servicio
     this.eventosService.editar(this.evento.ID_EVENTOS, datosActualizados).subscribe({
       next: (res) => {
-        console.log('Respuesta del servidor:', res);
         alert(res.mensaje || 'Evento actualizado correctamente.');
         this.cerrarVentana(); // Cierra después de guardar
       },

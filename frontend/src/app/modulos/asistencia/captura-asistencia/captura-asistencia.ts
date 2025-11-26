@@ -67,7 +67,7 @@ export class CapturaAsistencia {
 
 
   procesarQR(contenido: string) {
-    console.log('QR detectado:', contenido);
+ 
 
     const url = new URL(contenido);
     const idEvento = url.searchParams.get('id_evento');
@@ -91,7 +91,7 @@ export class CapturaAsistencia {
     // 🔹 Enviar al backend
     this.asistenciaService.registrarPorQR(data).subscribe({
       next: (res) => {
-        console.log('Respuesta del backend:', res);
+      
 
         switch (res.resultado) {
           case 'OK':

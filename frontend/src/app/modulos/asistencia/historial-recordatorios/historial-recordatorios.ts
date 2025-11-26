@@ -81,7 +81,7 @@ export class HistorialRecordatorios implements OnInit {
         this.enviando = null;
 
         if (res.resultado === 'OK') {
-          console.log(`✅ Recordatorio por ${tipo} enviado correctamente:`, res);
+      
 
           // 🔹 Determinar nuevo estado según frecuencia y estado actual
           let nuevoEstado = 'enviado';
@@ -95,7 +95,7 @@ export class HistorialRecordatorios implements OnInit {
             .actualizarEstado(recordatorio.ID_RECORDATORIO, nuevoEstado)
             .subscribe({
               next: () => {
-                console.log(`📬 Estado cambiado a ${nuevoEstado}`);
+               
 
                 // 🔹 Actualizar en la tabla visual
                 const index = this.recordatorio.findIndex(

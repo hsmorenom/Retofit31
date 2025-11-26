@@ -19,12 +19,11 @@ export class ConsultasAdministrativo {
   }
 
   recibirDatosParaInforme(event: any) {
-    console.log("📌 Datos enviados al PDF:", event);
+    
     this.filtrosParaInforme = event;
   }
 
   recibirGrafica(base64: string) {
-    console.log("Gráfica recibida desde graficos-administrativo");
     this.graficaBase64 = base64;
   }
 

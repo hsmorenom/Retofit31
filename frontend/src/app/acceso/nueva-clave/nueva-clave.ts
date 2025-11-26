@@ -38,7 +38,6 @@ export class NuevaClave {
         if (res.resultado === 'OK') {
           this.emailUsuario = res.email;
           this.idUsuario = res.idUsuario;
-          console.log("Email recuperado:", this.emailUsuario);
         } else {
           alert(res.mensaje);
           this.router.navigate(['/']);

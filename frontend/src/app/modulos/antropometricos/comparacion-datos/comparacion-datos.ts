@@ -93,7 +93,7 @@ export class ComparacionDatos {
 
     this.antropometricosService.filtrarIdCliente(idCliente).subscribe({
       next: (res) => {
-        console.log("Datos recibidos:", res);
+        
 
         let datos = Array.isArray(res) ? res : [];
 

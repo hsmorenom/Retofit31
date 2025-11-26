@@ -17,13 +17,13 @@ export class QrEvento {
   @ViewChild('qrContainer', { static: false }) qrContainer!: ElementRef;
 
   ngOnInit() {
-    console.log('Evento recibido en QR:', this.evento);
+  
   }
 
   get qrUrl(): string | null {
     if (this.evento?.QR_DE_EVENTO && this.evento.QR_DE_EVENTO.endsWith('.png')) {
       const archivo = this.evento.QR_DE_EVENTO.split('/').pop(); // obtiene solo el nombre
-      return `http://localhost:8000/backend/api/qr/ver-qr.php?archivo=${archivo}`;
+      return `http://localhost:8000/api/api/qr/ver-qr.php?archivo=${archivo}`;
     }
     return null;
   }

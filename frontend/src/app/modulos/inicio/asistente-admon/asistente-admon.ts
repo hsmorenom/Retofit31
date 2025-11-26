@@ -72,7 +72,7 @@ graficoAsistencia: any = null;
         return fecha >= hace30dias && fecha <= hoy;
       }).length;
 
-      console.log("📸 Nuevas fotos (30 días):", this.nuevasFotos);
+   
     }
   });
 }
@@ -205,9 +205,7 @@ cargarTendenciaAntropometrica() {
       this.promPGC    = pgcValidos.length    ? +(sPGC / pgcValidos.length).toFixed(1) : 0;
       this.promCuello = cuelloValidos.length ? +(sCuello / cuelloValidos.length).toFixed(1) : 0;
 
-      console.log("📌 Promedios (solo valores válidos):",
-        this.promPeso, this.promIMC, this.promPGC, this.promCuello
-      );
+     
 
       this.generarGraficaRadar();
     }
@@ -230,7 +228,7 @@ cargarEventosMesActual() {
         );
       }).length;
 
-      console.log("📅 Eventos del mes actual:", this.eventosDelMes);
+  
     }
   });
 }
@@ -247,8 +245,6 @@ cargarClientesSinFoto() {
           const sinFoto = clientes.filter(c => !idsConFoto.includes(Number(c.ID_CLIENTE)));
 
           this.clientesSinFoto = sinFoto.length;
-
-          console.log("📸 Clientes sin foto:", this.clientesSinFoto);
         }
       });
     }

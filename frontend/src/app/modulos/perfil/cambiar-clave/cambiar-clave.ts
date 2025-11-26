@@ -48,7 +48,7 @@ export class CambiarClave {
           // Paso 2: cambiar la clave
           this.usuarioService.cambiarClave(idUsuario, this.claveActual, this.nuevaClave).subscribe({
             next: (res) => {
-              console.log('✅ Respuesta backend cambio clave:', res);
+
               alert('✅ Contraseña actualizada con éxito');
               this.claveActual = '';
               this.nuevaClave = '';

@@ -57,7 +57,6 @@ export class Perfil implements OnInit {
       next: (res: any) => {
         this.datosUsuario = Array.isArray(res) ? res[0] : res;
         this.datosOriginales = JSON.parse(JSON.stringify(this.datosUsuario)); 
-        console.log('✅ Datos completos del usuario:', this.datosUsuario);
       },
       error: (err) => {
         console.error('Error al cargar datos:', err);
@@ -71,10 +70,8 @@ export class Perfil implements OnInit {
         // Tu backend devuelve un array directo (por tu modelo/controlador),
         // así que debería ser ya un array:
         this.ciudades = Array.isArray(res) ? res : [];
-        console.log('📍 Ciudades cargadas:', this.ciudades);
         // Para depurar: mira cómo vienen los nombres de campos
         if (this.ciudades.length) {
-          console.log('Ejemplo ciudad[0]:', this.ciudades[0]);
         }
       },
       error: (err) => {
@@ -89,10 +86,8 @@ export class Perfil implements OnInit {
         // Tu backend devuelve un array directo (por tu modelo/controlador),
         // así que debería ser ya un array:
         this.departamentos = Array.isArray(res) ? res : [];
-        console.log('📍 Ciudades cargadas:', this.departamentos);
         // Para depurar: mira cómo vienen los nombres de campos
         if (this.departamentos.length) {
-          console.log('Ejemplo ciudad[0]:', this.departamentos[0]);
         }
       },
       error: (err) => {
@@ -120,7 +115,6 @@ export class Perfil implements OnInit {
     } else {
       this.datosUsuario = { ...this.datosUsuario, ...cambios }
     }
-    console.log('Cambios pendientes actualizados:', this.cambiosPendientes);
   }
 
   toggleClave(): void {
@@ -166,7 +160,6 @@ export class Perfil implements OnInit {
 
 
     // Depuración: Ver qué se está enviando
-    console.log('Cambios pendientes:', this.cambiosPendientes);
 
     if (this.datosUsuario?.FOTO_PERFIL_URL) {
       this.cambiosPendientes['FOTO_PERFIL_URL'] = this.datosUsuario.FOTO_PERFIL_URL;
@@ -182,7 +175,6 @@ export class Perfil implements OnInit {
       pendientes++;
       this.usuarioService.editar(usuarioId, cambiosUsuario).subscribe({
         next: () => {
-          console.log('✅ Usuario actualizado');
           pendientes--;
           this.verificarFinalizacion(pendientes, errores);
         },
@@ -207,7 +199,6 @@ export class Perfil implements OnInit {
       }
       this.clienteService.editar(clienteId, cambiosCliente).subscribe({
         next: () => {
-          console.log('✅ Cliente actualizado');
           pendientes--;
           this.verificarFinalizacion(pendientes, errores);
         },

@@ -96,7 +96,6 @@ export class Registro {
     // Llamar al servicio
     this.clienteService.insertarClienteConUsuario(usuarioData, clienteData).subscribe({
       next: (res) => {
-        console.log('Registro exitoso:', res);
         alert('Usuario registrado con éxito');
         this.router.navigate(['/']); // 👈 redirige al login
       },

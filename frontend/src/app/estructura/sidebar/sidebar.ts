@@ -27,7 +27,7 @@ export class Sidebar implements OnInit {
     if (idUsuario) {
       this.usuarioService.filtrarPorId(+idUsuario).subscribe((data: any) => {
 
-        console.log("🔎 DATA SIDEBAR:", data);
+    
 
         const tipo =
           data?.TIPO_USUARIO ||
@@ -37,7 +37,7 @@ export class Sidebar implements OnInit {
           data?.data?.[0]?.TIPO_USUARIO ||
           null;
 
-        console.log("🔎 TIPO USUARIO RAW:", tipo);
+       
 
         // MAPA correcto con TUS ROLES REALES
         const mapaRoles: any = {
@@ -49,7 +49,7 @@ export class Sidebar implements OnInit {
 
         this.tipoUsuario = mapaRoles[tipo] ?? 0;
 
-        console.log("🔎 TIPO USUARIO NUM:", this.tipoUsuario);
+       
       });
     }
   }

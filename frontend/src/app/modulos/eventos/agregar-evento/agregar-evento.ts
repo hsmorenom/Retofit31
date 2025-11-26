@@ -89,7 +89,6 @@ export class AgregarEvento {
 
     this.eventosService.insertar(data).subscribe({
       next: (res) => {
-        console.log('📦 Respuesta del backend:', res); // 👈 agrega esto
         if (res.resultado === 'OK') {
           alert('✅ Evento guardado correctamente.');
           this.eventoGuardado = true;
@@ -122,7 +121,6 @@ export class AgregarEvento {
         if (res.resultado === 'OK') {
           alert('✅ QR generado correctamente.');
           this.qrGenerado = true;
-          console.log('📁 URL del QR:', res.qr);
         } else {
           alert('❌ ' + res.mensaje);
         }

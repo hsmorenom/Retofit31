@@ -88,7 +88,6 @@ export class Eventos implements OnInit {
   }
 
   abrirQrEvento(evento: any): void {
-    console.log('Evento recibido para QR:', evento);
     this.qrEvento = evento;
     this.mostrarQrEvento = true;
   }

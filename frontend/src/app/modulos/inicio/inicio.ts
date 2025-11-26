@@ -40,14 +40,10 @@ export class Inicio implements AfterViewInit, OnInit {
 
     if (idUsuario) {
       this.usuarioService.filtrarPorId(+idUsuario).subscribe((data) => {
-        console.log('Respuesta del backend:', data);
         this.nombreCompleto = `${data.PRIMER_NOMBRE } ${data.SEGUNDO_NOMBRE ||''} ${data.PRIMER_APELLIDO} ${data.SEGUNDO_APELLIDO ||''}`;
         this.tipoUsuario = data.TIPO_USUARIO;
       });
     }
-    
-
-    console.log('ID recuperado:', localStorage.getItem('idUsuario'));
 
   }
 

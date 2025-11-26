@@ -131,7 +131,7 @@ export class Administrativo implements OnInit {
       // 🔹 Buscar cliente por ID_USUARIO
       this.clienteService.obtenerClientePorUsuario(this.usuarioEditado.ID_USUARIO)
         .subscribe(res => {
-          console.log('Respuesta del backend:', res);
+        
 
           if (res.resultado === 'OK' && res.cliente?.ID_CLIENTE) {
             this.usuarioEditado.ID_CLIENTE = res.cliente.ID_CLIENTE;
@@ -220,7 +220,7 @@ export class Administrativo implements OnInit {
       !this.nuevoUsuario.telefono
     ) {
       alert('Complete todos los campos obligatorios');
-      console.log('Campos obligatorios no completados', this.nuevoUsuario);
+     
       return;
     }
 
@@ -374,10 +374,10 @@ export class Administrativo implements OnInit {
         // Tu backend devuelve un array directo (por tu modelo/controlador),
         // así que debería ser ya un array:
         this.ciudades = Array.isArray(res) ? res : [];
-        console.log('📍 Ciudades cargadas:', this.ciudades);
+       
         // Para depurar: mira cómo vienen los nombres de campos
         if (this.ciudades.length) {
-          console.log('Ejemplo ciudad[0]:', this.ciudades[0]);
+          
         }
       },
       error: (err) => {
@@ -398,10 +398,10 @@ export class Administrativo implements OnInit {
         // Tu backend devuelve un array directo (por tu modelo/controlador),
         // así que debería ser ya un array:
         this.tipoUsuario = Array.isArray(res) ? res : [];
-        console.log('📍 Tipo de usuarios cargadas:', this.tipoUsuario);
+      
         // Para depurar: mira cómo vienen los nombres de campos
         if (this.tipoUsuario.length) {
-          console.log('Ejemplo tipo usuario[0]:', this.tipoUsuario[0]);
+          
         }
       },
       error: (err) => {

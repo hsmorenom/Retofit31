@@ -184,9 +184,6 @@ cargarTendenciaAntropometrica() {
       this.promPGC    = pgcValidos.length    ? +(sPGC / pgcValidos.length).toFixed(1) : 0;
       this.promCuello = cuelloValidos.length ? +(sCuello / cuelloValidos.length).toFixed(1) : 0;
 
-      console.log("📌 Promedios (solo valores válidos):",
-        this.promPeso, this.promIMC, this.promPGC, this.promCuello
-      );
 
       this.generarGraficaRadar();
     }
@@ -209,7 +206,6 @@ cargarEventosMesActual() {
         );
       }).length;
 
-      console.log("📅 Eventos del mes actual:", this.eventosDelMes);
     }
   });
 }
@@ -227,7 +223,7 @@ cargarClientesSinFoto() {
 
           this.clientesSinFoto = sinFoto.length;
 
-          console.log("📸 Clientes sin foto:", this.clientesSinFoto);
+          
         }
       });
     }

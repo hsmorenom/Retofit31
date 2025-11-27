@@ -26,7 +26,7 @@ export class InfoBasica implements OnChanges {
   sexo = '';
   fechaNacimiento = '';
   fotoPerfil: string = 'assets/images/perfil/imagen-perfil-usuario.png';
-  private apiImagen= environment.apiApi;
+  private apiImagen= environment.production;
 
   get nombreCompleto(): string {
     return `${this.primerNombre} ${this.segundoNombre} ${this.primerApellido} ${this.segundoApellido}`.toUpperCase();

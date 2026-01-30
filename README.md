@@ -1,4 +1,4 @@
-# Retrofit 31
+# Retrofit31
 
 Aplicación web para la gestión de usuarios, seguimiento de datos físicos y administración de entrenamientos orientados al fútbol y la salud.
 
@@ -8,7 +8,7 @@ Proyecto desarrollado como parte del proceso formativo del Tecnólogo en Anális
 
 ## 📌 Descripción general
 
-Retrofit 31 permite gestionar usuarios que buscan mejorar su condición física y salud mediante el entrenamiento en fútbol, integrando módulos de perfil, datos antropométricos, planes alimenticios y control administrativo.
+Retrofit31 permite gestionar usuarios que buscan mejorar su condición física y salud mediante el entrenamiento en fútbol, integrando módulos de perfil, datos antropométricos, planes alimenticios y control administrativo.
 
 El sistema está diseñado bajo una arquitectura cliente-servidor, separando claramente el frontend y el backend.
 
@@ -54,7 +54,7 @@ El sistema está diseñado bajo una arquitectura cliente-servidor, separando cla
 ## 🛠️ Tecnologías utilizadas
 
 - Angular 20
-- Tailwind CSS
+- Tailwind CSS 4.1
 - PHP
 - PDO
 - MySQL

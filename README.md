@@ -1,4 +1,4 @@
-# Retrofit31
+# Retrofit31 (Versión Español)
 
 Aplicación web para la gestión de usuarios, seguimiento de datos físicos y administración de entrenamientos orientados al fútbol y la salud.
 
@@ -37,7 +37,7 @@ El sistema está diseñado bajo una arquitectura cliente-servidor, separando cla
 
 ### Frontend
 - Angular 20 (standalone components)
-- Tailwind CSS
+- Tailwind CSS 4.1
 - Consumo de servicios REST
 
 ### Backend
@@ -80,3 +80,85 @@ Ingeniero Civil
 Saul Fragua Nova  
 Tecnólogo en Análisis y Desarrollo de Software (ADSO)
 
+---
+
+# Retrofit31 (English Version)
+
+Web application for user management, physical data tracking, and training administration focused on football and health improvement.
+
+This project was developed as part of the Software Analysis and Development (ADSO) technologist program.
+
+---
+
+## 📌 Overview
+
+Retrofit31 is designed to manage users who aim to improve their physical condition and overall health through football training. The system integrates user profile management, anthropometric data tracking, nutritional information, and administrative control modules.
+
+The application follows a client–server architecture, with a clear separation between frontend and backend responsibilities.
+
+---
+
+## ⚙️ Main Features
+
+- User authentication
+- Role-based access control:
+  - Administrator
+  - Administrative Assistant
+  - User / Client
+- Modular user profile:
+  - Basic information
+  - Contact details
+  - Emergency contact
+- Profile picture upload and display
+- Anthropometric data management
+- Nutritional information tracking
+- Filter-based report generation
+- Responsive user interface
+
+---
+
+## 🧩 Architecture
+
+### Frontend
+- Angular 20 (standalone components)
+- Tailwind CSS 4.1
+- REST API consumption
+
+### Backend
+- PHP
+- PDO for database access
+- MVC-inspired structure using controllers and models
+
+### Database
+- MySQL
+- Normalized relational schema
+
+---
+
+## 🛠️ Technologies Used
+
+- Angular 20
+- Tailwind CSS 4.1
+- PHP
+- PDO
+- MySQL
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+
+---
+
+## 🚧 Project Status
+
+This project is currently under active development as part of an academic training process, with core functionalities implemented and continuous improvements in progress.
+
+---
+
+## 👨‍💻 Author
+
+Sebastian Moreno  
+Software Analysis and Development Technologist (ADSO)  
+Civil Engineer
+
+Saul Fragua Nova  
+Software Analysis and Development Technologist (ADSO)  

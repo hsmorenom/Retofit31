@@ -76,6 +76,7 @@ Sebastian Moreno
 Tecnólogo en Análisis y Desarrollo de Software (ADSO)  
 Ingeniero Civil
 
-Saul Fragua Nova
+
+Saul Fragua Nova  
 Tecnólogo en Análisis y Desarrollo de Software (ADSO)
 
